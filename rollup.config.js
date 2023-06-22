@@ -4,6 +4,7 @@ import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'rollup-plugin-dts';
+import image from 'rollup-plugin-img'
 import postcss from 'rollup-plugin-postcss';
 import babel from '@rollup/plugin-babel';
 import autoprefixer from 'autoprefixer';
@@ -34,6 +35,7 @@ export default [
                 exclude: 'node_modules/**',
                 babelHelpers: 'bundled',
             }),
+            image(),
             postcss({
                 plugins: [autoprefixer()],
                 modules: {

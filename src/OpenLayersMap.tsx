@@ -1,21 +1,18 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useRef,
-} from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import * as ol from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import "./index.css";
 import { transform } from "ol/proj";
-import { OpenLayersProps } from "./map.type";
+import {MapContextType, OpenLayersProps} from "./map.type";
+import {Map} from "ol";
 
 declare global {
   interface Window {
     mouseOut: boolean;
   }
 }
-
+const MapContext = React.createContext<MapContextType>({});
 const OpenLayersMap = forwardRef(
   (
     {
@@ -23,9 +20,13 @@ const OpenLayersMap = forwardRef(
       minZoom = 5,
       maxZoom = 21,
       initialZoom = 10,
+      clusterEnabled,
       className,
       children,
       onClickMap,
+      onClickFeature,
+      onMouseOut,
+      onMouseOver,
     }: OpenLayersProps,
     ref
   ) => {
@@ -40,7 +41,7 @@ const OpenLayersMap = forwardRef(
         });
         layer.set("name", "rasterLayer");
 
-        var center = transform(initialCenter, "EPSG:4326", "EPSG:3857");
+        var center = initialCenter? transform(initialCenter, "EPSG:4326", "EPSG:3857"): undefined;
 
         var view = new ol.View({
           center: center,
@@ -55,18 +56,41 @@ const OpenLayersMap = forwardRef(
           view: view,
         });
 
-        mapRef.current.on("singleclick", () => {
-          !!onClickMap && onClickMap();
+        mapRef.current.on("singleclick", function (event: any) {
+          event.stopPropagation();
+          if (mapRef.current) {
+            const features = mapRef.current.getFeaturesAtPixel(event.pixel);
+            if (features.length > 0) {
+              onClickFeature && onClickFeature(features);
+            } else {
+              !!onClickMap && onClickMap();
+            }
+          }
+        });
+
+        mapRef.current.on("pointermove", function (event: any) {
+          event.stopPropagation();
+          if (mapRef.current) {
+            const features = mapRef.current.getFeaturesAtPixel(event.pixel);
+            if (features.length > 0) {
+              onMouseOver && onMouseOver(features);
+            } else {
+              !!onMouseOut && onMouseOut();
+            }
+          }
         });
       }
     }, [mapElement, mapRef]);
 
     return (
-      <div ref={mapElement} className={'map ' + className}>
-        {children}
-      </div>
+        <MapContext.Provider value={{map: mapRef.current, clusterEnabled}}>
+          <div ref={mapElement} className={"map " + className}>
+            {children}
+          </div>
+        </MapContext.Provider>
     );
   }
 );
 
 export default OpenLayersMap;
+export const useMap = () => React.useContext(MapContext)
