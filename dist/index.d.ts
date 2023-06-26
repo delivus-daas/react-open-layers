@@ -1,13 +1,16 @@
 import React, { ReactNode } from 'react';
 import { Options } from 'ol/style/Icon';
-import { Feature } from 'ol';
+import VectorSource from 'ol/source/Vector';
+import { ViewOptions } from 'ol/View';
+import { FeatureLike } from 'ol/Feature';
+import { Options as Options$1 } from 'ol/style/Style';
 
 type Coordinate = {
     latitude: number;
     longitude: number;
 };
 type MarkerProps<T> = {
-    clusterEnabled?: boolean;
+    source?: VectorSource;
     iconOptions?: Options;
     datum?: T;
     index: number;
@@ -21,19 +24,28 @@ declare global {
 }
 declare const Marker: React.ForwardRefExoticComponent<MarkerProps<any> & React.RefAttributes<unknown>>;
 
-type OpenLayersProps = {
-    clusterEnabled?: boolean;
-    minZoom?: number;
-    maxZoom?: number;
-    initialZoom?: number;
-    initialCenter?: Array<number>;
+interface OpenLayersProps extends ViewOptions {
+    initialCenter?: number[];
     className?: string;
     onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     onClickMap?: () => void;
-    onMouseOver?: (feature: Feature[]) => void;
+    onMouseOver?: (feature: FeatureLike[]) => void;
     onMouseOut?: () => void;
-    onClickFeature?: (feature: Feature[]) => void;
+    onClickFeature?: (feature: FeatureLike[]) => void;
+}
+
+declare global {
+    interface Window {
+        mouseOut: boolean;
+    }
+}
+declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
+
+type LayerProps = {
+    options?: Options$1;
+    index?: number;
+    children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
 declare global {
@@ -41,6 +53,13 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const OpenLayersMap: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
+declare const Layer: ({ children }: LayerProps) => React.JSX.Element;
 
-export { Marker, OpenLayersMap as OpenLayers };
+declare global {
+    interface Window {
+        mouseOut: boolean;
+    }
+}
+declare const ClusterLayer: ({ children, options }: LayerProps) => React.JSX.Element;
+
+export { ClusterLayer, Layer, Marker, Map as OpenLayers };

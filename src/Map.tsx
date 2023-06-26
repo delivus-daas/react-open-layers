@@ -1,26 +1,23 @@
-import React, { forwardRef, useEffect, useRef } from "react";
+import React, {forwardRef, useEffect, useRef, useState} from "react";
 import * as ol from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import "./index.css";
 import { transform } from "ol/proj";
-import {MapContextType, OpenLayersProps} from "./map.type";
-import {Map} from "ol";
+import { OpenLayersProps } from "./map.type";
 
 declare global {
   interface Window {
     mouseOut: boolean;
   }
-}
-const MapContext = React.createContext<MapContextType>({});
-const OpenLayersMap = forwardRef(
+}const MapContext = React.createContext<any>(undefined);
+const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
       minZoom = 5,
       maxZoom = 21,
-      initialZoom = 10,
-      clusterEnabled,
+      zoom = 10,
       className,
       children,
       onClickMap,
@@ -30,36 +27,36 @@ const OpenLayersMap = forwardRef(
     }: OpenLayersProps,
     ref
   ) => {
-    const mapRef = useRef<any>();
+    const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
 
     useEffect(() => {
-      if (mapElement.current && !mapRef.current) {
-        var layer = new TileLayer({
-          source: new OSM(),
-          className: "bw",
-        });
+      if (mapElement.current && !map) {
+          const layer = new TileLayer({
+              source: new OSM(),
+              className: "bw",
+            });
         layer.set("name", "rasterLayer");
+        const center = initialCenter? transform(initialCenter, "EPSG:4326", "EPSG:3857"): undefined;
 
-        var center = initialCenter? transform(initialCenter, "EPSG:4326", "EPSG:3857"): undefined;
-
-        var view = new ol.View({
-          center: center,
-          zoom: initialZoom,
+          const view = new ol.View({
+          center,
+          zoom,
           maxZoom,
           minZoom,
         });
 
-        mapRef.current = new ol.Map({
+        const map = new ol.Map({
           target: mapElement.current,
           layers: [layer],
           view: view,
         });
+        setMap(map)
 
-        mapRef.current.on("singleclick", function (event: any) {
+        map.on("singleclick", function (event: any) {
           event.stopPropagation();
-          if (mapRef.current) {
-            const features = mapRef.current.getFeaturesAtPixel(event.pixel);
+          if (map) {
+            const features = map.getFeaturesAtPixel(event.pixel);
             if (features.length > 0) {
               onClickFeature && onClickFeature(features);
             } else {
@@ -68,10 +65,10 @@ const OpenLayersMap = forwardRef(
           }
         });
 
-        mapRef.current.on("pointermove", function (event: any) {
+        map.on("pointermove", function (event: any) {
           event.stopPropagation();
-          if (mapRef.current) {
-            const features = mapRef.current.getFeaturesAtPixel(event.pixel);
+          if (map) {
+            const features = map.getFeaturesAtPixel(event.pixel);
             if (features.length > 0) {
               onMouseOver && onMouseOver(features);
             } else {
@@ -80,10 +77,10 @@ const OpenLayersMap = forwardRef(
           }
         });
       }
-    }, [mapElement, mapRef]);
+    }, [mapElement]);
 
     return (
-        <MapContext.Provider value={{map: mapRef.current, clusterEnabled}}>
+        <MapContext.Provider value={map}>
           <div ref={mapElement} className={"map " + className}>
             {children}
           </div>
@@ -92,5 +89,6 @@ const OpenLayersMap = forwardRef(
   }
 );
 
-export default OpenLayersMap;
+export default Map;
 export const useMap = () => React.useContext(MapContext)
+

@@ -1,25 +1,18 @@
 import { ReactNode } from "react";
-import {Feature, Map} from "ol";
+import { Feature } from "ol";
+import { ViewOptions } from "ol/View";
+import {FeatureLike} from "ol/Feature";
 
-export type MapContextType = {
-  map?: Map;
-  clusterEnabled?: boolean;
-}
-
-export type OpenLayersProps = {
-  clusterEnabled?: boolean;
-  minZoom?: number;
-  maxZoom?: number;
-  initialZoom?: number;
-  initialCenter?: Array<number>;
+export interface OpenLayersProps extends ViewOptions {
+  initialCenter?: number[];
   className?: string;
   onMapBoundChanged?: (bounds: any) => void;
   children?: ReactNode | ReactNode[];
   onClickMap?: () => void;
-  onMouseOver?: (feature: Feature[]) => void;
+  onMouseOver?: (feature: FeatureLike[]) => void;
   onMouseOut?: () => void;
-  onClickFeature?: (feature: Feature[]) => void;
-};
+  onClickFeature?: (feature: FeatureLike[]) => void;
+}
 
 export enum FeatureNames {
   marker = "marker",
