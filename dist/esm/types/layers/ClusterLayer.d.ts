@@ -5,5 +5,5 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const ClusterLayer: ({ children, options }: LayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, clusterOptions, onClick }: LayerProps) => React.JSX.Element;
 export default ClusterLayer;

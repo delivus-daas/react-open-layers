@@ -10,6 +10,9 @@ type Coordinate = {
     longitude: number;
 };
 type MarkerProps<T> = {
+    properties?: {
+        [x: string]: any;
+    };
     source?: VectorSource;
     iconOptions?: Options;
     datum?: T;
@@ -43,7 +46,8 @@ declare global {
 declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
 
 type LayerProps = {
-    options?: Options$1;
+    onClick?: (features: FeatureLike[]) => void;
+    clusterOptions?: Options$1;
     index?: number;
     children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
@@ -53,13 +57,13 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const Layer: ({ children }: LayerProps) => React.JSX.Element;
+declare const Layer: ({ children, onClick }: LayerProps) => React.JSX.Element;
 
 declare global {
     interface Window {
         mouseOut: boolean;
     }
 }
-declare const ClusterLayer: ({ children, options }: LayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, clusterOptions, onClick }: LayerProps) => React.JSX.Element;
 
 export { ClusterLayer, Layer, Marker, Map as OpenLayers };

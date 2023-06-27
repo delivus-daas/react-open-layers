@@ -16,7 +16,7 @@ declare global {
 
 const Marker = forwardRef(
   (
-    { coordinate, datum, index, iconOptions, source }: MarkerProps<any>,
+    { coordinate, properties, index, iconOptions, source }: MarkerProps<any>,
     ref
   ) => {
     const defaultIconOptions: Options = {
@@ -30,10 +30,7 @@ const Marker = forwardRef(
         const feature = new Feature({
           geometry: new Point(coord),
         });
-        feature.setProperties({
-          datum,
-          id: index + 1,
-        });
+        properties && feature.setProperties(properties);
 
         const iconStyle = new Style({
           image: new Icon(iconOptions||defaultIconOptions),

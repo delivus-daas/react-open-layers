@@ -5,5 +5,5 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const Layer: ({ children }: LayerProps) => React.JSX.Element;
+declare const Layer: ({ children, onClick }: LayerProps) => React.JSX.Element;
 export default Layer;

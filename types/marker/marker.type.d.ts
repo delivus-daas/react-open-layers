@@ -5,6 +5,9 @@ export type Coordinate = {
     longitude: number;
 };
 export type MarkerProps<T> = {
+    properties?: {
+        [x: string]: any;
+    };
     source?: VectorSource;
     iconOptions?: Options;
     datum?: T;

@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { Cluster } from "ol/source";
-import {Fill, Icon, Stroke, Style, Text} from "ol/style";
+import {Fill, Stroke, Style, Text} from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
 import { LayerProps } from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
-// @ts-ignore
-import marker from "../assets/marker.png";
+import {boundingExtent} from "ol/extent";
 
 declare global {
   interface Window {
@@ -16,10 +15,10 @@ declare global {
   }
 }
 
-const ClusterLayer = ({ children, options }: LayerProps) => {
+const ClusterLayer = ({ children, clusterOptions, onClick }: LayerProps) => {
   const map = useMap();
   const source = useRef<VectorSource>();
-  function defaultStyle(size: number) {
+  function defaultStyle(size: number, fill?: Array<number>) {
     return {
       image: new CircleStyle({
         radius: 12,
@@ -27,7 +26,7 @@ const ClusterLayer = ({ children, options }: LayerProps) => {
           color: "#fff",
         }),
         fill: new Fill({
-          color: size===1?'#f00':"#3399CC",
+          color: fill || '#3399CC',
         }),
       }),
       text: new Text({
@@ -53,36 +52,54 @@ const ClusterLayer = ({ children, options }: LayerProps) => {
         style: function (feature: any) {
           const features = feature.get("features");
           const size = features.length;
-          let style = styleCache[size];
-
-          let markerIcon = new Style({
-            image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
-              crossOrigin: 'anonymous',
-              src: marker
-            }))
-          });
-
-          let clusterIcon = new Style(defaultStyle(size));
-
-          if(style)
-            return style;
-          if (size > 1) {
-            style = clusterIcon;
-          }else {
+          let style = null;
+          if(size>0) {
             style = features[0].getStyle();
-            console.log("feature", size, style)
+            console.log("feature", size, style[0]?.image_)
+            if (size > 1) {
+              style = new Style(clusterOptions || defaultStyle(size, style[0]?.image_?.color_));;
+            }
+            return style;
           }
-          styleCache[size] = style;
-          return style;
+          return null;
         },
       });
 
-      const styleCache: any = {};
+      handleClick(clusterLayer)
       clusterLayer.set("name", FeatureNames.cluster);
       clusterLayer.set("opacity", 2);
       map.addLayer(clusterLayer);
     }
   }, [map]);
+
+  function handleClick (clusterLayer: VectorLayer<VectorSource>) {
+    map.on("click", async (e: any) => {
+      let clickLayerStatus = false;
+      await clusterLayer
+          .getFeatures(e.pixel)
+          .then((clickedFeatures: any) => {
+            if (clickedFeatures.length) {
+              clickLayerStatus = true;
+              // Get clustered Coordinates
+              const features = clickedFeatures[0].get("features");
+              if (features.length > 1) {
+                const extent = boundingExtent(
+                    features.map((r: any) =>
+                        r.getGeometry().getCoordinates()
+                    )
+                );
+                map.getView().fit(extent, {
+                  duration: 1000,
+                  padding: [50, 50, 50, 50],
+                });
+                if (onClick) {
+                  onClick(features);
+                }
+              }
+            }
+          });
+    });
+  }
 
   return <>{children(source.current)}</>;
 };
