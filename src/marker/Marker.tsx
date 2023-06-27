@@ -25,11 +25,6 @@ const Marker = forwardRef(
     };
 
     useEffect(() => {
-      drawMarker();
-    }, [coordinate, source]);
-
-    function drawMarker() {
-      console.log("drawMrker", coordinate);
       if (source && !source.getFeatureById(index+1)) {
         const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
         const feature = new Feature({
@@ -48,8 +43,12 @@ const Marker = forwardRef(
         });
 
         source?.addFeature(feature);
+
+        return ()=> {
+          source?.removeFeature(feature);
+        }
       }
-    }
+    }, [coordinate, source]);
 
     return null;
   }

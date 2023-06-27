@@ -7,7 +7,8 @@ import CircleStyle from "ol/style/Circle";
 import { LayerProps } from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
-import markerIcon from "../assets/marker.png";
+// @ts-ignore
+import marker from "../assets/marker.png";
 
 declare global {
   interface Window {
@@ -47,27 +48,31 @@ const ClusterLayer = ({ children, options }: LayerProps) => {
         source: source.current,
       });
 
-      const markerLayer: any = new VectorLayer({
-        source: source.current,
-      });
-
       const clusterLayer = new VectorLayer({
         source: clusterSource,
         style: function (feature: any) {
           const features = feature.get("features");
           const size = features.length;
           let style = styleCache[size];
-          console.log("feature", size, features[0].getStyle())
-          if(style){
+          console.log("feature", size, features[size].getStyle())
+
+          let markerIcon = new Style({
+            image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
+              crossOrigin: 'anonymous',
+              src: marker
+            }))
+          });
+
+          let clusterIcon = new Style(defaultStyle(size));
+
+          if(style)
             return style;
+          if (size > 1) {
+            style = clusterIcon;
+          }else {
+            style = markerIcon;
           }
-          if (size === 1) {
-            style = new Style(defaultStyle(size));
-            styleCache[size] = style;
-          } else {
-            style = new Style(options || defaultStyle(size));
-            styleCache[size] = style;
-          }
+          styleCache[size] = style;
           return style;
         },
       });
