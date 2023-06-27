@@ -38,9 +38,7 @@ const Marker = forwardRef(
         const iconStyle = new Style({
           image: new Icon(iconOptions||defaultIconOptions),
         });
-        feature.setStyle(function (feature: any) {
-          return [iconStyle];
-        });
+        feature.setStyle([iconStyle]);
 
         source?.addFeature(feature);
 

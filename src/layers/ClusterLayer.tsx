@@ -54,7 +54,6 @@ const ClusterLayer = ({ children, options }: LayerProps) => {
           const features = feature.get("features");
           const size = features.length;
           let style = styleCache[size];
-          console.log("feature", size, features[size].getStyle())
 
           let markerIcon = new Style({
             image: new Icon(/** @type {module:ol/style/Icon~Options} */ ({
@@ -70,7 +69,8 @@ const ClusterLayer = ({ children, options }: LayerProps) => {
           if (size > 1) {
             style = clusterIcon;
           }else {
-            style = markerIcon;
+            style = features[0].getStyle();
+            console.log("feature", size, style)
           }
           styleCache[size] = style;
           return style;
