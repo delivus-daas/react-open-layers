@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-const ClusterLayer = ({ children, clusterOptions, enableFit, fitOptions, onClick }: ClusterLayerProps) => {
+const ClusterLayer = ({ children, clusterOptions, enableFit, fitOptions, onClick, onMouseOver, onMouseOut }: ClusterLayerProps) => {
   const map = useMap();
   const source = useRef<VectorSource>();
   const defaultFitOptions = {
@@ -73,27 +73,44 @@ const ClusterLayer = ({ children, clusterOptions, enableFit, fitOptions, onClick
       clusterLayer.set("name", FeatureNames.cluster);
       clusterLayer.set("opacity", 2);
       map.addLayer(clusterLayer);
-      handleOnClick(clusterLayer)
+      addOnClickListener(clusterLayer)
+      addOnMouseOverListener(clusterLayer)
     }
   }, [map]);
 
-  function handleOnClick (clusterLayer: VectorLayer<VectorSource>) {
-    map.on("click", async (e: any) => {
+  function addOnClickListener (clusterLayer: VectorLayer<VectorSource>) {
+    map.on("click", async (event: any) => {
       await clusterLayer
-          .getFeatures(e.pixel)
+          .getFeatures(event.pixel)
           .then((clickedFeatures: any) => {
             if (clickedFeatures.length) {
               const features = clickedFeatures[0].get("features");
               if (features.length > 0) {
                 if (onClick)
-                  onClick(features);
+                  onClick(features, event);
 
-                  if(enableFit)
+                if(enableFit)
                   fitToCluster(features);
               }
             }
           });
     });
+  }
+
+  function addOnMouseOverListener (clusterLayer: VectorLayer<VectorSource>) {
+    map.on('pointermove', async (event: any) => {
+      event.stopPropagation();
+      await clusterLayer.getFeatures(event.pixel).then((clickedFeatures:any) => {
+        if (clickedFeatures.length) {
+          const features = clickedFeatures[0].get('features');
+          if (onMouseOver)
+            onMouseOver(features, event);
+        }else{
+          if (onMouseOut)
+            onMouseOut();
+        }
+      });
+    })
   }
 
   function fitToCluster(features: FeatureLike[]) {

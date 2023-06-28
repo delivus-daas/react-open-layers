@@ -4,7 +4,9 @@ import VectorSource from "ol/source/Vector";
 import { FeatureLike } from "ol/Feature";
 import { FitOptions } from "ol/View";
 export type LayerProps = {
-    onClick?: (features: FeatureLike[]) => void;
+    onMouseOver?: (features: FeatureLike[], event: any) => void;
+    onMouseOut?: () => void;
+    onClick?: (features: FeatureLike[], event: any) => void;
     index?: number;
     children: (source?: VectorSource) => ReactNode | ReactNode[];
 };

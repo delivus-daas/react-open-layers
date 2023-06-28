@@ -46,7 +46,9 @@ declare global {
 declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
 
 type LayerProps = {
-    onClick?: (features: FeatureLike[]) => void;
+    onMouseOver?: (features: FeatureLike[], event: any) => void;
+    onMouseOut?: () => void;
+    onClick?: (features: FeatureLike[], event: any) => void;
     index?: number;
     children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
@@ -68,6 +70,6 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const ClusterLayer: ({ children, clusterOptions, enableFit, fitOptions, onClick }: ClusterLayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, clusterOptions, enableFit, fitOptions, onClick, onMouseOver, onMouseOut }: ClusterLayerProps) => React.JSX.Element;
 
 export { ClusterLayer, Layer, Marker, Map as OpenLayers };

@@ -53,7 +53,7 @@ const Layer = ({ children, onClick }: LayerProps) => {
                   padding: [50, 50, 50, 50],
                 });
                 if (onClick) {
-                  onClick(features);
+                  onClick(features, e);
                 }
               }
             }
