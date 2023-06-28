@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { Options } from 'ol/style/Icon';
 import VectorSource from 'ol/source/Vector';
-import { ViewOptions } from 'ol/View';
+import { ViewOptions, FitOptions } from 'ol/View';
 import { FeatureLike } from 'ol/Feature';
 import { Options as Options$1 } from 'ol/style/Style';
 
@@ -47,10 +47,14 @@ declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAt
 
 type LayerProps = {
     onClick?: (features: FeatureLike[]) => void;
-    clusterOptions?: Options$1;
     index?: number;
     children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
+interface ClusterLayerProps extends LayerProps {
+    enableFit?: boolean;
+    fitOptions?: FitOptions;
+    clusterOptions?: Options$1;
+}
 
 declare global {
     interface Window {
@@ -64,6 +68,6 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const ClusterLayer: ({ children, clusterOptions, onClick }: LayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, clusterOptions, enableFit, fitOptions, onClick }: ClusterLayerProps) => React.JSX.Element;
 
 export { ClusterLayer, Layer, Marker, Map as OpenLayers };

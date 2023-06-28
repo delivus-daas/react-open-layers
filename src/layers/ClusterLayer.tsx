@@ -4,10 +4,11 @@ import {Fill, Stroke, Style, Text} from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
-import { LayerProps } from "./layer.type";
+import {ClusterLayerProps, LayerProps} from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
 import {boundingExtent} from "ol/extent";
+import {FeatureLike} from "ol/Feature";
 
 declare global {
   interface Window {
@@ -15,9 +16,13 @@ declare global {
   }
 }
 
-const ClusterLayer = ({ children, clusterOptions, onClick }: LayerProps) => {
+const ClusterLayer = ({ children, clusterOptions, enableFit, fitOptions, onClick }: ClusterLayerProps) => {
   const map = useMap();
   const source = useRef<VectorSource>();
+  const defaultFitOptions = {
+    duration: 500,
+    padding: [50, 50, 50, 50],
+  }
   function defaultStyle(size: number, fill?: Array<number>) {
     return {
       image: new CircleStyle({
@@ -65,40 +70,39 @@ const ClusterLayer = ({ children, clusterOptions, onClick }: LayerProps) => {
         },
       });
 
-      handleClick(clusterLayer)
       clusterLayer.set("name", FeatureNames.cluster);
       clusterLayer.set("opacity", 2);
       map.addLayer(clusterLayer);
+      handleOnClick(clusterLayer)
     }
   }, [map]);
 
-  function handleClick (clusterLayer: VectorLayer<VectorSource>) {
+  function handleOnClick (clusterLayer: VectorLayer<VectorSource>) {
     map.on("click", async (e: any) => {
-      let clickLayerStatus = false;
       await clusterLayer
           .getFeatures(e.pixel)
           .then((clickedFeatures: any) => {
             if (clickedFeatures.length) {
-              clickLayerStatus = true;
-              // Get clustered Coordinates
               const features = clickedFeatures[0].get("features");
               if (features.length > 0) {
-                const extent = boundingExtent(
-                    features.map((r: any) =>
-                        r.getGeometry().getCoordinates()
-                    )
-                );
-                map.getView().fit(extent, {
-                  duration: 1000,
-                  padding: [50, 50, 50, 50],
-                });
-                if (onClick) {
+                if (onClick)
                   onClick(features);
-                }
+
+                  if(enableFit)
+                  fitToCluster(features);
               }
             }
           });
     });
+  }
+
+  function fitToCluster(features: FeatureLike[]) {
+    const extent = boundingExtent(
+        features.map((r: any) =>
+            r.getGeometry().getCoordinates()
+        )
+    );
+    map.getView().fit(extent, fitOptions || defaultFitOptions);
   }
 
   return <>{children(source.current)}</>;
