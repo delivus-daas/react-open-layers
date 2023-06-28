@@ -82,7 +82,7 @@ const ClusterLayer = ({ children, clusterOptions, onClick }: LayerProps) => {
               clickLayerStatus = true;
               // Get clustered Coordinates
               const features = clickedFeatures[0].get("features");
-              if (features.length > 1) {
+              if (features.length > 0) {
                 const extent = boundingExtent(
                     features.map((r: any) =>
                         r.getGeometry().getCoordinates()
