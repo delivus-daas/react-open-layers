@@ -9,7 +9,7 @@ export type Coordinate = {
 export type MarkerProps<T> = {
   properties?: {
     [x: string]: any;
-  },
+  };
   source?: VectorSource;
   iconOptions?: Options;
   datum?: T;

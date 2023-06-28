@@ -25,7 +25,7 @@ const Marker = forwardRef(
     };
 
     useEffect(() => {
-      if (source && !source.getFeatureById(index+1)) {
+      if (source && !source.getFeatureById(index + 1)) {
         const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
         const feature = new Feature({
           geometry: new Point(coord),
@@ -33,15 +33,15 @@ const Marker = forwardRef(
         properties && feature.setProperties(properties);
 
         const iconStyle = new Style({
-          image: new Icon(iconOptions||defaultIconOptions),
+          image: new Icon(iconOptions || defaultIconOptions),
         });
         feature.setStyle([iconStyle]);
 
         source?.addFeature(feature);
 
-        return ()=> {
+        return () => {
           source?.removeFeature(feature);
-        }
+        };
       }
     }, [coordinate, source]);
 

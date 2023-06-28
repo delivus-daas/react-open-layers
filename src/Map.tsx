@@ -1,16 +1,14 @@
-import React, {forwardRef, useEffect, useRef, useState} from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import * as ol from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import "./index.css";
 import { transform } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
+import { FeatureLike } from "ol/Feature";
+import { boundingExtent } from "ol/extent";
 
-declare global {
-  interface Window {
-    mouseOut: boolean;
-  }
-}const MapContext = React.createContext<any>(undefined);
+const MapContext = React.createContext<any>(undefined);
 const Map = forwardRef(
   (
     {
@@ -21,9 +19,11 @@ const Map = forwardRef(
       className,
       children,
       onClickMap,
-      onClickFeature,
+      onClickFeatures,
       onMouseOut,
       onMouseOver,
+      enableFitWhenClick,
+      fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
     }: OpenLayersProps,
     ref
   ) => {
@@ -32,14 +32,16 @@ const Map = forwardRef(
 
     useEffect(() => {
       if (mapElement.current && !map) {
-          const layer = new TileLayer({
-              source: new OSM(),
-              className: "bw",
-            });
+        const layer = new TileLayer({
+          source: new OSM(),
+          className: "bw",
+        });
         layer.set("name", "rasterLayer");
-        const center = initialCenter? transform(initialCenter, "EPSG:4326", "EPSG:3857"): undefined;
+        const center = initialCenter
+          ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
+          : undefined;
 
-          const view = new ol.View({
+        const view = new ol.View({
           center,
           zoom,
           maxZoom,
@@ -51,44 +53,65 @@ const Map = forwardRef(
           layers: [layer],
           view: view,
         });
-        setMap(map)
+        addOnClickListener(map);
 
-        map.on("singleclick", function (event: any) {
-          event.stopPropagation();
-          if (map) {
-            const features = map.getFeaturesAtPixel(event.pixel);
-            if (features.length > 0) {
-              onClickFeature && onClickFeature(features);
-            } else {
-              !!onClickMap && onClickMap();
-            }
-          }
-        });
+        addOnMouseOverListener(map);
 
-        map.on("pointermove", function (event: any) {
-          event.stopPropagation();
-          if (map) {
-            const features = map.getFeaturesAtPixel(event.pixel);
-            if (features.length > 0) {
-              onMouseOver && onMouseOver(features);
-            } else {
-              !!onMouseOut && onMouseOut();
-            }
-          }
-        });
+        setMap(map);
       }
     }, [mapElement]);
 
+    function addOnClickListener(map: any) {
+      map.on("singleclick", function (event: any) {
+        event.stopPropagation();
+        if (map) {
+          const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+          if (clickedFeatures.length) {
+            const features = clickedFeatures[0].get("features");
+            if (features.length > 0) {
+              onClickFeatures && onClickFeatures(features, event);
+              if (enableFitWhenClick) fitToCluster(features);
+              return;
+            }
+          }
+          !!onClickMap && onClickMap();
+        }
+      });
+    }
+
+    function addOnMouseOverListener(map: any) {
+      map.on("pointermove", (event: any) => {
+        event.stopPropagation();
+        if (map) {
+          const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+          if (clickedFeatures.length) {
+            const features = clickedFeatures[0].get("features");
+            if (features.length) {
+              onMouseOver && onMouseOver(features, event);
+              return;
+            }
+          }
+          onMouseOut && onMouseOut();
+        }
+      });
+    }
+
+    function fitToCluster(features: FeatureLike[]) {
+      const extent = boundingExtent(
+        features.map((r: any) => r.getGeometry().getCoordinates())
+      );
+      map.getView().fit(extent, fitOptions);
+    }
+
     return (
-        <MapContext.Provider value={map}>
-          <div ref={mapElement} className={"map " + className}>
-            {children}
-          </div>
-        </MapContext.Provider>
+      <MapContext.Provider value={map}>
+        <div ref={mapElement} className={"map " + className}>
+          {children}
+        </div>
+      </MapContext.Provider>
     );
   }
 );
 
 export default Map;
-export const useMap = () => React.useContext(MapContext)
-
+export const useMap = () => React.useContext(MapContext);

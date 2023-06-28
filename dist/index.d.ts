@@ -1,9 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, ReactElement } from 'react';
 import { Options } from 'ol/style/Icon';
 import VectorSource from 'ol/source/Vector';
+import { Feature } from 'ol';
 import { ViewOptions, FitOptions } from 'ol/View';
-import { FeatureLike } from 'ol/Feature';
+import { Geometry } from 'ol/geom';
 import { Options as Options$1 } from 'ol/style/Style';
+import { Coordinate as Coordinate$1 } from 'ol/coordinate';
 
 type Coordinate = {
     latitude: number;
@@ -28,48 +30,38 @@ declare global {
 declare const Marker: React.ForwardRefExoticComponent<MarkerProps<any> & React.RefAttributes<unknown>>;
 
 interface OpenLayersProps extends ViewOptions {
+    enableFitWhenClick?: boolean;
+    fitOptions?: FitOptions;
     initialCenter?: number[];
     className?: string;
     onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     onClickMap?: () => void;
-    onMouseOver?: (feature: FeatureLike[]) => void;
+    onMouseOver?: (feature: Feature<Geometry>[], event: any) => void;
     onMouseOut?: () => void;
-    onClickFeature?: (feature: FeatureLike[]) => void;
+    onClickFeatures?: (feature: Feature<Geometry>[], event: any) => void;
 }
 
-declare global {
-    interface Window {
-        mouseOut: boolean;
-    }
-}
 declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
 
 type LayerProps = {
-    onMouseOver?: (features: FeatureLike[], event: any) => void;
-    onMouseOut?: () => void;
-    onClick?: (features: FeatureLike[], event: any) => void;
+    onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
     children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 interface ClusterLayerProps extends LayerProps {
-    enableFit?: boolean;
-    fitOptions?: FitOptions;
     clusterOptions?: Options$1;
 }
 
-declare global {
-    interface Window {
-        mouseOut: boolean;
-    }
-}
 declare const Layer: ({ children, onClick }: LayerProps) => React.JSX.Element;
 
-declare global {
-    interface Window {
-        mouseOut: boolean;
-    }
-}
-declare const ClusterLayer: ({ children, clusterOptions, enableFit, fitOptions, onClick, onMouseOver, onMouseOut }: ClusterLayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, clusterOptions }: ClusterLayerProps) => React.JSX.Element;
 
-export { ClusterLayer, Layer, Marker, Map as OpenLayers };
+type OverlayProps = {
+    coordinate?: Coordinate$1;
+    children: ReactElement;
+};
+
+declare const Overlay: ({ children, coordinate }: OverlayProps) => React.JSX.Element;
+
+export { ClusterLayer, Layer, Marker, Map as OpenLayers, Overlay };

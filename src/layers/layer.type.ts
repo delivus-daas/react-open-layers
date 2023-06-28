@@ -1,19 +1,16 @@
 import { ReactNode } from "react";
 import { Options } from "ol/style/Style";
 import VectorSource from "ol/source/Vector";
-import {FeatureLike} from "ol/Feature";
-import {FitOptions} from "ol/View";
+import { FitOptions } from "ol/View";
+import { Geometry } from "ol/geom";
+import { Feature } from "ol";
 
 export type LayerProps = {
-  onMouseOver?: (features: FeatureLike[], event: any)=>void;
-  onMouseOut?: ()=>void;
-  onClick?: (features: FeatureLike[], event: any)=>void;
+  onClick?: (features: Feature<Geometry>[], event: any) => void;
   index?: number;
   children: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
 export interface ClusterLayerProps extends LayerProps {
-  enableFit?: boolean;
-  fitOptions?: FitOptions;
   clusterOptions?: Options;
-};
+}
