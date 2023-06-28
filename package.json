@@ -1,7 +1,8 @@
 {
-  "name": "react-open-layers",
-  "version": "0.0.1",
-  "description": "react library to connect open layers",
+  "name": "@delivus/react-open-layers",
+  "version": "0.1.1",
+  "repository": "https://github.com/delivus-daas/react-open-layers.git",
+  "description": "Open layer map component with, markers and clustering feature",
   "author": "delivus",
   "license": "MIT",
   "private": false,
@@ -10,6 +11,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "delivus:registry": "https://npm.pkg.github.com"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
