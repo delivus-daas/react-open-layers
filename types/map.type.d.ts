@@ -10,9 +10,9 @@ export interface OpenLayersProps extends ViewOptions {
     onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     onClickMap?: () => void;
-    onMouseOver?: (feature: Feature<Geometry>[], event: any) => void;
-    onMouseOut?: () => void;
-    onClickFeatures?: (feature: Feature<Geometry>[], event: any) => void;
+    onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+    onMouseOutFeatures?: () => void;
+    onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
 }
 export declare enum FeatureNames {
     marker = "marker",

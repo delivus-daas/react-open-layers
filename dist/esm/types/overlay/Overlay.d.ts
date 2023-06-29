@@ -1,4 +1,4 @@
 import React from "react";
 import { OverlayProps } from "./overlay.type";
-declare const Overlay: ({ children, coordinate }: OverlayProps) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+declare const Overlay: ({ children, className, id, position, options }: OverlayProps) => React.JSX.Element;
 export default Overlay;

@@ -7,6 +7,7 @@ import { transform } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
+import {Feature} from "ol";
 
 const MapContext = React.createContext<any>(undefined);
 const Map = forwardRef(
@@ -20,8 +21,8 @@ const Map = forwardRef(
       children,
       onClickMap,
       onClickFeatures,
-      onMouseOut,
-      onMouseOver,
+      onMouseOutFeatures,
+      onMouseOverFeatures,
       enableFitWhenClick,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
     }: OpenLayersProps,
@@ -29,7 +30,7 @@ const Map = forwardRef(
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
-    const hoveredFeaturesRef = useRef<any>();
+    const hoveredFeaturesRef = useRef<Feature[]>([]);
 
     useEffect(() => {
       if (mapElement.current && !map) {
@@ -70,7 +71,8 @@ const Map = forwardRef(
           if (clickedFeatures.length) {
             const features = clickedFeatures[0].get("features");
             if (features.length > 0) {
-              onClickFeatures && onClickFeatures(features, event);
+              const coordinate = features[0].getGeometry().getCoordinates();
+              onClickFeatures && onClickFeatures(features, coordinate);
               if (enableFitWhenClick) fitToCluster(features);
               return;
             }
@@ -88,15 +90,15 @@ const Map = forwardRef(
           if (hoveredFeatures.length) {
             const features = hoveredFeatures[0].get("features");
             if (features.length) {
-              hoveredFeaturesRef.current = hoveredFeatures;
-              onMouseOver && onMouseOver(features, event);
+              hoveredFeaturesRef.current = features;
+              onMouseOverFeatures && onMouseOverFeatures(features, event);
               return;
             }
           }
           //if there are features hovered before, call onMouseOut event
           if(hoveredFeaturesRef.current.length>0) {
             hoveredFeaturesRef.current = [];
-            onMouseOut && onMouseOut();
+            onMouseOutFeatures && onMouseOutFeatures();
           }
         }
       });

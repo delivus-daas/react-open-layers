@@ -6,6 +6,8 @@ import { ViewOptions, FitOptions } from 'ol/View';
 import { Geometry } from 'ol/geom';
 import { Options as Options$1 } from 'ol/style/Style';
 import { Coordinate as Coordinate$1 } from 'ol/coordinate';
+import { Pixel } from 'ol/pixel';
+import { Options as Options$2 } from 'ol/Overlay';
 
 type Coordinate = {
     latitude: number;
@@ -37,9 +39,9 @@ interface OpenLayersProps extends ViewOptions {
     onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     onClickMap?: () => void;
-    onMouseOver?: (feature: Feature<Geometry>[], event: any) => void;
-    onMouseOut?: () => void;
-    onClickFeatures?: (feature: Feature<Geometry>[], event: any) => void;
+    onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+    onMouseOutFeatures?: () => void;
+    onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
 }
 
 declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
@@ -58,10 +60,20 @@ declare const Layer: ({ children, onClick }: LayerProps) => React.JSX.Element;
 declare const ClusterLayer: ({ children, clusterOptions }: ClusterLayerProps) => React.JSX.Element;
 
 type OverlayProps = {
-    coordinate?: Coordinate$1;
+    /**
+     * unique id to get overlay container element
+     */
+    id: string;
+    /**
+     * className for overlay container element
+     */
+    className?: string;
+    position?: Coordinate$1;
+    pixel?: Pixel;
     children: ReactElement;
+    options?: Options$2;
 };
 
-declare const Overlay: ({ children, coordinate }: OverlayProps) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
+declare const Overlay: ({ children, className, id, position, options }: OverlayProps) => React.JSX.Element;
 
 export { ClusterLayer, Layer, Marker, Map as OpenLayers, Overlay };
