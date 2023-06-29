@@ -5,7 +5,7 @@ import { useMap } from "../Map";
 
 const Overlay = ({ children, coordinate }: OverlayProps) => {
   const map = useMap();
-  const childRef = useRef();
+  const childRef = useRef<any>();
   const overleyRef = useRef<OlOverlay>();
 
   useEffect(() => {
@@ -23,16 +23,14 @@ const Overlay = ({ children, coordinate }: OverlayProps) => {
   }, [map]);
 
   useEffect(() => {
-    console.log('overlay', overleyRef.current, coordinate)
     if (overleyRef.current) {
       overleyRef.current?.setPosition(coordinate);
     }
   }, [coordinate]);
 
-  return (
-    <div id="popup" className={"ol-popup"}>
-      {children}
-    </div>)
+  return (React.cloneElement(children, {
+    ref: childRef,
+  }));
 };
 
 export default Overlay;

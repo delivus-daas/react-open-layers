@@ -62,6 +62,6 @@ type OverlayProps = {
     children: ReactElement;
 };
 
-declare const Overlay: ({ children, coordinate }: OverlayProps) => React.JSX.Element;
+declare const Overlay: ({ children, coordinate }: OverlayProps) => React.ReactElement<any, string | React.JSXElementConstructor<any>>;
 
 export { ClusterLayer, Layer, Marker, Map as OpenLayers, Overlay };

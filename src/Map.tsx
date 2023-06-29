@@ -29,6 +29,7 @@ const Map = forwardRef(
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
+    const hoveredFeaturesRef = useRef<any>();
 
     useEffect(() => {
       if (mapElement.current && !map) {
@@ -83,15 +84,20 @@ const Map = forwardRef(
       map.on("pointermove", (event: any) => {
         event.stopPropagation();
         if (map) {
-          const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (clickedFeatures.length) {
-            const features = clickedFeatures[0].get("features");
+          const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
+          if (hoveredFeatures.length) {
+            const features = hoveredFeatures[0].get("features");
             if (features.length) {
+              hoveredFeaturesRef.current = hoveredFeatures;
               onMouseOver && onMouseOver(features, event);
               return;
             }
           }
-          onMouseOut && onMouseOut();
+          //if there are features hovered before, call onMouseOut event
+          if(hoveredFeaturesRef.current.length>0) {
+            hoveredFeaturesRef.current = [];
+            onMouseOut && onMouseOut();
+          }
         }
       });
     }
