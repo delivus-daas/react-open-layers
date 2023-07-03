@@ -1,12 +1,15 @@
 import { ReactNode } from "react";
 import { Feature } from "ol";
 import { FitOptions, ViewOptions } from "ol/View";
-import { FeatureLike } from "ol/Feature";
 import { Geometry } from "ol/geom";
-import {Coordinate} from "ol/coordinate";
+import {Options} from "ol/layer/BaseTile";
+import {DefaultsOptions} from "ol/interaction/defaults";
 
-export interface OpenLayersProps extends ViewOptions {
+export interface OpenLayersProps {
+  interactionOptions?: DefaultsOptions;
   enableFitWhenClick?: boolean;
+  layerOptions?: Options<any>;
+  viewOptions?: ViewOptions;
   fitOptions?: FitOptions;
   initialCenter?: number[];
   className?: string;

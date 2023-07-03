@@ -2,21 +2,19 @@ import React, { forwardRef, useEffect, useRef, useState } from "react";
 import * as ol from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
+import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { transform } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
-import {Feature} from "ol";
+import { Feature } from "ol";
 
 const MapContext = React.createContext<any>(undefined);
 const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
-      minZoom = 5,
-      maxZoom = 21,
-      zoom = 10,
       className,
       children,
       onClickMap,
@@ -24,7 +22,15 @@ const Map = forwardRef(
       onMouseOutFeatures,
       onMouseOverFeatures,
       enableFitWhenClick,
+      viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
+      layerOptions = { source: new OSM() },
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
+      interactionOptions = {
+        doubleClickZoom: true,
+        shiftDragZoom: true,
+        mouseWheelZoom: true,
+        dragPan: true,
+      },
     }: OpenLayersProps,
     ref
   ) => {
@@ -34,27 +40,17 @@ const Map = forwardRef(
 
     useEffect(() => {
       if (mapElement.current && !map) {
-        const layer = new TileLayer({
-          source: new OSM(),
-          className: "bw",
-        });
-        layer.set("name", "rasterLayer");
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
-        const view = new ol.View({
-          center,
-          zoom,
-          maxZoom,
-          minZoom,
-        });
-
         const map = new ol.Map({
           target: mapElement.current,
-          layers: [layer],
-          view: view,
+          layers: [new TileLayer(layerOptions)],
+          interactions: interactionDefaults(interactionOptions),
+          view: new ol.View({ center, ...viewOptions }),
         });
+
         addOnClickListener(map);
 
         addOnMouseOverListener(map);
@@ -96,7 +92,7 @@ const Map = forwardRef(
             }
           }
           //if there are features hovered before, call onMouseOut event
-          if(hoveredFeaturesRef.current.length>0) {
+          if (hoveredFeaturesRef.current.length > 0) {
             hoveredFeaturesRef.current = [];
             onMouseOutFeatures && onMouseOutFeatures();
           }

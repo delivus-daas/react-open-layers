@@ -1,7 +1,7 @@
-import {ReactElement} from "react";
+import { ReactElement } from "react";
 import { Coordinate } from "ol/coordinate";
-import {Pixel} from "ol/pixel";
-import {Options} from "ol/Overlay";
+import { Pixel } from "ol/pixel";
+import { Options } from "ol/Overlay";
 
 export type OverlayProps = {
   /**
