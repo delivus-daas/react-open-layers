@@ -80,7 +80,6 @@ const Map = forwardRef(
 
     function addOnMouseOverListener(map: any) {
       map.on("pointermove", (event: any) => {
-        event.stopPropagation();
         if (map) {
           const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
           if (hoveredFeatures.length) {
@@ -97,6 +96,7 @@ const Map = forwardRef(
             onMouseOutFeatures && onMouseOutFeatures();
           }
         }
+        event.preventDefault()
       });
     }
 
