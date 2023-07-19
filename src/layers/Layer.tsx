@@ -28,11 +28,11 @@ const Layer = ({ children, onClick }: LayerProps) => {
     map.on("click", async (e: any) => {
       let clickLayerStatus = false;
       await layer.getFeatures(e.pixel).then((clickedFeatures: any) => {
-        if (clickedFeatures.length) {
+        if (clickedFeatures?.length) {
           clickLayerStatus = true;
           // Get clustered Coordinates
           const features = clickedFeatures[0].get("features");
-          if (features.length > 1) {
+          if (features?.length > 1) {
             const extent = boundingExtent(
               features.map((r: any) => r.getGeometry().getCoordinates())
             );

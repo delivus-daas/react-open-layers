@@ -44,7 +44,7 @@ const ClusterLayer = ({ children, clusterOptions }: ClusterLayerProps) => {
         source: clusterSource,
         style: function (feature: any) {
           const features = feature.get("features");
-          const size = features.length;
+          const size = features?.length;
           let style = null;
           if (size > 0) {
             style = features[0].getStyle();
