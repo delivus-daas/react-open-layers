@@ -64,9 +64,9 @@ const Map = forwardRef(
         event.stopPropagation();
         if (map) {
           const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (clickedFeatures.length) {
+          if (clickedFeatures?.length) {
             const features = clickedFeatures[0].get("features");
-            if (features.length > 0) {
+            if (features?.length > 0) {
               const coordinate = features[0].getGeometry().getCoordinates();
               onClickFeatures && onClickFeatures(features, coordinate);
               if (enableFitWhenClick) fitToCluster(features);
@@ -82,16 +82,16 @@ const Map = forwardRef(
       map.on("pointermove", (event: any) => {
         if (map) {
           const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (hoveredFeatures.length) {
+          if (hoveredFeatures?.length) {
             const features = hoveredFeatures[0].get("features");
-            if (features.length) {
+            if (features?.length) {
               hoveredFeaturesRef.current = features;
               onMouseOverFeatures && onMouseOverFeatures(features, event);
               return;
             }
           }
           //if there are features hovered before, call onMouseOut event
-          if (hoveredFeaturesRef.current.length > 0) {
+          if (hoveredFeaturesRef.current?.length > 0) {
             hoveredFeaturesRef.current = [];
             onMouseOutFeatures && onMouseOutFeatures();
           }
