@@ -33,8 +33,8 @@ Preferred node version: 16
 
 ## Authors
 
-- [@Chimeg](https://github.com/Chimaa123)
-- [@Manoj](https://github.com/manojjonam10)
+- [Chimeg](https://github.com/Chimaa123)
+- [Manoj](https://github.com/manojjonam10)
 
 
 
