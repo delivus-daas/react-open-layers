@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import {Options} from "ol/control/Control";
+import { Options } from "ol/control/Control";
 
 export type ControlProps = {
   /**

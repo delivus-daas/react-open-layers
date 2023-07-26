@@ -96,7 +96,7 @@ const Map = forwardRef(
             onMouseOutFeatures && onMouseOutFeatures();
           }
         }
-        event.preventDefault()
+        event.preventDefault();
       });
     }
 

@@ -5,5 +5,5 @@ declare global {
         mouseOut: boolean;
     }
 }
-declare const Marker: React.ForwardRefExoticComponent<MarkerProps<any> & React.RefAttributes<unknown>>;
+declare const Marker: React.ForwardRefExoticComponent<MarkerProps & React.RefAttributes<unknown>>;
 export default Marker;

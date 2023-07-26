@@ -4,13 +4,12 @@ export type Coordinate = {
     latitude: number;
     longitude: number;
 };
-export type MarkerProps<T> = {
+export type MarkerProps = {
     properties?: {
         [x: string]: any;
     };
     source?: VectorSource;
     iconOptions?: Options;
-    datum?: T;
     index: number;
     coordinate: Coordinate;
 };

@@ -3,7 +3,12 @@ import { ControlProps } from "./control.type";
 import { useMap } from "../Map";
 import { Control } from "ol/control";
 
-const Controller = ({ id, children, className, options = {} }: ControlProps) => {
+const Controller = ({
+  id,
+  children,
+  className,
+  options = {},
+}: ControlProps) => {
   const map = useMap();
   const controlRef = useRef<Control>();
   const element = document.getElementById(id);
@@ -13,7 +18,7 @@ const Controller = ({ id, children, className, options = {} }: ControlProps) => 
       if (!controlRef.current && element) {
         controlRef.current = new Control({
           element,
-          ...options
+          ...options,
         });
         map.addControl(controlRef.current);
       }
@@ -24,9 +29,9 @@ const Controller = ({ id, children, className, options = {} }: ControlProps) => 
   }, [map]);
 
   return (
-      <div id={id} className={className}>
-        {children}
-      </div>
+    <div id={id} className={className}>
+      {children}
+    </div>
   );
 };
 

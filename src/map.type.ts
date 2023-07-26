@@ -2,8 +2,8 @@ import { ReactNode } from "react";
 import { Feature } from "ol";
 import { FitOptions, ViewOptions } from "ol/View";
 import { Geometry } from "ol/geom";
-import {Options} from "ol/layer/BaseTile";
-import {DefaultsOptions} from "ol/interaction/defaults";
+import { Options } from "ol/layer/BaseTile";
+import { DefaultsOptions } from "ol/interaction/defaults";
 
 export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
