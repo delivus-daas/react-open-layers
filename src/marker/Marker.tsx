@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect, useRef} from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { fromLonLat } from "ol/proj";
 import { MarkerProps } from "./marker.type";
 import { Point } from "ol/geom";
@@ -25,7 +25,7 @@ const Marker = forwardRef(
       scale: 0.1,
     };
 
-    useEffect(()=>{
+    useEffect(() => {
       const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
       const feature = new Feature({
         geometry: new Point(coord),
@@ -37,7 +37,7 @@ const Marker = forwardRef(
       });
       feature.setStyle([iconStyle]);
       featureRef.current = feature;
-    }, [])
+    }, []);
 
     useEffect(() => {
       if (source && !source.getFeatureById(index)) {
@@ -48,25 +48,27 @@ const Marker = forwardRef(
       }
     }, [source]);
 
-    useEffect(()=>{
-      featureRef.current && featureRef.current.setId(index)
-    }, [index])
+    useEffect(() => {
+      featureRef.current && featureRef.current.setId(index);
+    }, [index]);
 
-    useEffect(()=>{
+    useEffect(() => {
       const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
       featureRef.current && featureRef.current.setGeometry(new Point(coord));
-    }, [coordinate])
+    }, [coordinate]);
 
-    useEffect(()=>{
-      featureRef.current && properties && featureRef.current.setProperties(properties);
-    }, [properties])
+    useEffect(() => {
+      featureRef.current &&
+        properties &&
+        featureRef.current.setProperties(properties);
+    }, [properties]);
 
     useEffect(() => {
       const iconStyle = new Style({
         image: new Icon(iconOptions || defaultIconOptions),
       });
       featureRef.current && featureRef.current.setStyle([iconStyle]);
-    }, [iconOptions])
+    }, [iconOptions]);
 
     return null;
   }

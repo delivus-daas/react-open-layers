@@ -7,18 +7,28 @@ import CircleStyle from "ol/style/Circle";
 import { ClusterLayerProps } from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
-import { MarkerProps } from "../marker/marker.type";
 import { Feature } from "ol";
-import { Point } from "ol/geom";
-import { fromLonLat } from "ol/proj";
 // @ts-ignore
 import marker from "../assets/marker.png";
-import {Options} from "ol/style/Icon";
+import { Options } from "ol/style/Icon";
+import { FeatureLike } from "ol/Feature";
+import { boundingExtent } from "ol/extent";
 
-const ClusterLayer = ({ children, clusterOptions = {}, clusterStyle }: ClusterLayerProps) => {
+const ClusterLayer = ({
+  children,
+  fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
+  clusterOptions = {},
+  clusterStyle,
+  enableFitWhenClick,
+  onClickMap,
+  onClickFeatures,
+  onMouseOutFeatures,
+  onMouseOverFeatures,
+}: ClusterLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const clusterLayer = useRef<any>();
+  const hoveredFeaturesRef = useRef<Feature[]>([]);
 
   const defaultIconOptions: Options = {
     src: marker,
@@ -46,8 +56,7 @@ const ClusterLayer = ({ children, clusterOptions = {}, clusterStyle }: ClusterLa
   }
 
   useEffect(() => {
-    if (map) {
-      resetLayers();
+    if (map && !source.current) {
       source.current = new VectorSource();
 
       let clusterSource = new Cluster({
@@ -67,7 +76,9 @@ const ClusterLayer = ({ children, clusterOptions = {}, clusterStyle }: ClusterLa
             console.log("feature", size, style[0]?.image_);
             if (size > 1) {
               style = new Style(
-                  clusterStyle? clusterStyle(resolution, size, style[0]?.image_?.color_) : defaultClusterStyle(size, style[0]?.image_?.color_)
+                clusterStyle
+                  ? clusterStyle(resolution, size, style[0]?.image_?.color_)
+                  : defaultClusterStyle(size, style[0]?.image_?.color_)
               );
             }
             return style;
@@ -80,6 +91,9 @@ const ClusterLayer = ({ children, clusterOptions = {}, clusterStyle }: ClusterLa
       clusterLayer.current.set("name", FeatureNames.cluster);
       clusterLayer.current.set("opacity", 2);
       map.addLayer(clusterLayer.current);
+
+      addOnClickListener(map);
+      addOnMouseOverListener(map);
     }
     return () => {
       resetLayers();
@@ -92,28 +106,55 @@ const ClusterLayer = ({ children, clusterOptions = {}, clusterStyle }: ClusterLa
     }
   };
 
-  const drawFeatures = (markers?: MarkerProps[]) => {
-    console.log('drawFeatures')
-    let features: any = [];
-    if (markers && markers?.length > 0) {
-      features = markers.map(({iconOptions, coordinate, properties}, index) => {
-        const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
-        const feature = new Feature({
-          geometry: new Point(coord),
-        });
-        properties && feature.setProperties(properties);
+  function fitToCluster(features: FeatureLike[]) {
+    const extent = boundingExtent(
+      features.map((r: any) => r.getGeometry().getCoordinates())
+    );
+    map.getView().fit(extent, fitOptions);
+  }
 
-        const iconStyle = new Style({
-          image: new Icon(iconOptions || defaultIconOptions),
-        });
-        feature.setStyle([iconStyle]);
-        return feature;
-      });
-    }
-    return features;
-  };
+  function addOnClickListener(map: any) {
+    map.on("singleclick", function (event: any) {
+      event.stopPropagation();
+      if (map) {
+        const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+        if (clickedFeatures?.length) {
+          const features = clickedFeatures[0].get("features");
+          if (features?.length > 0) {
+            const coordinate = features[0].getGeometry().getCoordinates();
+            onClickFeatures && onClickFeatures(features, coordinate);
+            if (enableFitWhenClick) fitToCluster(features);
+            return;
+          }
+        }
+        !!onClickMap && onClickMap();
+      }
+    });
+  }
 
-  return (<>{children(source.current)}</>);
+  function addOnMouseOverListener(map: any) {
+    map.on("pointermove", (event: any) => {
+      if (map) {
+        const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
+        if (hoveredFeatures?.length) {
+          const features = hoveredFeatures[0].get("features");
+          if (features?.length) {
+            hoveredFeaturesRef.current = features;
+            onMouseOverFeatures && onMouseOverFeatures(features, event);
+            return;
+          }
+        }
+        //if there are features hovered before, call onMouseOut event
+        if (hoveredFeaturesRef.current?.length > 0) {
+          hoveredFeaturesRef.current = [];
+          onMouseOutFeatures && onMouseOutFeatures();
+        }
+      }
+      event.preventDefault();
+    });
+  }
+
+  return <>{children(source.current)}</>;
 };
 
 export default ClusterLayer;
