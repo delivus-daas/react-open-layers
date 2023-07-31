@@ -65,7 +65,7 @@ interface ClusterLayerProps extends LayerProps {
 
 declare const Layer: ({ children, fitOptions, enableFitWhenClick, onClickMap, onClickFeatures, onMouseOutFeatures, onMouseOverFeatures, }: LayerProps) => React.JSX.Element;
 
-declare const ClusterLayer: ({ children, fitOptions, clusterOptions, clusterStyle, enableFitWhenClick, onClickMap, onClickFeatures, onMouseOutFeatures, onMouseOverFeatures, }: ClusterLayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ children, markers, fitOptions, clusterOptions, clusterStyle, enableFitWhenClick, onClickMap, onClickFeatures, onMouseOutFeatures, onMouseOverFeatures, }: ClusterLayerProps) => React.JSX.Element;
 
 type OverlayProps = {
     /**

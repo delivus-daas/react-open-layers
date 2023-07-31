@@ -20,6 +20,7 @@ const Marker = forwardRef(
     ref
   ) => {
     const featureRef = useRef<any>();
+    const styleRef = useRef<any>();
     const defaultIconOptions: Options = {
       src: markerIcon,
       scale: 0.1,
@@ -32,10 +33,10 @@ const Marker = forwardRef(
       });
       properties && feature.setProperties(properties);
 
-      const iconStyle = new Style({
+      styleRef.current = new Style({
         image: new Icon(iconOptions || defaultIconOptions),
       });
-      feature.setStyle([iconStyle]);
+      feature.setStyle([styleRef.current]);
       featureRef.current = feature;
     }, []);
 
@@ -64,10 +65,7 @@ const Marker = forwardRef(
     }, [properties]);
 
     useEffect(() => {
-      const iconStyle = new Style({
-        image: new Icon(iconOptions || defaultIconOptions),
-      });
-      featureRef.current && featureRef.current.setStyle([iconStyle]);
+      styleRef.current.setImage(new Icon(iconOptions || defaultIconOptions));
     }, [iconOptions]);
 
     return null;

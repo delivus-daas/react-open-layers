@@ -61,11 +61,9 @@ const Layer = ({
           feature: any,
           layer: any
         ) {
-          console.log("handleClick 1", feature);
           features.push(feature);
         });
         event.stopPropagation();
-        console.log("handleClick", features);
 
         if (features?.length > 0) {
           const coordinate = features[0].getGeometry().getCoordinates();
@@ -84,9 +82,9 @@ const Layer = ({
       if (map) {
         const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
         if (hoveredFeatures?.length) {
-            hoveredFeaturesRef.current = hoveredFeatures;
-            onMouseOverFeatures && onMouseOverFeatures(hoveredFeatures, event);
-            return;
+          hoveredFeaturesRef.current = hoveredFeatures;
+          onMouseOverFeatures && onMouseOverFeatures(hoveredFeatures, event);
+          return;
         }
         //if there are features hovered before, call onMouseOut event
         if (hoveredFeaturesRef.current?.length > 0) {
