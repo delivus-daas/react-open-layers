@@ -55,7 +55,7 @@ type LayerProps = {
     enableFitWhenClick?: boolean;
     onClickMap?: () => void;
     onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
-    onMouseOutFeatures?: () => void;
+    onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
     onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
 };
 interface ClusterLayerProps extends LayerProps {

@@ -64,7 +64,7 @@ const ClusterLayer = ({
     if (map && !source.current) {
       resetLayers();
       // const features = drawFeatures(markers);
-      source.current  = new VectorSource();
+      source.current = new VectorSource();
 
       let clusterSource = new Cluster({
         distance: 10,
@@ -78,7 +78,7 @@ const ClusterLayer = ({
           const features = feature.get("features");
           const size = features?.length;
           let style = styleCache[size];
-          console.log('style', style);
+          console.log("style", style);
           // if (style) {
           //   return style;
           // }
@@ -148,19 +148,15 @@ const ClusterLayer = ({
       if (map) {
         const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
         if (hoveredFeatures?.length) {
-          console.log("hoveredFeature", hoveredFeaturesRef.current, hoveredFeatures, hoveredFeaturesRef.current != hoveredFeatures)
-          if(hoveredFeaturesRef.current != hoveredFeatures)
-          {
-            hoveredFeaturesRef.current = hoveredFeatures;
-            const features = hoveredFeatures[0].get("features");
-            if (features?.length) {
-              onMouseOverFeatures && onMouseOverFeatures(features, event);
-              return;
-            }
+          const features = hoveredFeatures[0].get("features");
+          hoveredFeaturesRef.current = features;
+          if (features?.length) {
+            onMouseOverFeatures && onMouseOverFeatures(features, event);
+            return;
           }
-        } else if (hoveredFeaturesRef.current) {
+        } else if (hoveredFeaturesRef.current?.length > 0) {
+          onMouseOutFeatures && onMouseOutFeatures(hoveredFeaturesRef.current);
           hoveredFeaturesRef.current = [];
-          onMouseOutFeatures && onMouseOutFeatures();
         }
       }
       event.preventDefault();
