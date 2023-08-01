@@ -63,7 +63,7 @@ interface ClusterLayerProps extends LayerProps {
     clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$3;
 }
 
-declare const Layer: ({}: LayerProps) => null;
+declare const Layer: ({ features }: LayerProps) => null;
 
 declare const ClusterLayer: ({ features, clusterOptions, clusterStyle, }: ClusterLayerProps) => null;
 
