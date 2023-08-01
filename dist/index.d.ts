@@ -1,11 +1,11 @@
 import React, { ReactNode, ReactElement } from 'react';
 import { Options } from 'ol/style/Icon';
 import VectorSource from 'ol/source/Vector';
+import { Feature } from 'ol';
 import { ViewOptions, FitOptions } from 'ol/View';
+import { Geometry } from 'ol/geom';
 import { Options as Options$1 } from 'ol/layer/BaseTile';
 import { DefaultsOptions } from 'ol/interaction/defaults';
-import { Geometry } from 'ol/geom';
-import { Feature } from 'ol';
 import { Options as Options$2 } from 'ol/source/Cluster';
 import { Options as Options$3 } from 'ol/style/Style';
 import { Coordinate as Coordinate$1 } from 'ol/coordinate';
@@ -42,30 +42,30 @@ interface OpenLayersProps {
     className?: string;
     onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
-}
-
-declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
-
-type LayerProps = {
     fitOptions?: FitOptions;
-    markers?: MarkerProps[];
-    onClick?: (features: Feature<Geometry>[], event: any) => void;
-    index?: number;
-    children: (source?: VectorSource) => ReactNode | ReactNode[];
     enableFitWhenClick?: boolean;
     onClickMap?: () => void;
     onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
     onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
     onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+}
+
+declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
+
+type LayerProps = {
+    features?: MarkerProps[];
+    onClick?: (features: Feature<Geometry>[], event: any) => void;
+    index?: number;
+    children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 interface ClusterLayerProps extends LayerProps {
     clusterOptions?: Options$2;
     clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$3;
 }
 
-declare const Layer: ({ children, fitOptions, enableFitWhenClick, onClickMap, onClickFeatures, onMouseOutFeatures, onMouseOverFeatures, }: LayerProps) => React.JSX.Element;
+declare const Layer: ({}: LayerProps) => null;
 
-declare const ClusterLayer: ({ children, markers, fitOptions, clusterOptions, clusterStyle, enableFitWhenClick, onClickMap, onClickFeatures, onMouseOutFeatures, onMouseOverFeatures, }: ClusterLayerProps) => React.JSX.Element;
+declare const ClusterLayer: ({ features, clusterOptions, clusterStyle, }: ClusterLayerProps) => null;
 
 type OverlayProps = {
     /**

@@ -13,6 +13,12 @@ export interface OpenLayersProps {
   className?: string;
   onMapBoundChanged?: (bounds: any) => void;
   children?: ReactNode | ReactNode[];
+  fitOptions?: FitOptions;
+  enableFitWhenClick?: boolean;
+  onClickMap?: () => void;
+  onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+  onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
+  onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
 }
 
 export enum FeatureNames {

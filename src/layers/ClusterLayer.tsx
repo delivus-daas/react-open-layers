@@ -11,28 +11,18 @@ import { Feature } from "ol";
 // @ts-ignore
 import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
-import { FeatureLike } from "ol/Feature";
-import { boundingExtent } from "ol/extent";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import { MarkerProps } from "../marker/marker.type";
 
 const ClusterLayer = ({
-  children,
-  markers,
-  fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
+  features,
   clusterOptions = {},
   clusterStyle,
-  enableFitWhenClick,
-  onClickMap,
-  onClickFeatures,
-  onMouseOutFeatures,
-  onMouseOverFeatures,
 }: ClusterLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const clusterLayer = useRef<any>();
-  const hoveredFeaturesRef = useRef<any[]>([]);
   const styleCache: any = {};
 
   const defaultIconOptions: Options = {
@@ -60,10 +50,15 @@ const ClusterLayer = ({
     };
   }
 
+  const resetLayers = () => {
+    if (map && map.getLayers().getArray().length > 0) {
+      map.removeLayer(clusterLayer.current);
+    }
+  };
+
   useEffect(() => {
     if (map && !source.current) {
       resetLayers();
-      // const features = drawFeatures(markers);
       source.current = new VectorSource();
 
       let clusterSource = new Cluster({
@@ -102,71 +97,20 @@ const ClusterLayer = ({
       clusterLayer.current.set("name", FeatureNames.cluster);
       clusterLayer.current.set("opacity", 2);
       map.addLayer(clusterLayer.current);
-
-      onClickFeatures && addOnClickListener(map);
-      onMouseOverFeatures && addOnMouseOverListener(map);
     }
     return () => {
       resetLayers();
     };
-  }, [map, markers]);
+  }, [map]);
 
-  const resetLayers = () => {
-    if (map && map.getLayers().getArray().length > 0) {
-      map.removeLayer(clusterLayer.current);
-    }
-  };
-
-  function fitToCluster(features: FeatureLike[]) {
-    const extent = boundingExtent(
-      features.map((r: any) => r.getGeometry().getCoordinates())
-    );
-    map.getView().fit(extent, fitOptions);
-  }
-
-  function addOnClickListener(map: any) {
-    map.on("singleclick", function (event: any) {
-      event.stopPropagation();
-      if (map) {
-        const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-        if (clickedFeatures?.length) {
-          const features = clickedFeatures[0].get("features");
-          if (features?.length > 0) {
-            const coordinate = features[0].getGeometry().getCoordinates();
-            onClickFeatures && onClickFeatures(features, coordinate);
-            if (enableFitWhenClick) fitToCluster(features);
-            return;
-          }
-        }
-        !!onClickMap && onClickMap();
-      }
-    });
-  }
-
-  function addOnMouseOverListener(map: any) {
-    map.on("pointermove", (event: any) => {
-      if (map) {
-        const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
-        if (hoveredFeatures?.length) {
-          const features = hoveredFeatures[0].get("features");
-          hoveredFeaturesRef.current = features;
-          if (features?.length) {
-            onMouseOverFeatures && onMouseOverFeatures(features, event);
-            return;
-          }
-        } else if (hoveredFeaturesRef.current?.length > 0) {
-          onMouseOutFeatures && onMouseOutFeatures(hoveredFeaturesRef.current);
-          hoveredFeaturesRef.current = [];
-        }
-      }
-      event.preventDefault();
-    });
-  }
+  useEffect(() => {
+    drawFeatures(features);
+  }, [features]);
 
   const drawFeatures = (markers?: MarkerProps[]) => {
     console.log("drawFeatures");
-    let features: any = [];
     if (markers && markers?.length > 0) {
+      let features: any = [];
       features = markers.map(
         ({ iconOptions, coordinate, properties }, index) => {
           const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
@@ -182,11 +126,14 @@ const ClusterLayer = ({
           return feature;
         }
       );
+      if (source.current) {
+        source.current.clear();
+        source.current.addFeatures(features);
+      }
     }
-    return features;
   };
 
-  return <>{children(source.current)}</>;
+  return null;
 };
 
 export default ClusterLayer;
