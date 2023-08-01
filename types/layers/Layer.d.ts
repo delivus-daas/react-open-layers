@@ -1,3 +1,3 @@
 import { LayerProps } from "./layer.type";
-declare const Layer: ({}: LayerProps) => null;
+declare const Layer: ({ features }: LayerProps) => null;
 export default Layer;

@@ -71,12 +71,11 @@ const Map = forwardRef(
           const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
           if (clickedFeatures?.length) {
             const features = clickedFeatures[0].get("features");
-            const coordinate = features[0].getGeometry().getCoordinates();
             if (features?.length > 0) { //if features are clusters
-              onClickFeatures && onClickFeatures(features, coordinate);
+              onClickFeatures && onClickFeatures(features, event);
               if (enableFitWhenClick) fitToCluster(features);
             } else {
-                onClickFeatures && onClickFeatures(clickedFeatures, coordinate);
+                onClickFeatures && onClickFeatures(clickedFeatures, event);
                 if (enableFitWhenClick) fitToCluster(clickedFeatures);
             }
           }else {
