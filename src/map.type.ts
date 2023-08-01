@@ -5,9 +5,22 @@ import { Geometry } from "ol/geom";
 import { Options } from "ol/layer/BaseTile";
 import { DefaultsOptions } from "ol/interaction/defaults";
 
+export interface zoomStyleProps {
+  width?: string;
+  height?: string;
+  backgroundColor?: string;
+  bottom?:string;
+  top?:string;
+  left?:string;
+  right?:string;
+}
+
 export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
   layerOptions?: Options<any>;
+  showZoom?:boolean;
+  zoomInStyle?: zoomStyleProps;
+  zoomOutStyle?: zoomStyleProps;
   viewOptions?: ViewOptions;
   initialCenter?: number[];
   className?: string;

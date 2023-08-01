@@ -31,12 +31,40 @@ const Map = forwardRef(
       onClickFeatures,
       onMouseOutFeatures,
       onMouseOverFeatures,
+      showZoom,
+      zoomInStyle,
+      zoomOutStyle,
     }: OpenLayersProps,
     ref
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
     const hoveredFeaturesRef = useRef<any[]>([]);
+
+      useEffect(()=>{
+          const bodyStyles:any = document.body.style;
+          if(!showZoom){
+              bodyStyles.setProperty('--zoom-visible', 'hidden');
+          } else {
+              bodyStyles.setProperty('--zoom-visible', 'visible');
+
+              bodyStyles.setProperty('--zoomin-width', zoomInStyle?.width ?? '47px');
+              bodyStyles.setProperty('--zoomin-height', zoomInStyle?.height ?? '39px');
+              bodyStyles.setProperty('--zoomin-backgroundColor', zoomInStyle?.backgroundColor ?? 'white');
+              bodyStyles.setProperty('--zoomin-bottom', zoomInStyle?.bottom ?? '69px');
+              bodyStyles.setProperty('--zoomin-top', zoomInStyle?.top ?? 'inherit');
+              bodyStyles.setProperty('--zoomin-right', zoomInStyle?.right ?? '20px');
+              bodyStyles.setProperty('--zoomin-left', zoomInStyle?.left ?? 'inherit');
+
+              bodyStyles.setProperty('--zoomout-width', zoomOutStyle?.width ?? '47px');
+              bodyStyles.setProperty('--zoomout-height', zoomOutStyle?.height ?? '39px');
+              bodyStyles.setProperty('--zoomout-backgroundColor', zoomOutStyle?.backgroundColor ?? 'white');
+              bodyStyles.setProperty('--zoomout-bottom', zoomOutStyle?.bottom ?? '29px');
+              bodyStyles.setProperty('--zoomout-top', zoomOutStyle?.top ?? 'inherit');
+              bodyStyles.setProperty('--zoomout-right', zoomOutStyle?.right ?? '20px');
+              bodyStyles.setProperty('--zoomout-left', zoomOutStyle?.left ?? 'inherit');
+          }
+      },[showZoom, zoomInStyle, zoomOutStyle])
 
     useEffect(() => {
       if (mapElement.current && !map) {
