@@ -1,42 +1,33 @@
 import React, { ReactNode, ReactElement } from 'react';
-import { Options } from 'ol/style/Icon';
-import VectorSource from 'ol/source/Vector';
 import { Feature } from 'ol';
 import { ViewOptions, FitOptions } from 'ol/View';
 import { Geometry } from 'ol/geom';
-import { Options as Options$1 } from 'ol/layer/BaseTile';
+import { Options } from 'ol/layer/BaseTile';
 import { DefaultsOptions } from 'ol/interaction/defaults';
-import { Options as Options$2 } from 'ol/source/Cluster';
-import { Options as Options$3 } from 'ol/style/Style';
+import VectorSource from 'ol/source/Vector';
+import { Options as Options$1 } from 'ol/source/Cluster';
+import { Options as Options$2 } from 'ol/style/Style';
+import { Options as Options$3 } from 'ol/style/Icon';
 import { Coordinate as Coordinate$1 } from 'ol/coordinate';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$4 } from 'ol/Overlay';
 import { Options as Options$5 } from 'ol/control/Control';
 
-type Coordinate = {
-    latitude: number;
-    longitude: number;
-};
-type MarkerProps = {
-    properties?: {
-        [x: string]: any;
-    };
-    source?: VectorSource;
-    iconOptions?: Options;
-    index: number;
-    coordinate: Coordinate;
-};
-
-declare global {
-    interface Window {
-        mouseOut: boolean;
-    }
+interface zoomStyleProps {
+    width?: string;
+    height?: string;
+    backgroundColor?: string;
+    bottom?: string;
+    top?: string;
+    left?: string;
+    right?: string;
 }
-declare const Marker: React.ForwardRefExoticComponent<MarkerProps & React.RefAttributes<unknown>>;
-
 interface OpenLayersProps {
     interactionOptions?: DefaultsOptions;
-    layerOptions?: Options$1<any>;
+    layerOptions?: Options<any>;
+    showZoom?: boolean;
+    zoomInStyle?: zoomStyleProps;
+    zoomOutStyle?: zoomStyleProps;
     viewOptions?: ViewOptions;
     initialCenter?: number[];
     className?: string;
@@ -52,15 +43,28 @@ interface OpenLayersProps {
 
 declare const Map: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
 
+type Coordinate = {
+    latitude: number;
+    longitude: number;
+};
+interface FeatureProps {
+    properties?: {
+        [x: string]: any;
+    };
+    source?: VectorSource;
+    iconOptions?: Options$3;
+    index: number;
+    coordinate: Coordinate;
+}
 type LayerProps = {
-    features?: MarkerProps[];
+    features?: FeatureProps[];
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 interface ClusterLayerProps extends LayerProps {
-    clusterOptions?: Options$2;
-    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$3;
+    clusterOptions?: Options$1;
+    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$2;
 }
 
 declare const Layer: ({ features }: LayerProps) => null;
@@ -99,4 +103,4 @@ type ControlProps = {
 
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
 
-export { ClusterLayer, Controller as Control, Layer, Marker, Map as OpenLayers, CustomOverlay as Overlay };
+export { ClusterLayer, Controller as Control, Layer, Map as OpenLayers, CustomOverlay as Overlay };

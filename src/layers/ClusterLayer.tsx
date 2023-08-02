@@ -4,7 +4,7 @@ import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
-import { ClusterLayerProps } from "./layer.type";
+import { ClusterLayerProps,  FeatureProps} from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
 import { Feature } from "ol";
@@ -13,7 +13,6 @@ import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
-import { MarkerProps } from "../marker/marker.type";
 
 const ClusterLayer = ({
   features,
@@ -107,22 +106,19 @@ const ClusterLayer = ({
     drawFeatures(features);
   }, [features]);
 
-  const drawFeatures = (markers?: MarkerProps[]) => {
-    console.log("drawFeatures");
+  const drawFeatures = (markers?: FeatureProps[]) => {
     if (markers && markers?.length > 0) {
       let features: any = [];
       features = markers.map(
-        ({ iconOptions, coordinate, properties }, index) => {
+        ({ iconOptions, coordinate, properties}, index) => {
           const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
           const feature = new Feature({
             geometry: new Point(coord),
+            properties,
+            style: [new Style({
+              image: new Icon(iconOptions || defaultIconOptions),
+            })],
           });
-          properties && feature.setProperties(properties);
-
-          const iconStyle = new Style({
-            image: new Icon(iconOptions || defaultIconOptions),
-          });
-          feature.setStyle([iconStyle]);
           return feature;
         }
       );

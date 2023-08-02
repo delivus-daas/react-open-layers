@@ -2,10 +2,9 @@ import React, { useEffect, useRef } from "react";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
-import { LayerProps } from "./layer.type";
+import { FeatureProps, LayerProps } from "./layer.type";
 import { useMap } from "../Map";
 import { Feature } from "ol";
-import {MarkerProps} from "../marker/marker.type";
 import {fromLonLat} from "ol/proj";
 import {Point} from "ol/geom";
 import {Icon, Style} from "ol/style";
@@ -48,8 +47,7 @@ const Layer = ({features
     drawFeatures(features);
   }, [features]);
 
-  const drawFeatures = (markers?: MarkerProps[]) => {
-    console.log("drawFeatures");
+  const drawFeatures = (markers?: FeatureProps[]) => {
     if (markers && markers.length > 0) {
       let features: any = [];
       features = markers.map(
