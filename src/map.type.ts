@@ -32,6 +32,8 @@ export interface OpenLayersProps {
   onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
   onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
   onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+  moveTolerance?: number;
+  maxTilesLoading?: number;
 }
 
 export enum FeatureNames {

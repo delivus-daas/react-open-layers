@@ -14,6 +14,8 @@ const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
+      moveTolerance = 1,
+      maxTilesLoading = 16,
       className,
       children,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
@@ -77,6 +79,8 @@ const Map = forwardRef(
           layers: [new TileLayer(layerOptions)],
           interactions: interactionDefaults(interactionOptions),
           view: new ol.View({ center, ...viewOptions }),
+          moveTolerance: moveTolerance,
+          maxTilesLoading: maxTilesLoading,
         });
 
         onClickFeatures && addOnClickListener(map);
