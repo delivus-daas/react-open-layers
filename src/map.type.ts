@@ -5,20 +5,6 @@ import { Geometry } from "ol/geom";
 import { Options } from "ol/layer/BaseTile";
 import { DefaultsOptions } from "ol/interaction/defaults";
 
-export interface viewOptionsProps {
-  zoom?: number,
-  maxZoom?: number,
-  minZoom?: number
-}
-
-export interface interactionOptionsProps {
-  doubleClickZoom?: boolean,
-  shiftDragZoom?: boolean,
-  mouseWheelZoom?: boolean,
-  dragPan?: boolean,
-  pinchZoom?: boolean,
-}
-
 export interface zoomStyleProps {
   width?: string;
   height?: string;
@@ -31,9 +17,6 @@ export interface zoomStyleProps {
 
 export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
-  mapInteractionOptions?: interactionOptionsProps;
-  mapCenter?:Array<number>;
-  mapViewOptions?: viewOptionsProps;
   layerOptions?: Options<any>;
   showZoom?:boolean;
   zoomInStyle?: zoomStyleProps;

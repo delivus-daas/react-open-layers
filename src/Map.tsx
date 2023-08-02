@@ -14,9 +14,6 @@ const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
-      mapCenter,
-      mapViewOptions,
-      mapInteractionOptions,
       className,
       children,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
@@ -71,15 +68,15 @@ const Map = forwardRef(
 
     useEffect(() => {
       if (mapElement.current && !map) {
-        const center = mapCenter
-          ? transform(mapCenter, "EPSG:4326", "EPSG:3857")
+        const center = initialCenter
+          ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
         const map = new ol.Map({
           target: mapElement.current,
           layers: [new TileLayer(layerOptions)],
-          interactions: interactionDefaults(mapInteractionOptions),
-          view: new ol.View({ center, ...mapViewOptions }),
+          interactions: interactionDefaults(interactionOptions),
+          view: new ol.View({ center, ...viewOptions }),
         });
 
         onClickFeatures && addOnClickListener(map);
