@@ -114,11 +114,14 @@ const ClusterLayer = ({
           const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
           const feature = new Feature({
             geometry: new Point(coord),
-            properties,
-            style: [new Style({
-              image: new Icon(iconOptions || defaultIconOptions),
-            })],
           });
+          properties && feature.setProperties(properties);
+
+          const iconStyle = new Style({
+            image: new Icon(iconOptions || defaultIconOptions),
+          });
+          feature.setStyle([iconStyle]);
+
           return feature;
         }
       );
