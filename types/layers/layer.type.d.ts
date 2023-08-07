@@ -3,8 +3,9 @@ import VectorSource from "ol/source/Vector";
 import { Geometry } from "ol/geom";
 import { Feature } from "ol";
 import { Options as ClusterOptions } from "ol/source/Cluster";
-import { Options } from "ol/style/Style";
+import { Options as StyleOptions } from "ol/style/Style";
 import { Options as IconOptions } from "ol/style/Icon";
+import { Options } from "ol/layer/BaseVector";
 export type Coordinate = {
     latitude: number;
     longitude: number;
@@ -19,6 +20,7 @@ export interface FeatureProps {
     coordinate: Coordinate;
 }
 export type LayerProps = {
+    options?: Options<any>;
     features?: FeatureProps[];
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
@@ -26,5 +28,5 @@ export type LayerProps = {
 };
 export interface ClusterLayerProps extends LayerProps {
     clusterOptions?: ClusterOptions;
-    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options;
+    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => StyleOptions;
 }

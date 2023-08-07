@@ -2,12 +2,15 @@ import React, { ReactNode, ReactElement } from 'react';
 import { Feature } from 'ol';
 import { ViewOptions, FitOptions } from 'ol/View';
 import { Geometry } from 'ol/geom';
-import { Options } from 'ol/layer/BaseTile';
 import { DefaultsOptions } from 'ol/interaction/defaults';
+import Collection from 'ol/Collection';
+import LayerGroup from 'ol/layer/Group';
+import BaseLayer from 'ol/layer/Base';
 import VectorSource from 'ol/source/Vector';
 import { Options as Options$1 } from 'ol/source/Cluster';
 import { Options as Options$2 } from 'ol/style/Style';
 import { Options as Options$3 } from 'ol/style/Icon';
+import { Options } from 'ol/layer/BaseVector';
 import { Coordinate as Coordinate$1 } from 'ol/coordinate';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$4 } from 'ol/Overlay';
@@ -24,7 +27,7 @@ interface zoomStyleProps {
 }
 interface OpenLayersProps {
     interactionOptions?: DefaultsOptions;
-    layerOptions?: Options<any>;
+    layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
     showZoom?: boolean;
     zoomInStyle?: zoomStyleProps;
     zoomOutStyle?: zoomStyleProps;
@@ -57,6 +60,7 @@ interface FeatureProps {
     coordinate: Coordinate;
 }
 type LayerProps = {
+    options?: Options<any>;
     features?: FeatureProps[];
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
@@ -67,9 +71,9 @@ interface ClusterLayerProps extends LayerProps {
     clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$2;
 }
 
-declare const Layer: ({ features }: LayerProps) => null;
+declare const Layer: ({ features, options }: LayerProps) => null;
 
-declare const ClusterLayer: ({ features, clusterOptions, clusterStyle, }: ClusterLayerProps) => null;
+declare const ClusterLayer: ({ features, clusterOptions, options, clusterStyle, }: ClusterLayerProps) => null;
 
 type OverlayProps = {
     /**

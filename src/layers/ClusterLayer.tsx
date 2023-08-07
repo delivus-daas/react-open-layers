@@ -4,7 +4,7 @@ import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
-import { ClusterLayerProps,  FeatureProps} from "./layer.type";
+import { ClusterLayerProps, FeatureProps } from "./layer.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../Map";
 import { Feature } from "ol";
@@ -17,6 +17,7 @@ import { Point } from "ol/geom";
 const ClusterLayer = ({
   features,
   clusterOptions = {},
+  options = { zIndex: 10 },
   clusterStyle,
 }: ClusterLayerProps) => {
   const map = useMap();
@@ -64,6 +65,7 @@ const ClusterLayer = ({
         distance: 10,
         minDistance: 10,
         source: source.current,
+        ...clusterOptions,
       });
 
       clusterLayer.current = new VectorLayer({
@@ -90,7 +92,7 @@ const ClusterLayer = ({
           }
           return null;
         },
-        ...clusterOptions,
+        ...options,
       });
 
       clusterLayer.current.set("name", FeatureNames.cluster);
@@ -110,7 +112,7 @@ const ClusterLayer = ({
     if (markers && markers?.length > 0) {
       let features: any = [];
       features = markers.map(
-        ({ iconOptions, coordinate, properties}, index) => {
+        ({ iconOptions, coordinate, properties }, index) => {
           const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
           const feature = new Feature({
             geometry: new Point(coord),

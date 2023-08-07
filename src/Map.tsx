@@ -17,14 +17,13 @@ const Map = forwardRef(
       className,
       children,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
-      layerOptions = { source: new OSM() },
+      layers: layersProp,
       interactionOptions = {
         doubleClickZoom: true,
         shiftDragZoom: true,
         mouseWheelZoom: true,
         dragPan: true,
       },
-
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
       onClickMap,
@@ -41,40 +40,68 @@ const Map = forwardRef(
     const mapElement = useRef<any>();
     const hoveredFeaturesRef = useRef<any[]>([]);
 
-      useEffect(()=>{
-          const bodyStyles:any = document.body.style;
-          if(!showZoom){
-              bodyStyles.setProperty('--zoom-visible', 'hidden');
-          } else {
-              bodyStyles.setProperty('--zoom-visible', 'visible');
+    useEffect(() => {
+      const bodyStyles: any = document.body.style;
+      if (!showZoom) {
+        bodyStyles.setProperty("--zoom-visible", "hidden");
+      } else {
+        bodyStyles.setProperty("--zoom-visible", "visible");
 
-              bodyStyles.setProperty('--zoomin-width', zoomInStyle?.width ?? '47px');
-              bodyStyles.setProperty('--zoomin-height', zoomInStyle?.height ?? '39px');
-              bodyStyles.setProperty('--zoomin-backgroundColor', zoomInStyle?.backgroundColor ?? 'white');
-              bodyStyles.setProperty('--zoomin-bottom', zoomInStyle?.bottom ?? '69px');
-              bodyStyles.setProperty('--zoomin-top', zoomInStyle?.top ?? 'inherit');
-              bodyStyles.setProperty('--zoomin-right', zoomInStyle?.right ?? '20px');
-              bodyStyles.setProperty('--zoomin-left', zoomInStyle?.left ?? 'inherit');
+        bodyStyles.setProperty("--zoomin-width", zoomInStyle?.width ?? "47px");
+        bodyStyles.setProperty(
+          "--zoomin-height",
+          zoomInStyle?.height ?? "39px"
+        );
+        bodyStyles.setProperty(
+          "--zoomin-backgroundColor",
+          zoomInStyle?.backgroundColor ?? "white"
+        );
+        bodyStyles.setProperty(
+          "--zoomin-bottom",
+          zoomInStyle?.bottom ?? "69px"
+        );
+        bodyStyles.setProperty("--zoomin-top", zoomInStyle?.top ?? "inherit");
+        bodyStyles.setProperty("--zoomin-right", zoomInStyle?.right ?? "20px");
+        bodyStyles.setProperty("--zoomin-left", zoomInStyle?.left ?? "inherit");
 
-              bodyStyles.setProperty('--zoomout-width', zoomOutStyle?.width ?? '47px');
-              bodyStyles.setProperty('--zoomout-height', zoomOutStyle?.height ?? '39px');
-              bodyStyles.setProperty('--zoomout-backgroundColor', zoomOutStyle?.backgroundColor ?? 'white');
-              bodyStyles.setProperty('--zoomout-bottom', zoomOutStyle?.bottom ?? '29px');
-              bodyStyles.setProperty('--zoomout-top', zoomOutStyle?.top ?? 'inherit');
-              bodyStyles.setProperty('--zoomout-right', zoomOutStyle?.right ?? '20px');
-              bodyStyles.setProperty('--zoomout-left', zoomOutStyle?.left ?? 'inherit');
-          }
-      },[showZoom, zoomInStyle, zoomOutStyle])
+        bodyStyles.setProperty(
+          "--zoomout-width",
+          zoomOutStyle?.width ?? "47px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-height",
+          zoomOutStyle?.height ?? "39px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-backgroundColor",
+          zoomOutStyle?.backgroundColor ?? "white"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-bottom",
+          zoomOutStyle?.bottom ?? "29px"
+        );
+        bodyStyles.setProperty("--zoomout-top", zoomOutStyle?.top ?? "inherit");
+        bodyStyles.setProperty(
+          "--zoomout-right",
+          zoomOutStyle?.right ?? "20px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-left",
+          zoomOutStyle?.left ?? "inherit"
+        );
+      }
+    }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
       if (mapElement.current && !map) {
+        const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
         const map = new ol.Map({
           target: mapElement.current,
-          layers: [new TileLayer(layerOptions)],
+          layers,
           interactions: interactionDefaults(interactionOptions),
           view: new ol.View({ center, ...viewOptions }),
         });
@@ -99,15 +126,16 @@ const Map = forwardRef(
           const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
           if (clickedFeatures?.length) {
             const features = clickedFeatures[0].get("features");
-            if (features?.length > 0) { //if features are clusters
+            if (features?.length > 0) {
+              //if features are clusters
               onClickFeatures && onClickFeatures(features, event);
               if (enableFitWhenClick) fitToCluster(features);
             } else {
-                onClickFeatures && onClickFeatures(clickedFeatures, event);
-                if (enableFitWhenClick) fitToCluster(clickedFeatures);
+              onClickFeatures && onClickFeatures(clickedFeatures, event);
+              if (enableFitWhenClick) fitToCluster(clickedFeatures);
             }
-          }else {
-              !!onClickMap && onClickMap();
+          } else {
+            !!onClickMap && onClickMap();
           }
         }
       });
@@ -119,8 +147,9 @@ const Map = forwardRef(
           const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
           if (hoveredFeatures?.length) {
             const features = hoveredFeatures[0].get("features");
-            if (features?.length) { //if features are clusters
-                hoveredFeaturesRef.current = features;
+            if (features?.length) {
+              //if features are clusters
+              hoveredFeaturesRef.current = features;
               onMouseOverFeatures && onMouseOverFeatures(features, event);
               return;
             } else {

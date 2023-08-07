@@ -5,15 +5,14 @@ import { FeatureNames } from "../map.type";
 import { FeatureProps, LayerProps } from "./layer.type";
 import { useMap } from "../Map";
 import { Feature } from "ol";
-import {fromLonLat} from "ol/proj";
-import {Point} from "ol/geom";
-import {Icon, Style} from "ol/style";
-import {Options} from "ol/style/Icon";
+import { fromLonLat } from "ol/proj";
+import { Point } from "ol/geom";
+import { Icon, Style } from "ol/style";
+import { Options } from "ol/style/Icon";
 // @ts-ignore
 import marker from "../assets/marker.png";
 
-const Layer = ({features
-}: LayerProps) => {
+const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -27,6 +26,7 @@ const Layer = ({features
       source.current = new VectorSource();
       vectorLayer.current = new VectorLayer({
         source: source.current,
+        ...options,
       });
       vectorLayer.current.set("name", FeatureNames.marker);
       vectorLayer.current.set("opacity", 2);
@@ -51,19 +51,19 @@ const Layer = ({features
     if (markers && markers.length > 0) {
       let features: any = [];
       features = markers.map(
-          ({ iconOptions, coordinate, properties }, index) => {
-            const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
-            const feature = new Feature({
-              geometry: new Point(coord),
-            });
-            properties && feature.setProperties(properties);
+        ({ iconOptions, coordinate, properties }, index) => {
+          const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
+          const feature = new Feature({
+            geometry: new Point(coord),
+          });
+          properties && feature.setProperties(properties);
 
-            const iconStyle = new Style({
-              image: new Icon(iconOptions || defaultIconOptions),
-            });
-            feature.setStyle([iconStyle]);
-            return feature;
-          }
+          const iconStyle = new Style({
+            image: new Icon(iconOptions || defaultIconOptions),
+          });
+          feature.setStyle([iconStyle]);
+          return feature;
+        }
       );
       if (source.current) {
         source.current.clear();

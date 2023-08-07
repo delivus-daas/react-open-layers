@@ -2,23 +2,25 @@ import { ReactNode } from "react";
 import { Feature } from "ol";
 import { FitOptions, ViewOptions } from "ol/View";
 import { Geometry } from "ol/geom";
-import { Options } from "ol/layer/BaseTile";
 import { DefaultsOptions } from "ol/interaction/defaults";
+import Collection from "ol/Collection";
+import LayerGroup from "ol/layer/Group";
+import BaseLayer from "ol/layer/Base";
 
 export interface zoomStyleProps {
   width?: string;
   height?: string;
   backgroundColor?: string;
-  bottom?:string;
-  top?:string;
-  left?:string;
-  right?:string;
+  bottom?: string;
+  top?: string;
+  left?: string;
+  right?: string;
 }
 
 export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
-  layerOptions?: Options<any>;
-  showZoom?:boolean;
+  layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
+  showZoom?: boolean;
   zoomInStyle?: zoomStyleProps;
   zoomOutStyle?: zoomStyleProps;
   viewOptions?: ViewOptions;
