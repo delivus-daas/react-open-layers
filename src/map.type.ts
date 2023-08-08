@@ -33,11 +33,13 @@ export interface OpenLayersProps {
   fitOptions?: FitOptions;
   enableFitWhenClick?: boolean;
   onClickMap?: () => void;
+  onClick?:(feature: FeatureLike[], event:  ol.MapBrowserEvent<any>) => void;
   onLoadStart?: (event:  ol.MapEvent)=>void;
   onLoadEnd?: (event:  ol.MapEvent)=>void;
   onMoveStart?: (event:  ol.MapEvent)=>void;
   onMoveEnd?: (event:  ol.MapEvent)=>void;
   onPointerDrag?: (event:  ol.MapBrowserEvent<any>)=>void;
+  onPointerMove?: (event:  ol.MapBrowserEvent<any>)=>void;
   onPostRender?: (event:   ol.MapEvent)=>void;
   onPostCompose?: (event:  any)=>void;
   onPreCompose?: (event:  any)=>void;

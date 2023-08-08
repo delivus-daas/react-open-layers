@@ -45,6 +45,8 @@ const Map = forwardRef(
       onPostCompose,
       onPreCompose,
       onRenderComplete,
+      onClick,
+      onPointerMove,
     }: OpenLayersProps,
     ref
   ) => {
@@ -179,8 +181,23 @@ const Map = forwardRef(
               }
           })
 
-        onClickFeatures && addOnClickListener(map);
-        onMouseOverFeatures && addOnMouseOverListener(map);
+        // onClickFeatures && addOnClickListener(map);
+
+          map.on('singleclick',function(event: { pixel: any; }){
+              if(onClick){
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onClick(clickedFeatures,event)
+              }
+
+          })
+
+          map.on('pointermove',function(event: { pixel: any; }){
+              if(onPointerMove){
+                  onPointerMove(event)
+              }
+
+          })
+        // onMouseOverFeatures && addOnMouseOverListener(map);
         setMap(map);
       }
     }, [mapElement]);
