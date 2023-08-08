@@ -1,14 +1,45 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+name: Release # Workflow name displayed on GitHub
 
-commit_msg=$(cat "${1:?Missing commit message file}")
+on:
 
-if ! echo "$commit_msg" | grep -Eq "^(build|chore|ci|docs|feat|feat!|fix|perf|refactor|revert|style|test)(\(.+\))?: .*$" ; then
+  workflow_dispatch: # Trigger manually
 
-  echo "Invalid commit message"
+   branches: master # Branch on which the workflow will run
 
-    exit 1
+jobs:
 
-fi
+   new-release:
 
-echo "Commit message is valid!"
+      runs-on: ubuntu-latest
+
+      steps:
+
+         - uses: actions/checkout@v3 # Checkout our working repository
+
+         - name: Conventional Changelog Action
+
+             id: changelog
+
+             uses: TriPSs/conventional-changelog-action@v3
+
+             with:
+
+                 github-token: ${{ secrets.github_token }
+
+                 output-file: "false"
+
+        - name: Create Release # This action will create the actual release
+
+             uses: actions/create-release@v1
+
+             if: ${{ steps.changelog.outputs.skipped == 'false' }
+
+             env:
+
+                GITHUB_TOKEN: ${{ secrets.github_token }
+
+                with: tag_name: ${{ steps.changelog.outputs.tag }
+
+                release_name: ${{ steps.changelog.outputs.tag }
+
+                body: ${{ steps.changelog.outputs.clean_changelog }
