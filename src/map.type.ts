@@ -33,6 +33,10 @@ export interface OpenLayersProps {
   onClickMap?: () => void;
   onLoadStart?: (event:  ol.MapEvent)=>void;
   onLoadEnd?: (event:  ol.MapEvent)=>void;
+  onMoveStart?: (event:  ol.MapEvent)=>void;
+  onMoveEnd?: (event:  ol.MapEvent)=>void;
+  onPointerDrag?: (event:  ol.MapBrowserEvent<any>)=>void;
+  onPointerMove?: (event:  ol.MapBrowserEvent<any>)=>void;
   onDoubleClick?:(feature: FeatureLike[], event:  ol.MapBrowserEvent<any>) => void;
   onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
   onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;

@@ -39,6 +39,10 @@ const Map = forwardRef(
       zoomOutStyle,
       onLoadStart,
       onLoadEnd,
+      onMoveStart,
+      onMoveEnd,
+      onPointerDrag,
+      onPointerMove,
     }: OpenLayersProps,
     ref
   ) => {
@@ -102,6 +106,30 @@ const Map = forwardRef(
                   onDoubleClick(clickedFeatures,event)
               }
           });
+
+          map.on('pointerdrag',function(event){
+              if(onPointerDrag){
+                  onPointerDrag(event)
+              }
+          })
+
+          map.on('pointermove',function(event){
+              if(onPointerMove){
+                  onPointerMove(event)
+              }
+          })
+
+          map.on('movestart',function(event){
+              if(onMoveStart){
+                  onMoveStart(event)
+              }
+          })
+
+          map.on('moveend',function(event){
+              if(onMoveEnd){
+                  onMoveEnd(event)
+              }
+          })
 
         onClickFeatures && addOnClickListener(map);
         onMouseOverFeatures && addOnMouseOverListener(map);
