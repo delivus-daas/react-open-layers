@@ -42,7 +42,6 @@ const Map = forwardRef(
       onMoveStart,
       onMoveEnd,
       onPointerDrag,
-      onPointerMove,
       onPostRender,
       onPostCompose,
       onPreCompose,
@@ -114,12 +113,6 @@ const Map = forwardRef(
           map.on('pointerdrag',function(event){
               if(onPointerDrag){
                   onPointerDrag(event)
-              }
-          })
-
-          map.on('pointermove',function(event){
-              if(onPointerMove){
-                  onPointerMove(event)
               }
           })
 

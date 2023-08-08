@@ -36,7 +36,6 @@ export interface OpenLayersProps {
   onMoveStart?: (event:  ol.MapEvent)=>void;
   onMoveEnd?: (event:  ol.MapEvent)=>void;
   onPointerDrag?: (event:  ol.MapBrowserEvent<any>)=>void;
-  onPointerMove?: (event:  ol.MapBrowserEvent<any>)=>void;
   onPostRender?: (event:   ol.MapEvent)=>void;
   onPostCompose?: (event:  any)=>void;
   onPreCompose?: (event:  any)=>void;
