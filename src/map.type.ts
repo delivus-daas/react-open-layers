@@ -31,6 +31,8 @@ export interface OpenLayersProps {
   fitOptions?: FitOptions;
   enableFitWhenClick?: boolean;
   onClickMap?: () => void;
+  onLoadStart?: (event:  ol.MapEvent)=>void;
+  onLoadEnd?: (event:  ol.MapEvent)=>void;
   onDoubleClick?:(feature: FeatureLike[], event:  ol.MapBrowserEvent<any>) => void;
   onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
   onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;

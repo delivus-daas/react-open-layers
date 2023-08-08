@@ -37,6 +37,8 @@ const Map = forwardRef(
       showZoom,
       zoomInStyle,
       zoomOutStyle,
+      onLoadStart,
+      onLoadEnd,
     }: OpenLayersProps,
     ref
   ) => {
@@ -83,7 +85,17 @@ const Map = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
+          map.on('loadstart',function(event){
+              if(onLoadStart){
+                  onLoadStart(event)
+              }
 
+          })
+          map.on('loadend',function(event){
+              if(onLoadEnd){
+                  onLoadEnd(event)
+              }
+          })
           map.on('dblclick', function (event) {
               if (onDoubleClick) {
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
