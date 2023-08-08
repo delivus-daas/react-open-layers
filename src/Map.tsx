@@ -43,6 +43,10 @@ const Map = forwardRef(
       onMoveEnd,
       onPointerDrag,
       onPointerMove,
+      onPostRender,
+      onPostCompose,
+      onPreCompose,
+      onRenderComplete,
     }: OpenLayersProps,
     ref
   ) => {
@@ -128,6 +132,30 @@ const Map = forwardRef(
           map.on('moveend',function(event){
               if(onMoveEnd){
                   onMoveEnd(event)
+              }
+          })
+
+          map.on('postrender',function(event){
+              if(onPostRender){
+                  onPostRender(event)
+              }
+          })
+
+          map.on('postcompose',function(event){
+              if(onPostCompose){
+                  onPostCompose(event)
+              }
+          })
+
+          map.on('precompose',function(event){
+              if(onPreCompose){
+                  onPreCompose(event)
+              }
+          })
+
+          map.on('rendercomplete',function(event){
+              if(onRenderComplete){
+                  onRenderComplete(event)
               }
           })
 
