@@ -31,6 +31,7 @@ const Map = forwardRef(
       enableFitWhenClick,
       onClickMap,
       onClickFeatures,
+      onDoubleClick,
       onMouseOutFeatures,
       onMouseOverFeatures,
       showZoom,
@@ -82,6 +83,13 @@ const Map = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
+
+          map.on('dblclick', function (event) {
+              if (onDoubleClick) {
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onDoubleClick(clickedFeatures,event)
+              }
+          });
 
         onClickFeatures && addOnClickListener(map);
         onMouseOverFeatures && addOnMouseOverListener(map);

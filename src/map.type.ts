@@ -4,6 +4,8 @@ import { FitOptions, ViewOptions } from "ol/View";
 import { Geometry } from "ol/geom";
 import { Options } from "ol/layer/BaseTile";
 import { DefaultsOptions } from "ol/interaction/defaults";
+import {FeatureLike} from "ol/Feature";
+import ol from "ol"
 
 export interface zoomStyleProps {
   width?: string;
@@ -29,6 +31,7 @@ export interface OpenLayersProps {
   fitOptions?: FitOptions;
   enableFitWhenClick?: boolean;
   onClickMap?: () => void;
+  onDoubleClick?:(feature: FeatureLike[], event:  ol.MapBrowserEvent<any>) => void;
   onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
   onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
   onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
