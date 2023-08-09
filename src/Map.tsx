@@ -14,6 +14,8 @@ const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
+      moveTolerance = 1,
+      maxTilesLoading = 16,
       className,
       children,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
@@ -28,11 +30,23 @@ const Map = forwardRef(
       enableFitWhenClick,
       onClickMap,
       onClickFeatures,
+      onDoubleClick,
       onMouseOutFeatures,
       onMouseOverFeatures,
       showZoom,
       zoomInStyle,
       zoomOutStyle,
+      onLoadStart,
+      onLoadEnd,
+      onMoveStart,
+      onMoveEnd,
+      onPointerDrag,
+      onPostRender,
+      onPostCompose,
+      onPreCompose,
+      onRenderComplete,
+      onClick,
+      onPointerMove,
     }: OpenLayersProps,
     ref
   ) => {
@@ -104,10 +118,86 @@ const Map = forwardRef(
           layers,
           interactions: interactionDefaults(interactionOptions),
           view: new ol.View({ center, ...viewOptions }),
+          moveTolerance: moveTolerance,
+          maxTilesLoading: maxTilesLoading,
         });
+          map.on('loadstart',function(event){
+              if(onLoadStart){
+                  onLoadStart(event)
+              }
 
-        onClickFeatures && addOnClickListener(map);
-        onMouseOverFeatures && addOnMouseOverListener(map);
+          })
+          map.on('loadend',function(event){
+              if(onLoadEnd){
+                  onLoadEnd(event)
+              }
+          })
+          map.on('dblclick', function (event) {
+              if (onDoubleClick) {
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onDoubleClick(clickedFeatures,event)
+              }
+          });
+
+          map.on('pointerdrag',function(event){
+              if(onPointerDrag){
+                  onPointerDrag(event)
+              }
+          })
+
+          map.on('movestart',function(event){
+              if(onMoveStart){
+                  onMoveStart(event)
+              }
+          })
+
+          map.on('moveend',function(event){
+              if(onMoveEnd){
+                  onMoveEnd(event)
+              }
+          })
+
+          map.on('postrender',function(event){
+              if(onPostRender){
+                  onPostRender(event)
+              }
+          })
+
+          map.on('postcompose',function(event){
+              if(onPostCompose){
+                  onPostCompose(event)
+              }
+          })
+
+          map.on('precompose',function(event){
+              if(onPreCompose){
+                  onPreCompose(event)
+              }
+          })
+
+          map.on('rendercomplete',function(event){
+              if(onRenderComplete){
+                  onRenderComplete(event)
+              }
+          })
+
+        // onClickFeatures && addOnClickListener(map);
+
+          map.on('singleclick',function(event: { pixel: any; }){
+              if(onClick){
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onClick(clickedFeatures,event)
+              }
+
+          })
+
+          map.on('pointermove',function(event: { pixel: any; }){
+              if(onPointerMove){
+                  onPointerMove(event)
+              }
+
+          })
+        // onMouseOverFeatures && addOnMouseOverListener(map);
         setMap(map);
       }
     }, [mapElement]);
