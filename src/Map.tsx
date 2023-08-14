@@ -38,6 +38,7 @@ const Map = forwardRef(
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
+    const mapRef = useRef<any>();
     const hoveredFeaturesRef = useRef<any[]>([]);
 
     useEffect(() => {
@@ -93,24 +94,27 @@ const Map = forwardRef(
     }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
-      if (mapElement.current && !map) {
+      console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
+      if (mapElement.current && !mapRef.current) {
+        console.log("mapElement 1", mapElement.current)
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
-        const map = new ol.Map({
+        mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
           interactions: interactionDefaults(interactionOptions),
           view: new ol.View({ center, ...viewOptions }),
         });
 
-        onClickFeatures && addOnClickListener(map);
-        onMouseOverFeatures && addOnMouseOverListener(map);
-        setMap(map);
+        console.log("mapElement 2", mapElement.current, mapRef.current)
+        onClickFeatures && addOnClickListener(mapRef.current);
+        onMouseOverFeatures && addOnMouseOverListener(mapRef.current);
+        setMap(mapRef.current);
       }
-    }, [mapElement]);
+    }, []);
 
     function fitToCluster(features: FeatureLike[]) {
       const extent = boundingExtent(

@@ -58,7 +58,6 @@ const ClusterLayer = ({
 
   useEffect(() => {
     if (map && !source.current) {
-      resetLayers();
       source.current = new VectorSource();
 
       let clusterSource = new Cluster({
@@ -106,7 +105,7 @@ const ClusterLayer = ({
 
   useEffect(() => {
     drawFeatures(features);
-  }, [features]);
+  }, [features, map]);
 
   const drawFeatures = (markers?: FeatureProps[]) => {
     if (markers && markers?.length > 0) {

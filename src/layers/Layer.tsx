@@ -45,7 +45,7 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
 
   useEffect(() => {
     drawFeatures(features);
-  }, [features]);
+  }, [features, map]);
 
   const drawFeatures = (markers?: FeatureProps[]) => {
     if (markers && markers.length > 0) {
@@ -65,6 +65,7 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
           return feature;
         }
       );
+      console.log("addFeatures", map, source.current, features)
       if (source.current) {
         source.current.clear();
         source.current.addFeatures(features);
