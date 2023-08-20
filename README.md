@@ -21,7 +21,7 @@ Preferred node version: 16
  
  # Documentation
 
- ## Usage
+ ## Full usage
 
 ```typescript
 
@@ -32,33 +32,34 @@ import {
   Overlay,
 } from "@delivus/react-open-layers";
 
+
 ```
 
 ```xml
-        <OpenLayers
-            interactionOptions={{ pinchZoom: true }}
-            className={"shipping-map"}
-            onMouseOverFeatures={handleMouseOverCluster}
-            onMouseOutFeatures={handleMouseOutCluster}
-            onClickFeatures={handleClickCluster}>
 
-            <Control
-              id={"right-control"}
-              className={"map-floating-cntr map-right-floating shipping-float"}>
-              {children}
-            </Control>
-            <Overlay
-              id={"shipping-tooltip"}
-              className={"tooltip"}
-              position={hoveredShippingTooltip?.position}
-            >
-              <ShippingsTooltip shippings={hoveredShippingTooltip?.shippings} />
-            </Overlay>
-            <ClusterLayer
-              clusterStyle={styleShippingCluster}
-              features={renderMarkers()}
-            />
-          </OpenLayers>
+  <OpenLayers
+   interactionOptions={{ pinchZoom: true }}
+   className={"shipping-map"}
+   onMouseOverFeatures={handleMouseOverCluster}
+   onMouseOutFeatures={handleMouseOutCluster}
+   onClickFeatures={handleClickCluster}>
+   
+   <Control
+    id={"right-control"}
+    className={"map-floating-cntr map-right-floating shipping-float"}>
+      {children}
+    </Control>
+    <Overlay
+     id={"shipping-tooltip"}
+     className={"tooltip"}
+     position={hoveredShippingTooltip?.position}>
+    <ShippingsTooltip shippings={hoveredShippingTooltip?.shippings} />
+    </Overlay>
+    <ClusterLayer
+      clusterStyle={styleShippingCluster}
+      features={renderMarkers()}
+      />
+    </OpenLayers>
 ```
 
 
@@ -74,3 +75,6 @@ import {
 
 - [Chimeg](https://github.com/Chimaa123)
 - [Manoj](https://github.com/manojjonam10)
+
+
+
