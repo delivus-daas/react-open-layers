@@ -183,7 +183,7 @@ const Map = forwardRef(
 
         // onClickFeatures && addOnClickListener(map);
 
-          map.on('singleclick',function(event: { pixel: any; }){
+          map.on('singleclick',function(feature: FeatureLike[], event:  ol.MapBrowserEvent<any>){
               if(onClick){
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
                   onClick(clickedFeatures,event)
