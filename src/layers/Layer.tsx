@@ -48,8 +48,8 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
   }, [features, map]);
 
   const drawFeatures = (markers?: FeatureProps[]) => {
+    let features: any = [];
     if (markers && markers.length > 0) {
-      let features: any = [];
       features = markers.map(
         ({ iconOptions, coordinate, properties }, index) => {
           const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
@@ -65,11 +65,10 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
           return feature;
         }
       );
-      console.log("addFeatures", map, source.current, features)
-      if (source.current) {
-        source.current.clear();
-        source.current.addFeatures(features);
-      }
+    }
+    if (source.current) {
+      source.current.clear();
+      source.current.addFeatures(features);
     }
   };
 
