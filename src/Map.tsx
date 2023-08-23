@@ -184,8 +184,8 @@ const Map = forwardRef(
                   onRenderComplete(event)
               }
           })
-        
-          mapRef.current.on('singleclick',function(event: { pixel: any; }){
+
+          mapRef.current.on('singleclick',function(event){
               if(onClick){
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
                   onClick(clickedFeatures,event)
@@ -193,7 +193,7 @@ const Map = forwardRef(
 
           })
 
-          mapRef.current.on('pointermove',function(event: { pixel: any; }){
+          map.on('pointermove',function(event){
               if(onPointerMove){
                   onPointerMove(event)
               }
