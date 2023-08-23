@@ -52,6 +52,7 @@ const Map = forwardRef(
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
+    const mapRef = useRef<any>();
     const hoveredFeaturesRef = useRef<any[]>([]);
 
     useEffect(() => {
@@ -107,13 +108,15 @@ const Map = forwardRef(
     }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
-      if (mapElement.current && !map) {
+      console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
+      if (mapElement.current && !mapRef.current) {
+        console.log("mapElement 1", mapElement.current)
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
-        const map = new ol.Map({
+        mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
           interactions: interactionDefaults(interactionOptions),
@@ -121,69 +124,68 @@ const Map = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
-          map.on('loadstart',function(event){
+        
+          mapRef.current.on('loadstart',function(event){
               if(onLoadStart){
                   onLoadStart(event)
               }
 
           })
-          map.on('loadend',function(event){
+          mapRef.current.on('loadend',function(event){
               if(onLoadEnd){
                   onLoadEnd(event)
               }
           })
-          map.on('dblclick', function (event) {
+          mapRef.current.on('dblclick', function (event) {
               if (onDoubleClick) {
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
                   onDoubleClick(clickedFeatures,event)
               }
           });
 
-          map.on('pointerdrag',function(event){
+          mapRef.current.on('pointerdrag',function(event){
               if(onPointerDrag){
                   onPointerDrag(event)
               }
           })
 
-          map.on('movestart',function(event){
+          mapRef.current.on('movestart',function(event){
               if(onMoveStart){
                   onMoveStart(event)
               }
           })
 
-          map.on('moveend',function(event){
+          mapRef.current.on('moveend',function(event){
               if(onMoveEnd){
                   onMoveEnd(event)
               }
           })
 
-          map.on('postrender',function(event){
+          mapRef.current.on('postrender',function(event){
               if(onPostRender){
                   onPostRender(event)
               }
           })
 
-          map.on('postcompose',function(event){
+          mapRef.current.on('postcompose',function(event){
               if(onPostCompose){
                   onPostCompose(event)
               }
           })
 
-          map.on('precompose',function(event){
+          mapRef.current.on('precompose',function(event){
               if(onPreCompose){
                   onPreCompose(event)
               }
           })
 
-          map.on('rendercomplete',function(event){
+          mapRef.current.on('rendercomplete',function(event){
               if(onRenderComplete){
                   onRenderComplete(event)
               }
           })
 
-        // onClickFeatures && addOnClickListener(map);
-
-          map.on('singleclick',function(event){
+          mapRef.current.on('singleclick',function(event){
               if(onClick){
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
                   onClick(clickedFeatures,event)
@@ -197,10 +199,9 @@ const Map = forwardRef(
               }
 
           })
-        // onMouseOverFeatures && addOnMouseOverListener(map);
-        setMap(map);
+        setMap(mapRef.current);
       }
-    }, [mapElement]);
+    }, []);
 
     function fitToCluster(features: FeatureLike[]) {
       const extent = boundingExtent(
