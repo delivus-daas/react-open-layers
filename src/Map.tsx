@@ -124,81 +124,88 @@ const Map = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
-        
-          mapRef.current.on('loadstart',function(event){
+
+          mapRef.current.on('loadstart',function(event: ol.MapBrowserEvent<any>){
               if(onLoadStart){
                   onLoadStart(event)
               }
 
           })
-          mapRef.current.on('loadend',function(event){
+          mapRef.current.on('loadend',function(event: ol.MapBrowserEvent<any>){
               if(onLoadEnd){
                   onLoadEnd(event)
               }
           })
-          mapRef.current.on('dblclick', function (event) {
+          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
               if (onDoubleClick) {
                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
                   onDoubleClick(clickedFeatures,event)
               }
           });
 
-          mapRef.current.on('pointerdrag',function(event){
+          mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
               if(onPointerDrag){
                   onPointerDrag(event)
               }
           })
 
-          mapRef.current.on('movestart',function(event){
+          mapRef.current.on('movestart',function(event: ol.MapBrowserEvent<any>){
               if(onMoveStart){
                   onMoveStart(event)
               }
           })
 
-          mapRef.current.on('moveend',function(event){
+          mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
               if(onMoveEnd){
                   onMoveEnd(event)
               }
           })
 
-          mapRef.current.on('postrender',function(event){
+          mapRef.current.on('postrender',function(event: ol.MapBrowserEvent<any>){
               if(onPostRender){
                   onPostRender(event)
               }
           })
 
-          mapRef.current.on('postcompose',function(event){
+          mapRef.current.on('postcompose',function(event: ol.MapBrowserEvent<any>){
               if(onPostCompose){
                   onPostCompose(event)
               }
           })
 
-          mapRef.current.on('precompose',function(event){
+          mapRef.current.on('precompose',function(event: ol.MapBrowserEvent<any>){
               if(onPreCompose){
                   onPreCompose(event)
               }
           })
 
-          mapRef.current.on('rendercomplete',function(event){
+          mapRef.current.on('rendercomplete',function(event: ol.MapBrowserEvent<any>){
               if(onRenderComplete){
                   onRenderComplete(event)
               }
           })
 
-          mapRef.current.on('singleclick',function(event){
-              if(onClick){
-                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                  onClick(clickedFeatures,event)
-              }
+          if(onClickFeatures)
+              addOnClickListener(mapRef.current);
+          else {
+              mapRef.current.on('singleclick',function(event: ol.MapBrowserEvent<any>){
+                  if(onClick){
+                      const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                      onClick(clickedFeatures,event)
+                  }
+              })
+          }
 
-          })
+          if(onMouseOverFeatures)
+              addOnMouseOverListener(mapRef.current);
+          else {
+              mapRef.current.on('pointermove', function (event: ol.MapBrowserEvent<any>) {
+                  if (onPointerMove) {
+                      onPointerMove(event)
+                  }
+              })
+          }
 
-          map.on('pointermove',function(event){
-              if(onPointerMove){
-                  onPointerMove(event)
-              }
-
-          })
         setMap(mapRef.current);
       }
     }, []);
