@@ -14,6 +14,8 @@ const Map = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
+      moveTolerance = 1,
+      maxTilesLoading = 16,
       className,
       children,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
@@ -28,11 +30,23 @@ const Map = forwardRef(
       enableFitWhenClick,
       onClickMap,
       onClickFeatures,
+      onDoubleClick,
       onMouseOutFeatures,
       onMouseOverFeatures,
       showZoom,
       zoomInStyle,
       zoomOutStyle,
+      onLoadStart,
+      onLoadEnd,
+      onMoveStart,
+      onMoveEnd,
+      onPointerDrag,
+      onPostRender,
+      onPostCompose,
+      onPreCompose,
+      onRenderComplete,
+      onClick,
+      onPointerMove,
     }: OpenLayersProps,
     ref
   ) => {
@@ -107,11 +121,84 @@ const Map = forwardRef(
           layers,
           interactions: interactionDefaults(interactionOptions),
           view: new ol.View({ center, ...viewOptions }),
+          moveTolerance: moveTolerance,
+          maxTilesLoading: maxTilesLoading,
         });
+        
+          mapRef.current.on('loadstart',function(event){
+              if(onLoadStart){
+                  onLoadStart(event)
+              }
 
-        console.log("mapElement 2", mapElement.current, mapRef.current)
-        onClickFeatures && addOnClickListener(mapRef.current);
-        onMouseOverFeatures && addOnMouseOverListener(mapRef.current);
+          })
+          mapRef.current.on('loadend',function(event){
+              if(onLoadEnd){
+                  onLoadEnd(event)
+              }
+          })
+          mapRef.current.on('dblclick', function (event) {
+              if (onDoubleClick) {
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onDoubleClick(clickedFeatures,event)
+              }
+          });
+
+          mapRef.current.on('pointerdrag',function(event){
+              if(onPointerDrag){
+                  onPointerDrag(event)
+              }
+          })
+
+          mapRef.current.on('movestart',function(event){
+              if(onMoveStart){
+                  onMoveStart(event)
+              }
+          })
+
+          mapRef.current.on('moveend',function(event){
+              if(onMoveEnd){
+                  onMoveEnd(event)
+              }
+          })
+
+          mapRef.current.on('postrender',function(event){
+              if(onPostRender){
+                  onPostRender(event)
+              }
+          })
+
+          mapRef.current.on('postcompose',function(event){
+              if(onPostCompose){
+                  onPostCompose(event)
+              }
+          })
+
+          mapRef.current.on('precompose',function(event){
+              if(onPreCompose){
+                  onPreCompose(event)
+              }
+          })
+
+          mapRef.current.on('rendercomplete',function(event){
+              if(onRenderComplete){
+                  onRenderComplete(event)
+              }
+          })
+        
+          mapRef.current.on('singleclick',function(event: { pixel: any; }){
+              if(onClick){
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onClick(clickedFeatures,event)
+              }
+
+          })
+
+          mapRef.current.on('pointermove',function(event: { pixel: any; }){
+              if(onPointerMove){
+                  onPointerMove(event)
+              }
+
+          })
         setMap(mapRef.current);
       }
     }, []);
