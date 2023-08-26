@@ -108,20 +108,37 @@ Optional default props for all Map components:
 
 for more information : [interactionOptions](https://openlayers.org/en/latest/apidoc/module-ol_interaction_defaults)
 
-### `cssOverride` prop
+### `layers` prop
 
-The `cssOverride` prop is an object of camelCase styles used to create inline styles on the loaders. Any html css property is valid here.
+The `layers` prop allows user to add layers for the map as an array collection similar to openlayers prop for layers.
 
-### `size`, `height`, `width`, and `radius` props
+For example :
+`layers: [
+raster,
+vector
+],`
 
-The input to these props can be _number_ or _string_.
+### `showZoom` props
 
-- If value is number, the loader will default to css unit `px`.
-- If value is string, the loader will verify the unit against valid css units.
- - If unit is valid, return the original value
- - If unit is invalid, output warning console log and default to `px`.
+The `showZoom` props is a boolean value and enable / disable zoom icons on the openlayers map
 
-The table below has the default values for each loader.
+### `zoomInStyle` & `zoomOutStyle` props
+
+Both `zoomInStyle` & `zoomOutStyle` props allows styling for zoomIn and zoomOut buttons that are displayed on the map view
+
+Accepted styling props are:
+
+ ```
+  width: string;
+  height: string;
+  backgroundColor: string;
+  bottom: string;
+  top: string;
+  left: string;
+  right: string;
+```
+
+
 
 
 
