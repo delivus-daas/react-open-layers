@@ -201,6 +201,49 @@ The default center point for map is set as `[126.83, 37.57] (South Korea)`
 
 `onPointerMove` event is triggered when a pointer is moved. Note that on touch devices this is triggered when the map is panned, so is not the same as mousemove.
 
+### `onPostRender`
+
+`onPostRender` event is triggered after a map frame is rendered.
+
+### `onPostCompose`
+
+`onPostCompose` event is triggered after layers are composed. When dispatched by the map, the event object will not have a context set. When dispatched by a layer, the event object will have a context set. Only WebGL layers currently dispatch this event.
+
+### `onPreCompose`
+
+`onPreCompose` event is  triggered before layers are composed. When dispatched by the map, the event object will not have a context set. When dispatched by a layer, the event object will have a context set. Only WebGL layers currently dispatch this event.
+
+### `onRenderComplete`
+
+`onRenderComplete` event is triggered when rendering is complete, i.e. all sources and tiles have finished loading for the current viewport, and all tiles are faded in. The event object will not have a context set.
+
+### `onDoubleClick`
+
+`onDoubleClick` event is a true double click, with no dragging.
+
+
+### `onMouseOverFeatures`
+
+`onPointerDrag` event is triggered when a pointer is dragged.
+
+
+### `onMouseOutFeatures`
+
+`onPointerDrag` event is triggered when a pointer is dragged.
+
+
+### `onClickFeatures`
+
+`onClickFeatures` event is triggered when a pointer is dragged.
+
+### `moveTolerance`
+
+`onClickFeatures` event is triggered when a pointer is dragged.
+
+### `maxTilesLoading`
+
+`onClickFeatures` event is triggered when a pointer is dragged.
+
 
 ## License
 
