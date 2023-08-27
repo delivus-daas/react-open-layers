@@ -138,7 +138,21 @@ Accepted styling props are:
   right: string;
 ```
 
+### `viewOptions` prop
 
+`viewOptions` prop is a set of view properties included in maps by default
+
+for more information : [viewOptions](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html)
+
+### `initialCenter` prop
+
+The `initialCenter` prop allows user to set center point on map
+
+The default center point for map is set as `[126.83, 37.57] (South Korea)`
+
+### `className` prop
+
+`className` prop allows styling of map component
 
 
 
