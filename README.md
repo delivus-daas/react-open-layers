@@ -101,13 +101,13 @@ Optional default props for all Map components:
 ```
 
 
-### `interactionOptions` prop
+### `interactionOptions`
 
 `interactionOptions` prop is a set of interactions included in maps by default
 
 for more information : [interactionOptions](https://openlayers.org/en/latest/apidoc/module-ol_interaction_defaults)
 
-### `layers` prop
+### `layers`
 
 The `layers` prop allows user to add layers for the map as an array collection similar to openlayers prop for layers.
 
@@ -117,11 +117,11 @@ raster,
 vector
 ],`
 
-### `showZoom` props
+### `showZoom`
 
 The `showZoom` props is a boolean value and enable / disable zoom icons on the openlayers map
 
-### `zoomInStyle` & `zoomOutStyle` props
+### `zoomInStyle` & `zoomOutStyle`
 
 Both `zoomInStyle` & `zoomOutStyle` props allows styling for zoomIn and zoomOut buttons that are displayed on the map view
 
@@ -137,42 +137,71 @@ Accepted styling props are:
   right: string;
 ```
 
-### `viewOptions` prop
+### `viewOptions`
 
 `viewOptions` prop is a set of view properties included in maps by default
 
 for more information : [viewOptions](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html)
 
-### `initialCenter` prop
+### `initialCenter`
 
 The `initialCenter` prop allows user to set center point on map
 
 The default center point for map is set as `[126.83, 37.57] (South Korea)`
 
-### `className` prop
+### `className`
 
 `className` prop allows styling of map component
 
-### `children` prop
+### `children`
 
 `children` prop allows to mount react node component as child
 
-### `fitOptions` prop
+### `fitOptions`
 
-`fitOptions` prop allows to set view component of Openlayer map view  [fitOptions](https://openlayers.org/en/latest/apidoc/module-ol_View.html#~FitOptions)
+`fitOptions` prop allows to set view component of ol map view  [fitOptions](https://openlayers.org/en/latest/apidoc/module-ol_View.html#~FitOptions)
 
-### `enableFitWhenClick` prop
+### `enableFitWhenClick`
 
 `enableFitWhenClick` prop enables singleClick function on features populated on the map
 
-### `onClickMap` prop
+### `onClickMap`
 
 `onClickMap` prop returns a listener event object whenever map is clicked
 
 
-### `onClick` prop
+### `onClick`
 
-`onClick` prop returns a listener event object whenever map is clicked
+`onClick` prop returns a single click event listener ol browser map event object whenever features in the map are clicked and feature data
+
+### `onLoadStart`
+
+`onLoadStart` event is triggered when loading of additional map data (tiles, images, features) starts.
+
+
+### `onLoadEnd`
+
+`onLoadEnd` event is triggered when loading of additional map data has completed.
+
+
+### `onMoveStart`
+
+`onMoveStart` event is triggered when the map starts moving.
+
+### `onMoveEnd`
+
+`onMoveEnd` event is triggered after the map is moved.
+
+### `onPointerDrag`
+
+`onPointerDrag` event is triggered when a pointer is dragged.
+
+
+### `onPointerMove`
+
+`onPointerMove` event is triggered when a pointer is moved. Note that on touch devices this is triggered when the map is panned, so is not the same as mousemove.
+
+
 ## License
 
 
