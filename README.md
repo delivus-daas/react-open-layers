@@ -224,25 +224,26 @@ The default center point for map is set as `[126.83, 37.57] (South Korea)`
 
 ### `onMouseOverFeatures`
 
-`onPointerDrag` event is triggered when a pointer is dragged.
+`onMouseOverFeatures` event is triggered when a pointer is moved over the feature in the ol map view.
 
 
 ### `onMouseOutFeatures`
 
-`onPointerDrag` event is triggered when a pointer is dragged.
+`onMouseOutFeatures` event is triggered when a pointer is moved outside the feature in the ol map view.
 
 
 ### `onClickFeatures`
 
-`onClickFeatures` event is triggered when a pointer is dragged.
+`onClickFeatures` enables feature click on ol layer for more event object description
 
 ### `moveTolerance`
 
-`onClickFeatures` event is triggered when a pointer is dragged.
+`moveTolerance` prop sets the minimum distance in pixels the cursor must move to be detected as a map move event instead of a click. Increasing this value can make it easier to click on the map. Default value is 1
 
 ### `maxTilesLoading`
 
-`onClickFeatures` event is triggered when a pointer is dragged.
+`maxTilesLoading` props sets the maximum number tiles to load simultaneously.
+Default value is 16
 
 
 ## License
