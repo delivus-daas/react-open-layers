@@ -77,7 +77,6 @@ Optional default props for all Map components:
   viewOptions: ViewOptions;
   initialCenter: number[];
   className: string;
-  onMapBoundChanged: (bounds: any) => void;
   children: ReactNode | ReactNode[];
   fitOptions: FitOptions;
   enableFitWhenClick: boolean;
@@ -154,8 +153,26 @@ The default center point for map is set as `[126.83, 37.57] (South Korea)`
 
 `className` prop allows styling of map component
 
+### `children` prop
+
+`children` prop allows to mount react node component as child
+
+### `fitOptions` prop
+
+`fitOptions` prop allows to set view component of Openlayer map view  [fitOptions](https://openlayers.org/en/latest/apidoc/module-ol_View.html#~FitOptions)
+
+### `enableFitWhenClick` prop
+
+`enableFitWhenClick` prop enables singleClick function on features populated on the map
+
+### `onClickMap` prop
+
+`onClickMap` prop returns a listener event object whenever map is clicked
 
 
+### `onClick` prop
+
+`onClick` prop returns a listener event object whenever map is clicked
 ## License
 
 
