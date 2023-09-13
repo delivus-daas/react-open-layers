@@ -61,12 +61,12 @@ import {
       />
     </OpenLayers>
 ```
-## Examples
-[Basic example](https://codesandbox.io/s/react-open-layers-basic-example-5sw8m6)
-[Marker example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-example-marker)
-[Cluster example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-cluster)
-[Tooltip example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-example-tooltip)
-## Available Loaders, PropTypes, and Default Values
+### Examples
+### [Basic example](https://codesandbox.io/s/react-open-layers-basic-example-5sw8m6)
+### [Marker example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-example-marker)
+### [Cluster example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-cluster)
+### [Tooltip example](https://codesandbox.io/p/github/delivus-daas/react-open-layers-example-tooltip)
+### Available Loaders, PropTypes, and Default Values
 
 Optional default props for all Map components:
 
