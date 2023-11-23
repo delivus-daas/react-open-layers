@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { ControlProps } from "./control.type";
-import { useMap } from "../Map";
+import { useMap } from "../OpenLayers";
 import { Control } from "ol/control";
 
 const Controller = ({

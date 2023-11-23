@@ -3,7 +3,7 @@ import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import { FeatureProps, LayerProps } from "./layer.type";
-import { useMap } from "../Map";
+import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";

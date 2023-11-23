@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { OverlayProps } from "./overlay.type";
 import { Overlay } from "ol";
-import { useMap } from "../Map";
+import { useMap } from "../OpenLayers";
 
 const CustomOverlay = ({
   children,

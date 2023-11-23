@@ -6,7 +6,7 @@ import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
 import { ClusterLayerProps, FeatureProps } from "./layer.type";
 import VectorSource from "ol/source/Vector";
-import { useMap } from "../Map";
+import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
 // @ts-ignore
 import marker from "../assets/marker.png";

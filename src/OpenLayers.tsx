@@ -10,7 +10,7 @@ import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
 
 const MapContext = React.createContext<any>(undefined);
-const Map = forwardRef(
+const OpenLayers:React.FC = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
@@ -275,5 +275,5 @@ const Map = forwardRef(
   }
 );
 
-export default Map;
+export default OpenLayers;
 export const useMap = () => React.useContext(MapContext);
