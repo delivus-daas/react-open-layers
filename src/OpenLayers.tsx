@@ -55,160 +55,160 @@ const OpenLayers = forwardRef(
     const mapRef = useRef<any>();
     const hoveredFeaturesRef = useRef<any[]>([]);
 
-    // useEffect(() => {
-    //   const bodyStyles: any = document.body.style;
-    //   if (!showZoom) {
-    //     bodyStyles.setProperty("--zoom-visible", "hidden");
-    //   } else {
-    //     bodyStyles.setProperty("--zoom-visible", "visible");
-    //
-    //     bodyStyles.setProperty("--zoomin-width", zoomInStyle?.width ?? "47px");
-    //     bodyStyles.setProperty(
-    //       "--zoomin-height",
-    //       zoomInStyle?.height ?? "39px"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomin-backgroundColor",
-    //       zoomInStyle?.backgroundColor ?? "white"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomin-bottom",
-    //       zoomInStyle?.bottom ?? "69px"
-    //     );
-    //     bodyStyles.setProperty("--zoomin-top", zoomInStyle?.top ?? "inherit");
-    //     bodyStyles.setProperty("--zoomin-right", zoomInStyle?.right ?? "20px");
-    //     bodyStyles.setProperty("--zoomin-left", zoomInStyle?.left ?? "inherit");
-    //
-    //     bodyStyles.setProperty(
-    //       "--zoomout-width",
-    //       zoomOutStyle?.width ?? "47px"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomout-height",
-    //       zoomOutStyle?.height ?? "39px"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomout-backgroundColor",
-    //       zoomOutStyle?.backgroundColor ?? "white"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomout-bottom",
-    //       zoomOutStyle?.bottom ?? "29px"
-    //     );
-    //     bodyStyles.setProperty("--zoomout-top", zoomOutStyle?.top ?? "inherit");
-    //     bodyStyles.setProperty(
-    //       "--zoomout-right",
-    //       zoomOutStyle?.right ?? "20px"
-    //     );
-    //     bodyStyles.setProperty(
-    //       "--zoomout-left",
-    //       zoomOutStyle?.left ?? "inherit"
-    //     );
-    //   }
-    // }, [showZoom, zoomInStyle, zoomOutStyle]);
+    useEffect(() => {
+      const bodyStyles: any = document.body.style;
+      if (!showZoom) {
+        bodyStyles.setProperty("--zoom-visible", "hidden");
+      } else {
+        bodyStyles.setProperty("--zoom-visible", "visible");
 
-    // useEffect(() => {
-    //   console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
-    //   if (mapElement.current && !mapRef.current) {
-    //     console.log("mapElement 1", mapElement.current)
-    //     const layers = layersProp || [new TileLayer({ source: new OSM() })];
-    //     const center = initialCenter
-    //       ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
-    //       : undefined;
-    //
-    //     mapRef.current = new ol.Map({
-    //       target: mapElement.current,
-    //       layers,
-    //       interactions: interactionDefaults(interactionOptions),
-    //       view: new ol.View({ center, ...viewOptions }),
-    //       moveTolerance: moveTolerance,
-    //       maxTilesLoading: maxTilesLoading,
-    //     });
-    //
-    //       mapRef.current.on('loadstart',function(event: ol.MapBrowserEvent<any>){
-    //           if(onLoadStart){
-    //               onLoadStart(event)
-    //           }
-    //
-    //       })
-    //       mapRef.current.on('loadend',function(event: ol.MapBrowserEvent<any>){
-    //           if(onLoadEnd){
-    //               onLoadEnd(event)
-    //           }
-    //       })
-    //       mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
-    //           if (onDoubleClick) {
-    //               const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-    //               onDoubleClick(clickedFeatures,event)
-    //           }
-    //       });
-    //
-    //       mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
-    //           if(onPointerDrag){
-    //               onPointerDrag(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('movestart',function(event: ol.MapBrowserEvent<any>){
-    //           if(onMoveStart){
-    //               onMoveStart(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
-    //           if(onMoveEnd){
-    //               onMoveEnd(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('postrender',function(event: ol.MapBrowserEvent<any>){
-    //           if(onPostRender){
-    //               onPostRender(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('postcompose',function(event: ol.MapBrowserEvent<any>){
-    //           if(onPostCompose){
-    //               onPostCompose(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('precompose',function(event: ol.MapBrowserEvent<any>){
-    //           if(onPreCompose){
-    //               onPreCompose(event)
-    //           }
-    //       })
-    //
-    //       mapRef.current.on('rendercomplete',function(event: ol.MapBrowserEvent<any>){
-    //           if(onRenderComplete){
-    //               onRenderComplete(event)
-    //           }
-    //       })
-    //
-    //       if(onClickFeatures)
-    //           addOnClickListener(mapRef.current);
-    //       else {
-    //           mapRef.current.on('singleclick',function(event: ol.MapBrowserEvent<any>){
-    //               if(onClick){
-    //                   const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-    //                   onClick(clickedFeatures,event)
-    //               }
-    //           })
-    //       }
-    //
-    //       if(onMouseOverFeatures)
-    //           addOnMouseOverListener(mapRef.current);
-    //       else {
-    //           mapRef.current.on('pointermove', function (event: ol.MapBrowserEvent<any>) {
-    //               if (onPointerMove) {
-    //                   onPointerMove(event)
-    //               }
-    //           })
-    //       }
-    //
-    //     setMap(mapRef.current);
-    //   }
-    // }, []);
+        bodyStyles.setProperty("--zoomin-width", zoomInStyle?.width ?? "47px");
+        bodyStyles.setProperty(
+          "--zoomin-height",
+          zoomInStyle?.height ?? "39px"
+        );
+        bodyStyles.setProperty(
+          "--zoomin-backgroundColor",
+          zoomInStyle?.backgroundColor ?? "white"
+        );
+        bodyStyles.setProperty(
+          "--zoomin-bottom",
+          zoomInStyle?.bottom ?? "69px"
+        );
+        bodyStyles.setProperty("--zoomin-top", zoomInStyle?.top ?? "inherit");
+        bodyStyles.setProperty("--zoomin-right", zoomInStyle?.right ?? "20px");
+        bodyStyles.setProperty("--zoomin-left", zoomInStyle?.left ?? "inherit");
+
+        bodyStyles.setProperty(
+          "--zoomout-width",
+          zoomOutStyle?.width ?? "47px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-height",
+          zoomOutStyle?.height ?? "39px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-backgroundColor",
+          zoomOutStyle?.backgroundColor ?? "white"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-bottom",
+          zoomOutStyle?.bottom ?? "29px"
+        );
+        bodyStyles.setProperty("--zoomout-top", zoomOutStyle?.top ?? "inherit");
+        bodyStyles.setProperty(
+          "--zoomout-right",
+          zoomOutStyle?.right ?? "20px"
+        );
+        bodyStyles.setProperty(
+          "--zoomout-left",
+          zoomOutStyle?.left ?? "inherit"
+        );
+      }
+    }, [showZoom, zoomInStyle, zoomOutStyle]);
+
+    useEffect(() => {
+      console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
+      if (mapElement.current && !mapRef.current) {
+        console.log("mapElement 1", mapElement.current)
+        const layers = layersProp || [new TileLayer({ source: new OSM() })];
+        const center = initialCenter
+          ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
+          : undefined;
+
+        mapRef.current = new ol.Map({
+          target: mapElement.current,
+          layers,
+          interactions: interactionDefaults(interactionOptions),
+          view: new ol.View({ center, ...viewOptions }),
+          moveTolerance: moveTolerance,
+          maxTilesLoading: maxTilesLoading,
+        });
+
+          mapRef.current.on('loadstart',function(event: ol.MapBrowserEvent<any>){
+              if(onLoadStart){
+                  onLoadStart(event)
+              }
+
+          })
+          mapRef.current.on('loadend',function(event: ol.MapBrowserEvent<any>){
+              if(onLoadEnd){
+                  onLoadEnd(event)
+              }
+          })
+          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
+              if (onDoubleClick) {
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onDoubleClick(clickedFeatures,event)
+              }
+          });
+
+          mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
+              if(onPointerDrag){
+                  onPointerDrag(event)
+              }
+          })
+
+          mapRef.current.on('movestart',function(event: ol.MapBrowserEvent<any>){
+              if(onMoveStart){
+                  onMoveStart(event)
+              }
+          })
+
+          mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
+              if(onMoveEnd){
+                  onMoveEnd(event)
+              }
+          })
+
+          mapRef.current.on('postrender',function(event: ol.MapBrowserEvent<any>){
+              if(onPostRender){
+                  onPostRender(event)
+              }
+          })
+
+          mapRef.current.on('postcompose',function(event: ol.MapBrowserEvent<any>){
+              if(onPostCompose){
+                  onPostCompose(event)
+              }
+          })
+
+          mapRef.current.on('precompose',function(event: ol.MapBrowserEvent<any>){
+              if(onPreCompose){
+                  onPreCompose(event)
+              }
+          })
+
+          mapRef.current.on('rendercomplete',function(event: ol.MapBrowserEvent<any>){
+              if(onRenderComplete){
+                  onRenderComplete(event)
+              }
+          })
+
+          if(onClickFeatures)
+              addOnClickListener(mapRef.current);
+          else {
+              mapRef.current.on('singleclick',function(event: ol.MapBrowserEvent<any>){
+                  if(onClick){
+                      const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                      onClick(clickedFeatures,event)
+                  }
+              })
+          }
+
+          if(onMouseOverFeatures)
+              addOnMouseOverListener(mapRef.current);
+          else {
+              mapRef.current.on('pointermove', function (event: ol.MapBrowserEvent<any>) {
+                  if (onPointerMove) {
+                      onPointerMove(event)
+                  }
+              })
+          }
+
+        setMap(mapRef.current);
+      }
+    }, []);
 
     function fitToCluster(features: FeatureLike[]) {
       const extent = boundingExtent(

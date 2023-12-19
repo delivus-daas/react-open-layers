@@ -1,6 +1,7 @@
 :root {
   --vh: 1vh;
 }
+
 .body {
   --zoom-visible: true;
   /* zoom in styles */

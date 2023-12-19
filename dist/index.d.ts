@@ -122,4 +122,14 @@ type ControlProps = {
 
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
 
-export { ClusterLayer, Controller as Control, Layer, OpenLayers, CustomOverlay as Overlay };
+type PolygonProps = {
+    coordinates: string[][];
+    options?: Options<any>;
+    onClick?: (features: Feature<Geometry>[], event: any) => void;
+    index?: number;
+    children?: (source?: VectorSource) => ReactNode | ReactNode[];
+};
+
+declare const CustomPolygon: ({ coordinates, options }: PolygonProps) => null;
+
+export { ClusterLayer, Controller as Control, Layer, OpenLayers, CustomOverlay as Overlay, CustomPolygon as Polygon };

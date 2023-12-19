@@ -54,5 +54,6 @@ export interface OpenLayersProps {
 
 export enum FeatureNames {
   marker = "marker",
+  polygon = "polygon",
   cluster = "cluster",
 }
