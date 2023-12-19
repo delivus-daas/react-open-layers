@@ -6,8 +6,12 @@ import Polygon from 'ol/geom/Polygon.js';
 import {PolygonProps} from "./polygon.type";
 import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
+import {Coordinate} from "../layers/layer.type";
+import {fromLonLat} from "ol/proj";
+import {Circle, Fill, Stroke, Style} from "ol/style";
+import {MultiPoint} from "ol/geom";
 
-const CustomPolygon = ({ coordinates, options = { zIndex: 10 } }: PolygonProps) => {
+const CustomPolygon = ({ coordinateGroups, options = { zIndex: 10 } }: PolygonProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -17,6 +21,7 @@ const CustomPolygon = ({ coordinates, options = { zIndex: 10 } }: PolygonProps) 
       source.current = new VectorSource();
       vectorLayer.current = new VectorLayer({
         source: source.current,
+        style: styleFunction,
         ...options,
       });
       vectorLayer.current.set("name", FeatureNames.polygon);
@@ -35,26 +40,51 @@ const CustomPolygon = ({ coordinates, options = { zIndex: 10 } }: PolygonProps) 
   };
 
   useEffect(() => {
-    drawPolygons(coordinates);
-  }, [coordinates, map]);
+    console.log("drawPolygons 1", coordinateGroups)
+    drawPolygons(coordinateGroups);
+  }, [coordinateGroups, map]);
 
-  const drawPolygons = (coordinates?: string[][]) => {
-    let features: any = [];
-    if (coordinates && coordinates.length > 0) {
-      features = coordinates.map(
-        (co, index) => {
-          const coordinate = '[3143090.603086447, 9928281.393790578], [3283734.7351311715, 9928892.890016861], [3181003.3691158947, 9849398.380600277], [3143090.603086447, 9928281.393790578]';
-          // const coordString = coordinates.join(",");
-          var feature = new Feature(new Polygon(JSON.parse('[[' + coordinate + ']]')));
-          return feature;
+  const drawPolygons = (coordinateGroups?: Coordinate[][]) => {
+    console.log("drawPolygons", coordinateGroups)
+    let feature: any;
+    if (coordinateGroups && coordinateGroups.length > 0) {
+      const coordinates = coordinateGroups.map(
+        (coordinateGroup, index) => {
+          return coordinateGroup.map((coordinate, index) => fromLonLat([coordinate.longitude, coordinate.latitude]));
         }
       );
+      feature = new Feature(new Polygon(coordinates));
+      console.log("coordinate", coordinates);
     }
-    if (source.current) {
+    if (source.current && feature) {
       source.current.clear();
-      source.current.addFeatures(features);
+      source.current.addFeatures([feature]);
     }
   };
+
+  const styleFunction = () => {
+    const style = [
+      new Style({
+        stroke: new Stroke({
+          color: 'rgba(0,0,255,0.4)',
+          width: 2,
+        }),
+        fill: new Fill({
+          color: `rgba(0,0,255,0.2)`,
+        }),
+      }),
+      new Style({
+        image: new Circle({
+          radius: 3,
+          fill: new Fill({
+            color: 'rgba(0,0,255,0.4)',
+          }),
+        })
+      }),
+    ];
+    return style;
+  };
+
 
   return null;
 };
