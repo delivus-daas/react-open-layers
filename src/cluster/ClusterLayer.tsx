@@ -4,7 +4,7 @@ import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
 import CircleStyle from "ol/style/Circle";
-import { ClusterLayerProps, FeatureProps } from "./layer.type";
+import { ClusterLayerProps } from "./cluster.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
@@ -13,9 +13,10 @@ import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
+import {PointProps} from "../point/point.type";
 
-const ClusterLayer = ({
-  features,
+export const ClusterLayer = ({
+  points,
   clusterOptions = {},
   options = { zIndex: 10 },
   clusterStyle,
@@ -104,15 +105,15 @@ const ClusterLayer = ({
   }, [map]);
 
   useEffect(() => {
-    drawFeatures(features);
-  }, [features, map]);
+    drawFeatures(points);
+  }, [points, map]);
 
-  const drawFeatures = (markers?: FeatureProps[]) => {
+  const drawFeatures = (markers?: PointProps[]) => {
     let features: any = [];
     if (markers && markers?.length > 0) {
       features = markers.map(
         ({ iconOptions, coordinate, properties }, index) => {
-          const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
+          const coord = fromLonLat(coordinate);
           const feature = new Feature({
             geometry: new Point(coord),
           });
@@ -135,5 +136,3 @@ const ClusterLayer = ({
 
   return null;
 };
-
-export default ClusterLayer;

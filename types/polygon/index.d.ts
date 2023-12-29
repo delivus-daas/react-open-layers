@@ -1,1 +1,1 @@
-export { default } from "./CustomPolygon";
+export { PolygonLayer } from "./PolygonLayer";

@@ -3,7 +3,7 @@ import { ControlProps } from "./control.type";
 import { useMap } from "../OpenLayers";
 import { Control } from "ol/control";
 
-const Controller = ({
+export const Controller = ({
   id,
   children,
   className,
@@ -34,5 +34,3 @@ const Controller = ({
     </div>
   );
 };
-
-export default Controller;

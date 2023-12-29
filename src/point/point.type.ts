@@ -2,17 +2,11 @@ import { ReactNode } from "react";
 import VectorSource from "ol/source/Vector";
 import { Geometry } from "ol/geom";
 import { Feature } from "ol";
-import { Options as ClusterOptions } from "ol/source/Cluster";
-import { Options as StyleOptions } from "ol/style/Style";
 import { Options as IconOptions } from "ol/style/Icon";
 import { Options } from "ol/layer/BaseVector";
+import {Coordinate} from "ol/coordinate";
 
-export type Coordinate = {
-  latitude: number;
-  longitude: number;
-};
-
-export interface FeatureProps {
+export interface PointProps {
   properties?: {
     [x: string]: any;
   };
@@ -22,19 +16,10 @@ export interface FeatureProps {
   coordinate: Coordinate;
 }
 
-export type LayerProps = {
+export type PointLayerProps = {
   options?: Options<any>;
-  features?: FeatureProps[];
+  points?: PointProps[];
   onClick?: (features: Feature<Geometry>[], event: any) => void;
   index?: number;
   children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
-
-export interface ClusterLayerProps extends LayerProps {
-  clusterOptions?: ClusterOptions;
-  clusterStyle?: (
-    resolution: number,
-    size: number,
-    fill?: Array<number>
-  ) => StyleOptions;
-}

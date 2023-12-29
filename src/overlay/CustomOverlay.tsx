@@ -3,7 +3,7 @@ import { OverlayProps } from "./overlay.type";
 import { Overlay } from "ol";
 import { useMap } from "../OpenLayers";
 
-const CustomOverlay = ({
+export const CustomOverlay = ({
   children,
   className,
   id,
@@ -40,5 +40,3 @@ const CustomOverlay = ({
     </div>
   );
 };
-
-export default CustomOverlay;

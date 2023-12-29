@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { FeatureNames } from "../map.type";
-import { FeatureProps, LayerProps } from "./layer.type";
+import { PointLayerProps, PointProps } from "./point.type";
 import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
 import { fromLonLat } from "ol/proj";
@@ -12,7 +12,7 @@ import { Options } from "ol/style/Icon";
 // @ts-ignore
 import marker from "../assets/marker.png";
 
-const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
+export const PointLayer = ({ points, options = { zIndex: 10 } }: PointLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -44,15 +44,15 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
   };
 
   useEffect(() => {
-    drawFeatures(features);
-  }, [features, map]);
+    drawPoints(points);
+  }, [points, map]);
 
-  const drawFeatures = (markers?: FeatureProps[]) => {
+  const drawPoints = (points?: PointProps[]) => {
     let features: any = [];
-    if (markers && markers.length > 0) {
-      features = markers.map(
+    if (points && points.length > 0) {
+      features = points.map(
         ({ iconOptions, coordinate, properties }, index) => {
-          const coord = fromLonLat([coordinate.longitude, coordinate.latitude]);
+          const coord = fromLonLat(coordinate);
           const feature = new Feature({
             geometry: new Point(coord),
           });
@@ -74,5 +74,3 @@ const Layer = ({ features, options = { zIndex: 10 } }: LayerProps) => {
 
   return null;
 };
-
-export default Layer;

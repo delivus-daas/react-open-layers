@@ -8,11 +8,11 @@ import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import VectorSource from 'ol/source/Vector';
-import { Options as Options$1 } from 'ol/source/Cluster';
-import { Options as Options$2 } from 'ol/style/Style';
-import { Options as Options$3 } from 'ol/style/Icon';
+import { Options as Options$1 } from 'ol/style/Icon';
 import { Options } from 'ol/layer/BaseVector';
-import { Coordinate as Coordinate$1 } from 'ol/coordinate';
+import { Coordinate } from 'ol/coordinate';
+import { Options as Options$2 } from 'ol/source/Cluster';
+import { Options as Options$3, StyleLike } from 'ol/style/Style';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$4 } from 'ol/Overlay';
 import { Options as Options$5 } from 'ol/control/Control';
@@ -61,34 +61,31 @@ interface OpenLayersProps {
 
 declare const OpenLayers: React.ForwardRefExoticComponent<OpenLayersProps & React.RefAttributes<unknown>>;
 
-type Coordinate = {
-    latitude: number;
-    longitude: number;
-};
-interface FeatureProps {
+interface PointProps {
     properties?: {
         [x: string]: any;
     };
     source?: VectorSource;
-    iconOptions?: Options$3;
+    iconOptions?: Options$1;
     index: number;
     coordinate: Coordinate;
 }
-type LayerProps = {
+type PointLayerProps = {
     options?: Options<any>;
-    features?: FeatureProps[];
+    points?: PointProps[];
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
-interface ClusterLayerProps extends LayerProps {
-    clusterOptions?: Options$1;
-    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$2;
+
+declare const PointLayer: ({ points, options }: PointLayerProps) => null;
+
+interface ClusterLayerProps extends PointLayerProps {
+    clusterOptions?: Options$2;
+    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$3;
 }
 
-declare const Layer: ({ features, options }: LayerProps) => null;
-
-declare const ClusterLayer: ({ features, clusterOptions, options, clusterStyle, }: ClusterLayerProps) => null;
+declare const ClusterLayer: ({ points, clusterOptions, options, clusterStyle, }: ClusterLayerProps) => null;
 
 type OverlayProps = {
     /**
@@ -99,7 +96,7 @@ type OverlayProps = {
      * className for overlay container element
      */
     className?: string;
-    position?: Coordinate$1;
+    position?: Coordinate;
     pixel?: Pixel;
     children: ReactElement;
     options?: Options$4;
@@ -123,13 +120,18 @@ type ControlProps = {
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
 
 type PolygonProps = {
-    coordinateGroups: Coordinate[][];
+    coordinates: Array<Coordinate>;
+    color: string;
+};
+type PolygonLayerProps = {
+    polygons: Array<PolygonProps>;
     options?: Options<any>;
+    polygonStyle?: StyleLike;
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
-declare const CustomPolygon: ({ coordinateGroups, options }: PolygonProps) => null;
+declare const PolygonLayer: ({ polygons, options, polygonStyle }: PolygonLayerProps) => null;
 
-export { ClusterLayer, Controller as Control, CustomPolygon, Layer, OpenLayers, CustomOverlay as Overlay };
+export { ClusterLayer, Controller, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };

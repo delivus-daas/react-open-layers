@@ -1,5 +1,6 @@
 export { default as OpenLayers } from "./OpenLayers";
-export { Layer, ClusterLayer } from "./layers";
-export { default as Overlay } from "./overlay";
-export { default as Control } from "./control";
-export { default as CustomPolygon } from "./polygon";
+export { PointLayer } from "./point";
+export { ClusterLayer } from "./cluster";
+export { CustomOverlay } from "./overlay";
+export { Controller } from "./control";
+export { PolygonLayer } from "./polygon";
