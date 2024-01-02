@@ -8,6 +8,7 @@ import ol from "ol"
 import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
+import {Extent} from "ol/extent";
 
 export interface zoomStyleProps {
   width?: string;
@@ -37,7 +38,7 @@ export interface OpenLayersProps {
   onLoadStart?: (event:  ol.MapEvent)=>void;
   onLoadEnd?: (event:  ol.MapEvent)=>void;
   onMoveStart?: (event:  ol.MapEvent)=>void;
-  onMoveEnd?: (event:  ol.MapEvent)=>void;
+  onMoveEnd?: (event:  ol.MapEvent, extent?: Extent)=>void;
   onPointerDrag?: (event:  ol.MapBrowserEvent<any>)=>void;
   onPointerMove?: (event:  ol.MapBrowserEvent<any>)=>void;
   onPostRender?: (event:   ol.MapEvent)=>void;

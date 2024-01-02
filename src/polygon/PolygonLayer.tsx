@@ -5,11 +5,10 @@ import { FeatureNames } from "../map.type";
 import Polygon from 'ol/geom/Polygon.js';
 import {PolygonLayerProps, PolygonProps} from "./polygon.type";
 import { useMap } from "../OpenLayers";
-import { Feature } from "ol";
-import {Fill, Stroke, Style} from "ol/style";
-import {fromLonLat} from "ol/proj";
+import ol, { Feature } from "ol";
+import {Fill, Stroke, Style, Text} from "ol/style";
 
-function defaultPolygonStyle(color?: string) {
+function defaultPolygonStyle(color?: string, text?: string) {
   return [
     new Style({
       stroke: new Stroke({
@@ -18,11 +17,21 @@ function defaultPolygonStyle(color?: string) {
       }),
       fill: new Fill({
         color: color?color+'20':'#4200FF10',
+      }),
+      text: new Text({
+        font: '12px Calibri,sans-serif',
+        fill: new Fill({ color: '#000' }),
+        stroke: new Stroke({
+          color: '#fff', width: 2
+        }),
+        // get the text from the feature - `this` is ol.Feature
+        // and show only under certain resolution
+        text
       })
     }),
   ]
 }
-export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle }: PolygonLayerProps) => {
+export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle, showCode }: PolygonLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -55,19 +64,20 @@ export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle 
   }, [polygons, map]);
 
   const drawPolygons = (polygons?: Array<PolygonProps>) => {
+    let features:Feature[] = [];
     if (polygons && polygons.length > 0) {
-      const features = polygons.map(
-        ({coordinates, color}, index) => {
+      features = polygons.map(
+        ({coordinates, color, code}, index) => {
           const feature = new Feature(new Polygon([coordinates]));
-          feature.setStyle(polygonStyle||defaultPolygonStyle(color));
+          feature.setStyle(polygonStyle||defaultPolygonStyle(color, showCode?code:undefined));
           return feature;
         }
       );
       console.log("drawPolygons", polygons)
-      if (source.current && features.length>0) {
-        source.current.clear();
+    }
+    if (source.current) {
+      source.current.clear();
         source.current.addFeatures(features);
-      }
     }
   };
 

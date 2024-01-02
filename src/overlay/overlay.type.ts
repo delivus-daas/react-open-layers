@@ -15,6 +15,6 @@ export type OverlayProps = {
   className?: string;
   position?: Coordinate;
   pixel?: Pixel;
-  children: ReactElement;
+  children?: ReactElement;
   options?: Options;
 };
