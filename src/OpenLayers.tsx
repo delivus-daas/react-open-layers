@@ -4,7 +4,7 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import {transform, transformExtent} from "ol/proj";
+import { transform, transformExtent } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
@@ -29,7 +29,6 @@ const OpenLayers = forwardRef(
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
       onClickMap,
-      onMapBoundChanged,
       onClickFeatures,
       onDoubleClick,
       onMouseOutFeatures,
@@ -109,9 +108,14 @@ const OpenLayers = forwardRef(
     }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
-      console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
+      console.log(
+        "mapElement",
+        mapElement.current,
+        mapRef.current,
+        mapElement.current && !mapRef.current
+      );
       if (mapElement.current && !mapRef.current) {
-        console.log("mapElement 1", mapElement.current)
+        console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
@@ -126,99 +130,123 @@ const OpenLayers = forwardRef(
           maxTilesLoading: maxTilesLoading,
         });
 
-          mapRef.current.on('loadstart',function(event: ol.MapBrowserEvent<any>){
-              if(onLoadStart){
-                  onLoadStart(event)
-              }
-
-          })
-          mapRef.current.on('loadend',function(event: ol.MapBrowserEvent<any>){
-              if(onLoadEnd){
-                  onLoadEnd(event)
-              }
-          })
-          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
-              if (onDoubleClick) {
-                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                  onDoubleClick(clickedFeatures,event)
-              }
-          });
-
-          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
-              if (onDoubleClick) {
-                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                  onDoubleClick(clickedFeatures,event)
-              }
-          });
-
-          mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
-              if(onPointerDrag){
-                  onPointerDrag(event)
-              }
-          })
-
-          mapRef.current.on('movestart',function(event: ol.MapBrowserEvent<any>){
-              if(onMoveStart){
-                  onMoveStart(event)
-              }
-          })
-
-          mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
-              if(onMoveEnd){
-                  let transExtent;
-                  if(mapRef.current) {
-
-                      const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
-                      transExtent = transformExtent(extent, mapRef.current.getView().getProjection(), 'EPSG:4326');
-                  }
-                  onMoveEnd(event, transExtent);
-              }
-          })
-
-          mapRef.current.on('postrender',function(event: ol.MapBrowserEvent<any>){
-              if(onPostRender){
-                  onPostRender(event)
-              }
-          })
-
-          mapRef.current.on('postcompose',function(event: ol.MapBrowserEvent<any>){
-              if(onPostCompose){
-                  onPostCompose(event)
-              }
-          })
-
-          mapRef.current.on('precompose',function(event: ol.MapBrowserEvent<any>){
-              if(onPreCompose){
-                  onPreCompose(event)
-              }
-          })
-
-          mapRef.current.on('rendercomplete',function(event: ol.MapBrowserEvent<any>){
-              if(onRenderComplete){
-                  onRenderComplete(event)
-              }
-          })
-
-          if(onClickFeatures)
-              addOnClickListener(mapRef.current);
-          else {
-              mapRef.current.on('singleclick',function(event: ol.MapBrowserEvent<any>){
-                  if(onClick){
-                      const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                      onClick(clickedFeatures,event)
-                  }
-              })
+        mapRef.current.on("loadstart", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onLoadStart) {
+            onLoadStart(event);
           }
-
-          if(onMouseOverFeatures)
-              addOnMouseOverListener(mapRef.current);
-          else {
-              mapRef.current.on('pointermove', function (event: ol.MapBrowserEvent<any>) {
-                  if (onPointerMove) {
-                      onPointerMove(event)
-                  }
-              })
+        });
+        mapRef.current.on("loadend", function (event: ol.MapBrowserEvent<any>) {
+          if (onLoadEnd) {
+            onLoadEnd(event);
           }
+        });
+        mapRef.current.on("dblclick", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onDoubleClick) {
+            const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+            onDoubleClick(clickedFeatures, event);
+          }
+        });
+
+        mapRef.current.on("dblclick", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onDoubleClick) {
+            const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+            onDoubleClick(clickedFeatures, event);
+          }
+        });
+
+        mapRef.current.on("pointerdrag", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onPointerDrag) {
+            onPointerDrag(event);
+          }
+        });
+
+        mapRef.current.on("movestart", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onMoveStart) {
+            onMoveStart(event);
+          }
+        });
+
+        mapRef.current.on("moveend", function (event: ol.MapBrowserEvent<any>) {
+          if (onMoveEnd) {
+            let transExtent;
+            if (mapRef.current) {
+              const extent = mapRef.current
+                .getView()
+                .calculateExtent(mapRef.current.getSize());
+              transExtent = transformExtent(
+                extent,
+                mapRef.current.getView().getProjection(),
+                "EPSG:4326"
+              );
+            }
+            onMoveEnd(event, transExtent);
+          }
+        });
+
+        mapRef.current.on("postrender", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onPostRender) {
+            onPostRender(event);
+          }
+        });
+
+        mapRef.current.on("postcompose", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onPostCompose) {
+            onPostCompose(event);
+          }
+        });
+
+        mapRef.current.on("precompose", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onPreCompose) {
+            onPreCompose(event);
+          }
+        });
+
+        mapRef.current.on("rendercomplete", function (
+          event: ol.MapBrowserEvent<any>
+        ) {
+          if (onRenderComplete) {
+            onRenderComplete(event);
+          }
+        });
+
+        if (onClickFeatures) addOnClickListener(mapRef.current);
+        else {
+          mapRef.current.on("singleclick", function (
+            event: ol.MapBrowserEvent<any>
+          ) {
+            if (onClick) {
+              const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+              onClick(clickedFeatures, event);
+            }
+          });
+        }
+
+        if (onMouseOverFeatures) addOnMouseOverListener(mapRef.current);
+        else {
+          mapRef.current.on("pointermove", function (
+            event: ol.MapBrowserEvent<any>
+          ) {
+            if (onPointerMove) {
+              onPointerMove(event);
+            }
+          });
+        }
 
         setMap(mapRef.current);
       }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Cluster } from "ol/source";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
-import { FeatureNames } from "../map.type";
+import { EFeatureName } from "../map.type";
 import CircleStyle from "ol/style/Circle";
 import { ClusterLayerProps } from "./cluster.type";
 import VectorSource from "ol/source/Vector";
@@ -13,7 +13,7 @@ import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
-import {PointProps} from "../point/point.type";
+import { PointProps } from "../point/point.type";
 
 export const ClusterLayer = ({
   points,
@@ -95,7 +95,7 @@ export const ClusterLayer = ({
         ...options,
       });
 
-      clusterLayer.current.set("name", FeatureNames.cluster);
+      clusterLayer.current.set("name", EFeatureName.cluster);
       clusterLayer.current.set("opacity", 2);
       map.addLayer(clusterLayer.current);
     }

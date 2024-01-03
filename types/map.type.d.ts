@@ -27,7 +27,6 @@ export interface OpenLayersProps {
     viewOptions?: ViewOptions;
     initialCenter?: number[];
     className?: string;
-    onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     fitOptions?: FitOptions;
     enableFitWhenClick?: boolean;
@@ -50,7 +49,7 @@ export interface OpenLayersProps {
     moveTolerance?: number;
     maxTilesLoading?: number;
 }
-export declare enum FeatureNames {
+export declare enum EFeatureName {
     marker = "marker",
     polygon = "polygon",
     cluster = "cluster"

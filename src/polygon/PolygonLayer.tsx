@@ -1,37 +1,43 @@
 import React, { useEffect, useRef } from "react";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import { FeatureNames } from "../map.type";
-import Polygon from 'ol/geom/Polygon.js';
-import {PolygonLayerProps, PolygonProps} from "./polygon.type";
+import { EFeatureName } from "../map.type";
+import Polygon from "ol/geom/Polygon.js";
+import { PolygonLayerProps, PolygonProps } from "./polygon.type";
 import { useMap } from "../OpenLayers";
 import ol, { Feature } from "ol";
-import {Fill, Stroke, Style, Text} from "ol/style";
+import { Fill, Stroke, Style, Text } from "ol/style";
 
 function defaultPolygonStyle(color?: string, text?: string) {
   return [
     new Style({
       stroke: new Stroke({
-        color: color||'#4200FF',
+        color: color || "#4200FF",
         width: 2.5,
       }),
       fill: new Fill({
-        color: color?color+'20':'#4200FF10',
+        color: color ? color + "20" : "#4200FF10",
       }),
       text: new Text({
-        font: '12px Calibri,sans-serif',
-        fill: new Fill({ color: '#000' }),
+        font: "12px Calibri,sans-serif",
+        fill: new Fill({ color: "#000" }),
         stroke: new Stroke({
-          color: '#fff', width: 2
+          color: "#fff",
+          width: 2,
         }),
         // get the text from the feature - `this` is ol.Feature
         // and show only under certain resolution
-        text
-      })
+        text,
+      }),
     }),
-  ]
+  ];
 }
-export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle, showCode }: PolygonLayerProps) => {
+export const PolygonLayer = ({
+  polygons,
+  options = { zIndex: 10 },
+  polygonStyle,
+  showCode,
+}: PolygonLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -43,7 +49,7 @@ export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle,
         source: source.current,
         ...options,
       });
-      vectorLayer.current.set("name", FeatureNames.polygon);
+      vectorLayer.current.set("name", EFeatureName.polygon);
       vectorLayer.current.set("opacity", 3);
       map.addLayer(vectorLayer.current);
     }
@@ -59,25 +65,26 @@ export const PolygonLayer = ({ polygons, options = { zIndex: 10 }, polygonStyle,
   };
 
   useEffect(() => {
-    console.log("drawPolygons 1", polygons)
+    console.log("drawPolygons 1", polygons);
     drawPolygons(polygons);
   }, [polygons, map]);
 
   const drawPolygons = (polygons?: Array<PolygonProps>) => {
-    let features:Feature[] = [];
+    let features: Feature[] = [];
     if (polygons && polygons.length > 0) {
-      features = polygons.map(
-        ({coordinates, color, code}, index) => {
-          const feature = new Feature(new Polygon([coordinates]));
-          feature.setStyle(polygonStyle||defaultPolygonStyle(color, showCode?code:undefined));
-          return feature;
-        }
-      );
-      console.log("drawPolygons", polygons)
+      features = polygons.map(({ coordinates, color, code }, index) => {
+        const feature = new Feature(new Polygon([coordinates]));
+        feature.setStyle(
+          polygonStyle ||
+            defaultPolygonStyle(color, showCode ? code : undefined)
+        );
+        return feature;
+      });
+      console.log("drawPolygons", polygons);
     }
     if (source.current) {
       source.current.clear();
-        source.current.addFeatures(features);
+      source.current.addFeatures(features);
     }
   };
 

@@ -17,6 +17,7 @@ import { Options as Options$3, StyleLike } from 'ol/style/Style';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$4 } from 'ol/Overlay';
 import { Options as Options$5 } from 'ol/control/Control';
+import { Options as Options$6 } from 'ol/interaction/Draw';
 
 interface zoomStyleProps {
     width?: string;
@@ -36,7 +37,6 @@ interface OpenLayersProps {
     viewOptions?: ViewOptions;
     initialCenter?: number[];
     className?: string;
-    onMapBoundChanged?: (bounds: any) => void;
     children?: ReactNode | ReactNode[];
     fitOptions?: FitOptions;
     enableFitWhenClick?: boolean;
@@ -79,7 +79,7 @@ type PointLayerProps = {
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
-declare const PointLayer: ({ points, options }: PointLayerProps) => null;
+declare const PointLayer: ({ points, options, }: PointLayerProps) => null;
 
 interface ClusterLayerProps extends PointLayerProps {
     clusterOptions?: Options$2;
@@ -135,6 +135,18 @@ type PolygonLayerProps = {
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
-declare const PolygonLayer: ({ polygons, options, polygonStyle, showCode }: PolygonLayerProps) => null;
+declare const PolygonLayer: ({ polygons, options, polygonStyle, showCode, }: PolygonLayerProps) => null;
 
-export { ClusterLayer, Controller, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };
+type DrawProps = {
+    /**
+     * unique id to get overlay container element
+     */
+    onDrawStart?: (coordinate: Coordinate, event: any) => void;
+    onDrawEnd?: (coordinate: Coordinate, event: any) => void;
+    onDrawAbort?: (coordinate: Coordinate, event: any) => void;
+    options?: Options$6;
+};
+
+declare const CustomDraw: ({ onDrawEnd, onDrawAbort, onDrawStart, options, }: DrawProps) => null;
+
+export { ClusterLayer, Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };

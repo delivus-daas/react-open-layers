@@ -4,7 +4,7 @@ import { Geometry } from "ol/geom";
 import { Feature } from "ol";
 import { Options as IconOptions } from "ol/style/Icon";
 import { Options } from "ol/layer/BaseVector";
-import {Coordinate} from "ol/coordinate";
+import { Coordinate } from "ol/coordinate";
 
 export interface PointProps {
   properties?: {
