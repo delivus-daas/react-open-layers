@@ -4,7 +4,7 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import { transform } from "ol/proj";
+import {transform, transformExtent} from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
@@ -29,6 +29,7 @@ const OpenLayers = forwardRef(
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
       onClickMap,
+      onMapBoundChanged,
       onClickFeatures,
       onDoubleClick,
       onMouseOutFeatures,
@@ -143,6 +144,13 @@ const OpenLayers = forwardRef(
               }
           });
 
+          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
+              if (onDoubleClick) {
+                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+                  onDoubleClick(clickedFeatures,event)
+              }
+          });
+
           mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
               if(onPointerDrag){
                   onPointerDrag(event)
@@ -157,7 +165,13 @@ const OpenLayers = forwardRef(
 
           mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
               if(onMoveEnd){
-                  onMoveEnd(event)
+                  let transExtent;
+                  if(mapRef.current) {
+
+                      const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
+                      transExtent = transformExtent(extent, mapRef.current.getView().getProjection(), 'EPSG:4326');
+                  }
+                  onMoveEnd(event, transExtent);
               }
           })
 

@@ -8,12 +8,14 @@ import { StyleLike } from "ol/style/Style";
 export type PolygonProps = {
     coordinates: Array<Coordinate>;
     color: string;
+    code: string;
 };
 export type PolygonLayerProps = {
-    polygons: Array<PolygonProps>;
+    polygons?: Array<PolygonProps>;
     options?: Options<any>;
     polygonStyle?: StyleLike;
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
+    showCode?: boolean;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };

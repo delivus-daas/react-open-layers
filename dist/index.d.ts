@@ -7,6 +7,7 @@ import { FeatureLike } from 'ol/Feature';
 import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
+import { Extent } from 'ol/extent';
 import VectorSource from 'ol/source/Vector';
 import { Options as Options$1 } from 'ol/style/Icon';
 import { Options } from 'ol/layer/BaseVector';
@@ -44,7 +45,7 @@ interface OpenLayersProps {
     onLoadStart?: (event: ol.MapEvent) => void;
     onLoadEnd?: (event: ol.MapEvent) => void;
     onMoveStart?: (event: ol.MapEvent) => void;
-    onMoveEnd?: (event: ol.MapEvent) => void;
+    onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;
     onPointerDrag?: (event: ol.MapBrowserEvent<any>) => void;
     onPointerMove?: (event: ol.MapBrowserEvent<any>) => void;
     onPostRender?: (event: ol.MapEvent) => void;
@@ -98,7 +99,7 @@ type OverlayProps = {
     className?: string;
     position?: Coordinate;
     pixel?: Pixel;
-    children: ReactElement;
+    children?: ReactElement;
     options?: Options$4;
 };
 
@@ -122,16 +123,18 @@ declare const Controller: ({ id, children, className, options, }: ControlProps) 
 type PolygonProps = {
     coordinates: Array<Coordinate>;
     color: string;
+    code: string;
 };
 type PolygonLayerProps = {
-    polygons: Array<PolygonProps>;
+    polygons?: Array<PolygonProps>;
     options?: Options<any>;
     polygonStyle?: StyleLike;
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
+    showCode?: boolean;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
-declare const PolygonLayer: ({ polygons, options, polygonStyle }: PolygonLayerProps) => null;
+declare const PolygonLayer: ({ polygons, options, polygonStyle, showCode }: PolygonLayerProps) => null;
 
 export { ClusterLayer, Controller, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };
