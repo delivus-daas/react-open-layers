@@ -17,7 +17,7 @@ import { PointProps } from "../point/point.type";
 import { FeatureLike } from "ol/Feature";
 import { Select } from "ol/interaction";
 import { click, pointerMove } from "ol/events/condition";
-import {SelectEvent} from "ol/interaction/Select";
+import { SelectEvent } from "ol/interaction/Select";
 
 export const ClusterLayer = ({
   points,
@@ -25,6 +25,7 @@ export const ClusterLayer = ({
   options = { zIndex: 10 },
   onClick,
   onOver,
+  onSourceCreated,
   clusterStyle,
 }: ClusterLayerProps) => {
   const map = useMap();
@@ -64,7 +65,7 @@ export const ClusterLayer = ({
       if (onOver) {
         const select = new Select({
           condition: pointerMove,
-          layers: [clusterLayer.current]
+          layers: [clusterLayer.current],
         });
         select.on("select", (event) => {
           console.log("onOver", event.selected);
@@ -78,7 +79,7 @@ export const ClusterLayer = ({
       if (onClick) {
         const select = new Select({
           condition: click,
-          layers: [clusterLayer.current]
+          layers: [clusterLayer.current],
         });
         select.on("select", (event: SelectEvent) => {
           console.log("onClick", event.selected);
@@ -124,7 +125,12 @@ export const ClusterLayer = ({
         style: function (feature: FeatureLike, resolution: number) {
           const features: Feature[] = feature.get("features");
           const size = features?.length;
-          console.log("clusterStyle", feature, features, features[0].getStyle());
+          console.log(
+            "clusterStyle",
+            feature,
+            features,
+            features[0].getStyle()
+          );
           if (size === 1) return features[0].getStyle();
           if (size > 1) {
             console.log("clusterStyle size>1", features, !!clusterStyle);
@@ -146,6 +152,7 @@ export const ClusterLayer = ({
       clusterLayer.current.set("name", EFeatureName.cluster);
       clusterLayer.current.set("opacity", 2);
       map.addLayer(clusterLayer.current);
+      onSourceCreated && onSourceCreated(source.current);
       addInteraction();
     }
     return () => {

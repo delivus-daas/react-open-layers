@@ -17,6 +17,7 @@ export interface PointProps {
 export type PointLayerProps = {
     options?: Options<any>;
     points?: PointProps[];
+    onSourceCreated?: (source: VectorSource) => void;
     onClick?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
     onOver?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
     index?: number;
