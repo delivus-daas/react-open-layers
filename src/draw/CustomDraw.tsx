@@ -11,6 +11,7 @@ export const CustomDraw = ({
   onDrawEnd,
   onDrawAbort,
   onDrawStart,
+  onSourceCreated,
   options = { type: "Polygon" },
 }: DrawProps) => {
   const map = useMap();
@@ -95,6 +96,7 @@ export const CustomDraw = ({
       type,
       ...rest,
     });
+    onSourceCreated && onSourceCreated(sourceRef.current);
     map.addLayer(layerRef.current);
     map.addInteraction(drawRef.current);
     addEventListener();

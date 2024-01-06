@@ -1,10 +1,12 @@
 import { Options } from "ol/interaction/Draw";
 import { Coordinate } from "ol/coordinate";
+import VectorSource from "ol/source/Vector";
 
 export type DrawProps = {
   /**
    * unique id to get overlay container element
    */
+  onSourceCreated?: (source: VectorSource) => void;
   onDrawStart?: (coordinate: Coordinate, event: any) => void;
   onDrawEnd?: (event: any) => void;
   onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
