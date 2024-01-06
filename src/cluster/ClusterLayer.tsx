@@ -14,11 +14,14 @@ import { Options } from "ol/style/Icon";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import { PointProps } from "../point/point.type";
+import {FeatureLike} from "ol/Feature";
 
 export const ClusterLayer = ({
   points,
   clusterOptions = {},
   options = { zIndex: 10 },
+    onClick,
+    onOver,
   clusterStyle,
 }: ClusterLayerProps) => {
   const map = useMap();
@@ -31,15 +34,15 @@ export const ClusterLayer = ({
     scale: 0.1,
   };
 
-  function defaultClusterStyle(size: number, fill?: Array<number>) {
-    return {
+  function defaultClusterStyle(size: number) {
+    return new Style({
       image: new CircleStyle({
         radius: 12,
         stroke: new Stroke({
           color: "#fff",
         }),
         fill: new Fill({
-          color: fill || "#3399CC",
+          color: "#3399CC",
         }),
       }),
       text: new Text({
@@ -48,9 +51,14 @@ export const ClusterLayer = ({
           color: "#fff",
         }),
       }),
-    };
+    });
   }
 
+  const addInteraction = () => {
+    if(onOver){
+      
+    }
+  }
   const resetLayers = () => {
     if (map && map.getLayers().getArray().length > 0) {
       map.removeLayer(clusterLayer.current);
@@ -70,26 +78,21 @@ export const ClusterLayer = ({
 
       clusterLayer.current = new VectorLayer({
         source: clusterSource,
-        style: function (feature: any, resolution: number) {
-          const features = feature.get("features");
+        style: function (feature: FeatureLike, resolution: number) {
+          const features: Feature[] = feature.get("features");
           const size = features?.length;
-          let style = styleCache[size];
-          console.log("style", style);
-          // if (style) {
-          //   return style;
-          // }
-          if (size > 0) {
-            style = features[0].getStyle();
-            if (size > 1) {
-              style = new Style(
-                clusterStyle
-                  ? clusterStyle(resolution, size, style[0]?.image_?.color_)
-                  : defaultClusterStyle(size, style[0]?.image_?.color_)
-              );
+          console.log("style", features);
+          if (size === 1) return features[0].getStyle();
+          if (size > 1) {
+            if (clusterStyle) {
+              return clusterStyle(resolution, size, features);
             }
-            styleCache[size] = style;
-            return style;
-          }
+            if (styleCache[size]) {
+              return styleCache[size];
+            }
+            styleCache[size] = defaultClusterStyle(size)
+            return styleCache[size];
+          } //without feature no style;
           return null;
         },
         ...options,

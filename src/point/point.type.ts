@@ -20,6 +20,7 @@ export type PointLayerProps = {
   options?: Options<any>;
   points?: PointProps[];
   onClick?: (features: Feature<Geometry>[], event: any) => void;
+  onOver?: (features: Feature<Geometry>[], event: any) => void;
   index?: number;
   children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };

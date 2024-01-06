@@ -6,7 +6,8 @@ export type DrawProps = {
    * unique id to get overlay container element
    */
   onDrawStart?: (coordinate: Coordinate, event: any) => void;
-  onDrawEnd?: (coordinate: Coordinate, event: any) => void;
+  onDrawEnd?: (event: any) => void;
+  onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
   onDrawAbort?: (coordinate: Coordinate, event: any) => void;
   options?: Options;
 };

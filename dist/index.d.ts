@@ -1,23 +1,22 @@
 import React, { ReactNode, ReactElement } from 'react';
-import ol, { Feature } from 'ol';
 import { ViewOptions, FitOptions } from 'ol/View';
-import { Geometry } from 'ol/geom';
 import { DefaultsOptions } from 'ol/interaction/defaults';
-import { FeatureLike } from 'ol/Feature';
+import ol, { Feature } from 'ol';
 import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
 import VectorSource from 'ol/source/Vector';
+import { Geometry } from 'ol/geom';
 import { Options as Options$1 } from 'ol/style/Icon';
 import { Options } from 'ol/layer/BaseVector';
 import { Coordinate } from 'ol/coordinate';
 import { Options as Options$2 } from 'ol/source/Cluster';
-import { Options as Options$3, StyleLike } from 'ol/style/Style';
+import { StyleLike } from 'ol/style/Style';
 import { Pixel } from 'ol/pixel';
-import { Options as Options$4 } from 'ol/Overlay';
-import { Options as Options$5 } from 'ol/control/Control';
-import { Options as Options$6 } from 'ol/interaction/Draw';
+import { Options as Options$3 } from 'ol/Overlay';
+import { Options as Options$4 } from 'ol/control/Control';
+import { Options as Options$5 } from 'ol/interaction/Draw';
 
 interface zoomStyleProps {
     width?: string;
@@ -41,21 +40,20 @@ interface OpenLayersProps {
     fitOptions?: FitOptions;
     enableFitWhenClick?: boolean;
     onClickMap?: () => void;
-    onClick?: (feature: FeatureLike[], event: ol.MapBrowserEvent<any>) => void;
+    onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
     onLoadStart?: (event: ol.MapEvent) => void;
     onLoadEnd?: (event: ol.MapEvent) => void;
     onMoveStart?: (event: ol.MapEvent) => void;
     onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;
     onPointerDrag?: (event: ol.MapBrowserEvent<any>) => void;
-    onPointerMove?: (event: ol.MapBrowserEvent<any>) => void;
+    onPointerMove?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
+    onPointerOut?: (event: ol.MapBrowserEvent<any>) => void;
+    onMouseOut?: (event: ol.MapBrowserEvent<any>) => void;
     onPostRender?: (event: ol.MapEvent) => void;
     onPostCompose?: (event: any) => void;
     onPreCompose?: (event: any) => void;
     onRenderComplete?: (event: any) => void;
-    onDoubleClick?: (feature: FeatureLike[], event: ol.MapBrowserEvent<any>) => void;
-    onMouseOverFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
-    onMouseOutFeatures?: (feature?: Feature<Geometry>[]) => void;
-    onClickFeatures?: (feature: Feature<Geometry>[], event: Event) => void;
+    onDoubleClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
     moveTolerance?: number;
     maxTilesLoading?: number;
 }
@@ -83,7 +81,7 @@ declare const PointLayer: ({ points, options, }: PointLayerProps) => null;
 
 interface ClusterLayerProps extends PointLayerProps {
     clusterOptions?: Options$2;
-    clusterStyle?: (resolution: number, size: number, fill?: Array<number>) => Options$3;
+    clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
 }
 
 declare const ClusterLayer: ({ points, clusterOptions, options, clusterStyle, }: ClusterLayerProps) => null;
@@ -100,7 +98,7 @@ type OverlayProps = {
     position?: Coordinate;
     pixel?: Pixel;
     children?: ReactElement;
-    options?: Options$4;
+    options?: Options$3;
 };
 
 declare const CustomOverlay: ({ children, className, id, position, options, }: OverlayProps) => React.JSX.Element;
@@ -115,7 +113,7 @@ type ControlProps = {
      */
     className?: string;
     children: any;
-    options?: Options$5;
+    options?: Options$4;
 };
 
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
@@ -142,9 +140,10 @@ type DrawProps = {
      * unique id to get overlay container element
      */
     onDrawStart?: (coordinate: Coordinate, event: any) => void;
-    onDrawEnd?: (coordinate: Coordinate, event: any) => void;
+    onDrawEnd?: (event: any) => void;
+    onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
     onDrawAbort?: (coordinate: Coordinate, event: any) => void;
-    options?: Options$6;
+    options?: Options$5;
 };
 
 declare const CustomDraw: ({ onDrawEnd, onDrawAbort, onDrawStart, options, }: DrawProps) => null;

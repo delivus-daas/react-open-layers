@@ -1,21 +1,44 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { DrawProps } from "./draw.type";
 import { useMap } from "../OpenLayers";
 import { Draw } from "ol/interaction";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Vector } from "ol/layer";
+import { Options } from "ol/interaction/Draw";
 
 export const CustomDraw = ({
   onDrawEnd,
   onDrawAbort,
   onDrawStart,
-  options = {type: "Polygon"},
+  options = { type: "Polygon" },
 }: DrawProps) => {
   const map = useMap();
   const drawRef = useRef<any>();
+  const sourceRef = useRef<any>();
   const layerRef = useRef<any>();
-  const {type, ...restOption} = options;
+  function addEventListener() {
+    if (drawRef.current) {
+      if (onDrawStart) {
+        drawRef.current.on("drawstart", function (event: any) {
+          const coordinate = event.feature.getGeometry().getFirstCoordinate();
+          onDrawStart(coordinate, event);
+        });
+      }
+      if (onDrawEnd) {
+        drawRef.current.on("drawend", function (event: any) {
+          const extents = event.feature.getGeometry().getExtent();
+          onDrawEnd(event);
+        });
+      }
+      if (onDrawAbort) {
+        drawRef.current.on("drawabort", function (event: any) {
+          const coordinate = event.feature.getGeometry().getFirstCoordinate();
+          onDrawAbort(coordinate, event);
+        });
+      }
+    }
+  }
   const defaultDrawStyle = (feature: any) => {
     var geometry = feature.getGeometry();
     console.log("geometry", geometry.getType());
@@ -25,7 +48,7 @@ export const CustomDraw = ({
           new Style({
             stroke: new Stroke({
               color: "#FF008A",
-              lineDash: [5,5],
+              lineDash: [5, 5],
               width: 2,
             }),
           }),
@@ -45,7 +68,7 @@ export const CustomDraw = ({
           new Style({
             stroke: new Stroke({
               color: "#FF008A",
-              lineDash: [5,5],
+              lineDash: [5, 5],
               width: 2,
             }),
             fill: new Fill({
@@ -58,50 +81,48 @@ export const CustomDraw = ({
     }
   };
 
-  useEffect(() => {
-    if (map && !drawRef.current) {
-      console.log("ondrawrender", drawRef.current, layerRef.current);
-      const source = new VectorSource({ wrapX: false });
-      layerRef.current = new Vector({ source, style: defaultDrawStyle });
-      map.addLayer(layerRef.current);
-      drawRef.current = new Draw({
-        source,
-        style: defaultDrawStyle,
-        type,
-        ...restOption
-      });
-      map.addInteraction(drawRef.current);
-      addEventListener();
-    }
+  const addLayer = useCallback((options: Options) => {
+    if (drawRef.current) removeLayer();
+    const { type, ...rest } = options;
+    sourceRef.current = new VectorSource({ wrapX: false });
+    layerRef.current = new Vector({
+      source: sourceRef.current,
+      style: defaultDrawStyle,
+    });
+    drawRef.current = new Draw({
+      source: sourceRef.current,
+      style: defaultDrawStyle,
+      type,
+      ...rest,
+    });
+    map.addLayer(layerRef.current);
+    map.addInteraction(drawRef.current);
+    addEventListener();
+  }, []);
 
-    function addEventListener() {
-      if (drawRef.current) {
-        if (onDrawStart) {
-          drawRef.current.on("drawstart", function (event: any) {
-            const coordinate = event.feature.getGeometry().getFirstCoordinate();
-            onDrawStart(coordinate, event);
-          });
+  const removeLayer = useCallback(() => {
+    if (map) {
+      drawRef.current && map.removeInteraction(drawRef.current);
+      layerRef.current && map.removeLayer(layerRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (map) {
+      if (options) {
+        console.log("drawer", options, drawRef.current);
+        if (!!drawRef.current) {
+          removeLayer();
         }
-        if (onDrawEnd) {
-          drawRef.current.on("drawend", function (event: any) {
-            const coordinate = event.feature.getGeometry().getFirstCoordinate();
-            console.log("onDrawEnd", coordinate);
-            onDrawEnd(coordinate, event);
-          });
-        }
-        if (onDrawAbort) {
-          drawRef.current.on("drawabort", function (event: any) {
-            const coordinate = event.feature.getGeometry().getFirstCoordinate();
-            onDrawAbort(coordinate, event);
-          });
-        }
+        addLayer(options);
+      } else {
+        removeLayer();
       }
     }
     return () => {
-      map && map.removeInteraction(drawRef.current);
-      map && map.removeLayer(drawRef.current);
+      removeLayer();
     };
-  }, [map]);
+  }, [map, options]);
 
   return null;
 };
