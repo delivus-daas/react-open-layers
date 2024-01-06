@@ -5,6 +5,8 @@ import { Feature } from "ol";
 import { Options as IconOptions } from "ol/style/Icon";
 import { Options } from "ol/layer/BaseVector";
 import { Coordinate } from "ol/coordinate";
+import { SelectEvent } from "ol/interaction/Select";
+import { FeatureLike } from "ol/Feature";
 
 export interface PointProps {
   properties?: {
@@ -19,8 +21,16 @@ export interface PointProps {
 export type PointLayerProps = {
   options?: Options<any>;
   points?: PointProps[];
-  onClick?: (features: Feature<Geometry>[], event: any) => void;
-  onOver?: (features: Feature<Geometry>[], event: any) => void;
+  onClick?: (
+    selected: Feature[],
+    deselected: Feature[],
+    event: SelectEvent
+  ) => void;
+  onOver?: (
+    selected: Feature[],
+    deselected: Feature[],
+    event: SelectEvent
+  ) => void;
   index?: number;
   children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };

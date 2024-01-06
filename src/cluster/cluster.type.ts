@@ -1,7 +1,7 @@
 import { Options as ClusterOptions } from "ol/source/Cluster";
 import { PointLayerProps } from "../point/point.type";
-import {Feature} from "ol";
-import {StyleLike} from "ol/style/Style";
+import { Feature } from "ol";
+import { StyleLike } from "ol/style/Style";
 
 export type Coordinate = {
   latitude: number;

@@ -7,15 +7,16 @@ import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
 import VectorSource from 'ol/source/Vector';
-import { Geometry } from 'ol/geom';
 import { Options as Options$1 } from 'ol/style/Icon';
 import { Options } from 'ol/layer/BaseVector';
 import { Coordinate } from 'ol/coordinate';
+import { SelectEvent } from 'ol/interaction/Select';
 import { Options as Options$2 } from 'ol/source/Cluster';
 import { StyleLike } from 'ol/style/Style';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$3 } from 'ol/Overlay';
 import { Options as Options$4 } from 'ol/control/Control';
+import { Geometry } from 'ol/geom';
 import { Options as Options$5 } from 'ol/interaction/Draw';
 
 interface zoomStyleProps {
@@ -72,7 +73,8 @@ interface PointProps {
 type PointLayerProps = {
     options?: Options<any>;
     points?: PointProps[];
-    onClick?: (features: Feature<Geometry>[], event: any) => void;
+    onClick?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
+    onOver?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
     index?: number;
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
@@ -84,7 +86,7 @@ interface ClusterLayerProps extends PointLayerProps {
     clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
 }
 
-declare const ClusterLayer: ({ points, clusterOptions, options, clusterStyle, }: ClusterLayerProps) => null;
+declare const ClusterLayer: ({ points, clusterOptions, options, onClick, onOver, clusterStyle, }: ClusterLayerProps) => null;
 
 type OverlayProps = {
     /**
