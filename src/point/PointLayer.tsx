@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
-import { FeatureNames } from "../map.type";
+import { EFeatureName } from "../map.type";
 import { PointLayerProps, PointProps } from "./point.type";
 import { useMap } from "../OpenLayers";
 import { Feature } from "ol";
@@ -12,7 +12,10 @@ import { Options } from "ol/style/Icon";
 // @ts-ignore
 import marker from "../assets/marker.png";
 
-export const PointLayer = ({ points, options = { zIndex: 10 } }: PointLayerProps) => {
+export const PointLayer = ({
+  points,
+  options = { zIndex: 10 },
+}: PointLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -28,7 +31,7 @@ export const PointLayer = ({ points, options = { zIndex: 10 } }: PointLayerProps
         source: source.current,
         ...options,
       });
-      vectorLayer.current.set("name", FeatureNames.marker);
+      vectorLayer.current.set("name", EFeatureName.marker);
       vectorLayer.current.set("opacity", 2);
       map.addLayer(vectorLayer.current);
     }

@@ -4,10 +4,11 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import {transform, transformExtent} from "ol/proj";
+import { transform, transformExtent } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { boundingExtent } from "ol/extent";
+import { MapBrowserEvent } from "ol";
 
 const MapContext = React.createContext<any>(undefined);
 const OpenLayers = forwardRef(
@@ -28,12 +29,7 @@ const OpenLayers = forwardRef(
       },
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
-      onClickMap,
-      onMapBoundChanged,
-      onClickFeatures,
       onDoubleClick,
-      onMouseOutFeatures,
-      onMouseOverFeatures,
       showZoom,
       zoomInStyle,
       zoomOutStyle,
@@ -48,6 +44,7 @@ const OpenLayers = forwardRef(
       onRenderComplete,
       onClick,
       onPointerMove,
+      onPointerOut,
     }: OpenLayersProps,
     ref
   ) => {
@@ -109,9 +106,14 @@ const OpenLayers = forwardRef(
     }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
-      console.log("mapElement", mapElement.current, mapRef.current, mapElement.current && !mapRef.current)
+      console.log(
+        "mapElement",
+        mapElement.current,
+        mapRef.current,
+        mapElement.current && !mapRef.current
+      );
       if (mapElement.current && !mapRef.current) {
-        console.log("mapElement 1", mapElement.current)
+        console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
@@ -126,157 +128,130 @@ const OpenLayers = forwardRef(
           maxTilesLoading: maxTilesLoading,
         });
 
-          mapRef.current.on('loadstart',function(event: ol.MapBrowserEvent<any>){
-              if(onLoadStart){
-                  onLoadStart(event)
-              }
-
-          })
-          mapRef.current.on('loadend',function(event: ol.MapBrowserEvent<any>){
-              if(onLoadEnd){
-                  onLoadEnd(event)
-              }
-          })
-          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
-              if (onDoubleClick) {
-                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                  onDoubleClick(clickedFeatures,event)
-              }
-          });
-
-          mapRef.current.on('dblclick', function (event: ol.MapBrowserEvent<any>) {
-              if (onDoubleClick) {
-                  const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                  onDoubleClick(clickedFeatures,event)
-              }
-          });
-
-          mapRef.current.on('pointerdrag',function(event: ol.MapBrowserEvent<any>){
-              if(onPointerDrag){
-                  onPointerDrag(event)
-              }
-          })
-
-          mapRef.current.on('movestart',function(event: ol.MapBrowserEvent<any>){
-              if(onMoveStart){
-                  onMoveStart(event)
-              }
-          })
-
-          mapRef.current.on('moveend',function(event: ol.MapBrowserEvent<any>){
-              if(onMoveEnd){
-                  let transExtent;
-                  if(mapRef.current) {
-
-                      const extent = mapRef.current.getView().calculateExtent(mapRef.current.getSize());
-                      transExtent = transformExtent(extent, mapRef.current.getView().getProjection(), 'EPSG:4326');
-                  }
-                  onMoveEnd(event, transExtent);
-              }
-          })
-
-          mapRef.current.on('postrender',function(event: ol.MapBrowserEvent<any>){
-              if(onPostRender){
-                  onPostRender(event)
-              }
-          })
-
-          mapRef.current.on('postcompose',function(event: ol.MapBrowserEvent<any>){
-              if(onPostCompose){
-                  onPostCompose(event)
-              }
-          })
-
-          mapRef.current.on('precompose',function(event: ol.MapBrowserEvent<any>){
-              if(onPreCompose){
-                  onPreCompose(event)
-              }
-          })
-
-          mapRef.current.on('rendercomplete',function(event: ol.MapBrowserEvent<any>){
-              if(onRenderComplete){
-                  onRenderComplete(event)
-              }
-          })
-
-          if(onClickFeatures)
-              addOnClickListener(mapRef.current);
-          else {
-              mapRef.current.on('singleclick',function(event: ol.MapBrowserEvent<any>){
-                  if(onClick){
-                      const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-                      onClick(clickedFeatures,event)
-                  }
-              })
-          }
-
-          if(onMouseOverFeatures)
-              addOnMouseOverListener(mapRef.current);
-          else {
-              mapRef.current.on('pointermove', function (event: ol.MapBrowserEvent<any>) {
-                  if (onPointerMove) {
-                      onPointerMove(event)
-                  }
-              })
-          }
-
+        addListeners(mapRef.current);
         setMap(mapRef.current);
       }
     }, []);
 
-    function fitToCluster(features: FeatureLike[]) {
+    function fitToFeatures(features: FeatureLike[]) {
       const extent = boundingExtent(
         features.map((r: any) => r.getGeometry().getCoordinates())
       );
       map.getView().fit(extent, fitOptions);
     }
-
-    function addOnClickListener(map: any) {
-      map.on("singleclick", function (event: any) {
-        event.stopPropagation();
-        if (map) {
-          const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (clickedFeatures?.length) {
-            const features = clickedFeatures[0].get("features");
-            if (features?.length > 0) {
-              //if features are clusters
-              onClickFeatures && onClickFeatures(features, event);
-              if (enableFitWhenClick) fitToCluster(features);
-            } else {
-              onClickFeatures && onClickFeatures(clickedFeatures, event);
-              if (enableFitWhenClick) fitToCluster(clickedFeatures);
+    function addListeners(map: any) {
+      if (map) {
+        onLoadStart &&
+          map.on("loadstart", function (event: ol.MapBrowserEvent<any>) {
+            if (onLoadStart) {
+              onLoadStart(event);
             }
-          } else {
-            !!onClickMap && onClickMap();
-          }
-        }
-      });
-    }
+          });
 
-    function addOnMouseOverListener(map: any) {
-      map.on("pointermove", (event: any) => {
-        if (map) {
-          const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (hoveredFeatures?.length) {
-            const features = hoveredFeatures[0].get("features");
-            if (features?.length) {
-              //if features are clusters
-              hoveredFeaturesRef.current = features;
-              onMouseOverFeatures && onMouseOverFeatures(features, event);
-              return;
-            } else {
-              hoveredFeaturesRef.current = hoveredFeatures;
-              onMouseOverFeatures &&
-                onMouseOverFeatures(hoveredFeatures, event);
+        onLoadEnd &&
+          map.on("loadend", function (event: ol.MapBrowserEvent<any>) {
+            if (onLoadEnd) {
+              onLoadEnd(event);
             }
-          } else if (hoveredFeaturesRef.current?.length > 0) {
-            onMouseOutFeatures &&
-              onMouseOutFeatures(hoveredFeaturesRef.current);
-            hoveredFeaturesRef.current = [];
-          }
-        }
-        event.preventDefault();
-      });
+          });
+
+        onPostRender &&
+          map.on("postrender", function (event: ol.MapBrowserEvent<any>) {
+            if (onPostRender) {
+              onPostRender(event);
+            }
+          });
+
+        onPreCompose &&
+          map.on("precompose", function (event: ol.MapBrowserEvent<any>) {
+            if (onPreCompose) {
+              onPreCompose(event);
+            }
+          });
+
+        onPostCompose &&
+          map.on("postcompose", function (event: ol.MapBrowserEvent<any>) {
+            if (onPostCompose) {
+              onPostCompose(event);
+            }
+          });
+
+        onRenderComplete &&
+          map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
+            if (onRenderComplete) {
+              onRenderComplete(event);
+            }
+          });
+
+        onMoveStart &&
+          map.on("movestart", function (event: ol.MapBrowserEvent<any>) {
+            if (onMoveStart) {
+              onMoveStart(event);
+            }
+          });
+
+        onMoveEnd &&
+          map.on("moveend", function (event: ol.MapBrowserEvent<any>) {
+            if (onMoveEnd) {
+              let transExtent;
+              if (mapRef.current) {
+                const extent = mapRef.current
+                  .getView()
+                  .calculateExtent(mapRef.current.getSize());
+                transExtent = transformExtent(
+                  extent,
+                  mapRef.current.getView().getProjection(),
+                  "EPSG:4326"
+                );
+              }
+              onMoveEnd(event, transExtent);
+            }
+          });
+
+        onDoubleClick &&
+          mapRef.current.on("dblclick", function (
+            event: ol.MapBrowserEvent<any>
+          ) {
+            if (onDoubleClick) {
+              const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+              onDoubleClick(clickedFeatures, event);
+            }
+          });
+
+        onClick &&
+          map.on("singleclick", function (event: MapBrowserEvent<any>) {
+            event.stopPropagation();
+            if (map) {
+              const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+              onClick && onClick(clickedFeatures, event);
+              if (enableFitWhenClick) {
+                fitToFeatures(clickedFeatures);
+              }
+            }
+          });
+
+        onPointerDrag &&
+          map.on("pointerdrag", function (event: ol.MapBrowserEvent<any>) {
+            if (onPointerDrag) {
+              onPointerDrag(event);
+            }
+          });
+
+        onPointerMove &&
+          map.on("pointermove", function (event: ol.MapBrowserEvent<any>) {
+            const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
+            if (onPointerMove) {
+              onPointerMove(hoveredFeatures, event);
+            }
+          });
+
+        onPointerOut &&
+          map.on("pointerout", function (event: ol.MapBrowserEvent<any>) {
+            if (onPointerOut) {
+              onPointerOut(event);
+            }
+          });
+      }
     }
 
     return (
