@@ -125,6 +125,7 @@ type PolygonProps = {
     coordinates: Array<Coordinate>;
     color: string;
     code: string;
+    opacity: string;
 };
 type PolygonLayerProps = {
     polygons?: Array<PolygonProps>;
@@ -142,6 +143,8 @@ type DrawProps = {
     /**
      * unique id to get overlay container element
      */
+    drawStyle?: StyleLike;
+    drawnStyle?: StyleLike;
     onSourceCreated?: (source: VectorSource) => void;
     onDrawStart?: (coordinate: Coordinate, event: any) => void;
     onDrawEnd?: (event: any) => void;
@@ -150,6 +153,6 @@ type DrawProps = {
     options?: Options$5;
 };
 
-declare const CustomDraw: ({ onDrawEnd, onDrawAbort, onDrawStart, onSourceCreated, options, }: DrawProps) => null;
+declare const CustomDraw: ({ drawStyle, drawnStyle, onDrawEnd, onDrawAbort, onDrawStart, onSourceCreated, options, }: DrawProps) => null;
 
 export { ClusterLayer, Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };

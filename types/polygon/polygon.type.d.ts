@@ -9,6 +9,7 @@ export type PolygonProps = {
     coordinates: Array<Coordinate>;
     color: string;
     code: string;
+    opacity: string;
 };
 export type PolygonLayerProps = {
     polygons?: Array<PolygonProps>;

@@ -8,6 +8,8 @@ import { Vector } from "ol/layer";
 import { Options } from "ol/interaction/Draw";
 
 export const CustomDraw = ({
+  drawStyle,
+  drawnStyle,
   onDrawEnd,
   onDrawAbort,
   onDrawStart,
@@ -28,7 +30,6 @@ export const CustomDraw = ({
       }
       if (onDrawEnd) {
         drawRef.current.on("drawend", function (event: any) {
-          const extents = event.feature.getGeometry().getExtent();
           onDrawEnd(event);
         });
       }
@@ -73,7 +74,7 @@ export const CustomDraw = ({
               width: 2,
             }),
             fill: new Fill({
-              color: "#FF008A20",
+              color: "#FF008A50",
             }),
           }),
         ];
@@ -88,11 +89,11 @@ export const CustomDraw = ({
     sourceRef.current = new VectorSource({ wrapX: false });
     layerRef.current = new Vector({
       source: sourceRef.current,
-      style: defaultDrawStyle,
+      style: drawStyle || defaultDrawStyle,
     });
     drawRef.current = new Draw({
       source: sourceRef.current,
-      style: defaultDrawStyle,
+      style: drawnStyle || defaultDrawStyle,
       type,
       ...rest,
     });

@@ -51,7 +51,6 @@ const OpenLayers = forwardRef(
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
     const mapRef = useRef<any>();
-    const hoveredFeaturesRef = useRef<any[]>([]);
 
     useEffect(() => {
       const bodyStyles: any = document.body.style;
