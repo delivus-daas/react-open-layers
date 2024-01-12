@@ -6,6 +6,8 @@ import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
 import { Extent } from "ol/extent";
+import { Options as ZoomOptions } from "ol/control/ZoomSlider";
+import {ObjectEvent} from "ol/Object";
 
 export interface zoomStyleProps {
   width?: string;
@@ -20,6 +22,9 @@ export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
   layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
   showZoom?: boolean;
+  showZoomSlider?: boolean;
+  zoomOptions?: ZoomOptions;
+  zoom?: zoomStyleProps;
   zoomInStyle?: zoomStyleProps;
   zoomOutStyle?: zoomStyleProps;
   viewOptions?: ViewOptions;
@@ -31,13 +36,13 @@ export interface OpenLayersProps {
   onClickMap?: () => void;
   onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   onLoadStart?: (event: ol.MapEvent) => void;
+  onResolutionChange?: (event: ObjectEvent) => void;
   onLoadEnd?: (event: ol.MapEvent) => void;
   onMoveStart?: (event: ol.MapEvent) => void;
   onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;
   onPointerDrag?: (event: ol.MapBrowserEvent<any>) => void;
   onPointerMove?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   onPointerOut?: (event: ol.MapBrowserEvent<any>) => void;
-
   onMouseOut?: (event: ol.MapBrowserEvent<any>) => void;
   onPostRender?: (event: ol.MapEvent) => void;
   onPostCompose?: (event: any) => void;

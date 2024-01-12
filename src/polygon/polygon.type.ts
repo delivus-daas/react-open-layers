@@ -8,9 +8,10 @@ import { StyleLike } from "ol/style/Style";
 
 export type PolygonProps = {
   coordinates: Array<Coordinate>;
-  color: string;
+  strokeColor?: string;
+  fillColor?: string;
+  strokeWidth?: number;
   code: string;
-  opacity: string;
 };
 
 export type PolygonLayerProps = {

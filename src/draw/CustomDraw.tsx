@@ -50,8 +50,8 @@ export const CustomDraw = ({
           new Style({
             stroke: new Stroke({
               color: "#FF008A",
-              lineDash: [5, 5],
-              width: 2,
+              lineDash: [5],
+              width: 3.5,
             }),
           }),
         ];
@@ -71,7 +71,7 @@ export const CustomDraw = ({
             stroke: new Stroke({
               color: "#FF008A",
               lineDash: [5, 5],
-              width: 2,
+              width: 3.5,
             }),
             fill: new Fill({
               color: "#FF008A50",
