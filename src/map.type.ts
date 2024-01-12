@@ -7,7 +7,8 @@ import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
 import { Extent } from "ol/extent";
 import { Options as ZoomOptions } from "ol/control/ZoomSlider";
-import {ObjectEvent} from "ol/Object";
+import { ObjectEvent } from "ol/Object";
+import { GeolocationType } from "./geolocation/geolocation.type";
 
 export interface zoomStyleProps {
   width?: string;
@@ -18,9 +19,11 @@ export interface zoomStyleProps {
   left?: string;
   right?: string;
 }
-export interface OpenLayersProps {
+export interface OpenLayersProps extends GeolocationType {
   interactionOptions?: DefaultsOptions;
   layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
+  showGeolocation?: boolean;
+  geolocationOptions?: GeolocationType;
   showZoom?: boolean;
   showZoomSlider?: boolean;
   zoomOptions?: ZoomOptions;

@@ -113,10 +113,6 @@ export const CustomDraw = ({
   useEffect(() => {
     if (map) {
       if (options) {
-        console.log("drawer", options, drawRef.current);
-        if (!!drawRef.current) {
-          removeLayer();
-        }
         addLayer(options);
       } else {
         removeLayer();

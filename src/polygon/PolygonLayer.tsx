@@ -78,10 +78,7 @@ export const PolygonLayer = ({
     let features: Feature[] = [];
     if (polygons && polygons.length > 0) {
       features = polygons.map(
-        (
-          { coordinates, strokeColor, fillColor, strokeWidth, code },
-          index
-        ) => {
+        ({ coordinates, strokeColor, fillColor, strokeWidth, code }, index) => {
           const feature = new Feature(new Polygon([coordinates]));
           feature.setStyle(
             polygonStyle ||
