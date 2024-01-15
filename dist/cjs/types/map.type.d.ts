@@ -55,6 +55,7 @@ export interface OpenLayersProps extends GeolocationType {
     maxTilesLoading?: number;
 }
 export declare enum EFeatureName {
+    geo = "geo",
     marker = "marker",
     polygon = "polygon",
     cluster = "cluster"

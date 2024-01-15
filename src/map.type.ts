@@ -57,6 +57,7 @@ export interface OpenLayersProps extends GeolocationType {
 }
 
 export enum EFeatureName {
+  geo = "geo",
   marker = "marker",
   polygon = "polygon",
   cluster = "cluster",

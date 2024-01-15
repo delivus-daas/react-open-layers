@@ -25,7 +25,7 @@ type GeolocationType = {
     fillColor?: string;
     strokeColor?: string;
     positionStyle?: StyleLike;
-    showMyLocation?: boolean;
+    trackGeolocation?: boolean;
 };
 
 interface zoomStyleProps {
