@@ -9,10 +9,11 @@ import { Extent } from 'ol/extent';
 import { Options } from 'ol/control/ZoomSlider';
 import { ObjectEvent } from 'ol/Object';
 import { StyleLike } from 'ol/style/Style';
+import { GeolocationError } from 'ol/Geolocation';
+import { Coordinate } from 'ol/coordinate';
 import VectorSource from 'ol/source/Vector';
 import { Options as Options$2 } from 'ol/style/Icon';
 import { Options as Options$1 } from 'ol/layer/BaseVector';
-import { Coordinate } from 'ol/coordinate';
 import { SelectEvent } from 'ol/interaction/Select';
 import { Options as Options$3 } from 'ol/source/Cluster';
 import { Pixel } from 'ol/pixel';
@@ -26,6 +27,8 @@ type GeolocationType = {
     strokeColor?: string;
     positionStyle?: StyleLike;
     trackGeolocation?: boolean;
+    onError?: (error: GeolocationError) => void;
+    onChangePosition?: (coordinates: Coordinate) => void;
 };
 
 interface zoomStyleProps {

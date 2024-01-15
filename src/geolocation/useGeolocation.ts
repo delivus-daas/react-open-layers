@@ -1,4 +1,4 @@
-import { Feature, Map } from "ol";
+import {Feature, Map, View} from "ol";
 import Geolocation from "ol/Geolocation";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
@@ -17,6 +17,7 @@ export function useGeolocation(
   const geolocationRef = useRef<any>();
   const layerRef = useRef<any>();
   const featureRef = useRef<any>();
+  const animatedToLocation = useRef(false);
   const defaultPositionStyle = (fillColor?: string, strokeColor?: string) => {
     return new Style({
       image: new CircleStyle({
@@ -32,27 +33,30 @@ export function useGeolocation(
     });
   };
 
-  const addListener = (geolocation: Geolocation) => {
+  const addListener = (geolocation: Geolocation, view: View) => {
     if (geolocation) {
       // handle geolocation error.
       geolocation.on("error", function (error) {
         console.log("geolocation error", error);
+        options?.onError && options?.onError(error);
       });
-
-      geolocation.on("change:accuracyGeometry", function () {});
-
       geolocation.on("change:position", function () {
         const coordinates = geolocationRef.current.getPosition();
+        options?.onChangePosition && options?.onChangePosition(coordinates);
         console.log(
           "geolocation change:position",
           coordinates,
           featureRef.current
         );
-        if (options?.trackGeolocation) map.getView().setCenter(coordinates);
-        if (featureRef.current)
-          featureRef.current.setGeometry(
-            coordinates ? new Point(coordinates) : undefined
-          );
+        if (view && (options?.trackGeolocation || !animatedToLocation.current)) {
+          view.animate({
+            center: coordinates,
+            duration: 250,
+          });
+          animatedToLocation.current = true;
+        }
+        if (featureRef.current && coordinates)
+          featureRef.current.setGeometry(new Point(coordinates));
       });
     }
   };
@@ -60,29 +64,28 @@ export function useGeolocation(
   const addLayer = useCallback((map: Map) => {
     if (layerRef.current) removeLayer();
     featureRef.current = new Feature();
-
     featureRef.current.setStyle(
-      options?.positionStyle ||
+        options?.positionStyle ||
         defaultPositionStyle(options?.fillColor, options?.strokeColor)
     );
+
     layerRef.current = new VectorLayer({
-      source: new VectorSource({
-        features: [featureRef.current],
-      }),
+      source: new VectorSource({features: [featureRef.current]}),
       opacity: 5,
     });
-
     layerRef.current.set("name", EFeatureName.geo);
     map.addLayer(layerRef.current);
+
+    animatedToLocation.current = false;
     geolocationRef.current = new Geolocation({
-      // enableHighAccuracy must be set to true to have the heading value.
       trackingOptions: {
         enableHighAccuracy: true,
       },
+      tracking: true,
       projection: map.getView().getProjection(),
     });
-    geolocationRef.current.setTracking(true);
-    addListener(geolocationRef.current);
+
+    addListener(geolocationRef.current, map.getView());
   }, []);
 
   const removeLayer = useCallback(() => {
@@ -102,5 +105,5 @@ export function useGeolocation(
     return () => {
       removeLayer();
     };
-  }, [map, showGeolocation]);
+  }, [map, showGeolocation, addLayer]);
 }
