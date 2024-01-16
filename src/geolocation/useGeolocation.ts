@@ -1,4 +1,4 @@
-import {Feature, Map, View} from "ol";
+import { Feature, Map, View } from "ol";
 import Geolocation from "ol/Geolocation";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
@@ -48,7 +48,10 @@ export function useGeolocation(
           coordinates,
           featureRef.current
         );
-        if (view && (options?.trackGeolocation || !animatedToLocation.current)) {
+        if (
+          view &&
+          (options?.trackGeolocation || !animatedToLocation.current)
+        ) {
           view.animate({
             center: coordinates,
             duration: 250,
@@ -65,12 +68,12 @@ export function useGeolocation(
     if (layerRef.current) removeLayer();
     featureRef.current = new Feature();
     featureRef.current.setStyle(
-        options?.positionStyle ||
+      options?.positionStyle ||
         defaultPositionStyle(options?.fillColor, options?.strokeColor)
     );
 
     layerRef.current = new VectorLayer({
-      source: new VectorSource({features: [featureRef.current]}),
+      source: new VectorSource({ features: [featureRef.current] }),
       opacity: 5,
     });
     layerRef.current.set("name", EFeatureName.geo);

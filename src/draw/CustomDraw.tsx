@@ -5,7 +5,6 @@ import { Draw } from "ol/interaction";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Vector } from "ol/layer";
-import { Options } from "ol/interaction/Draw";
 
 export const CustomDraw = ({
   drawStyle,
@@ -18,7 +17,7 @@ export const CustomDraw = ({
 }: DrawProps) => {
   const map = useMap();
   const drawRef = useRef<any>();
-  const sourceRef = useRef<any>();
+  const source = new VectorSource({ wrapX: false });
   const layerRef = useRef<any>();
   function addEventListener() {
     if (drawRef.current) {
@@ -83,27 +82,26 @@ export const CustomDraw = ({
     }
   };
 
-  const addLayer = useCallback((options: Options) => {
-    if (drawRef.current) removeLayer();
+  const addLayer = useCallback(() => {
+    console.log("addLayer");
     const { type, ...rest } = options;
-    sourceRef.current = new VectorSource({ wrapX: false });
     layerRef.current = new Vector({
-      source: sourceRef.current,
+      source,
       style: drawStyle || defaultDrawStyle,
     });
     drawRef.current = new Draw({
-      source: sourceRef.current,
+      source,
       style: drawnStyle || defaultDrawStyle,
       type,
       ...rest,
     });
-    onSourceCreated && onSourceCreated(sourceRef.current);
+    onSourceCreated && onSourceCreated(source);
     map.addLayer(layerRef.current);
     map.addInteraction(drawRef.current);
-    addEventListener();
   }, []);
 
   const removeLayer = useCallback(() => {
+    console.log("add removeLayer");
     if (map) {
       drawRef.current && map.removeInteraction(drawRef.current);
       layerRef.current && map.removeLayer(layerRef.current);
@@ -112,16 +110,13 @@ export const CustomDraw = ({
 
   useEffect(() => {
     if (map) {
-      if (options) {
-        addLayer(options);
-      } else {
-        removeLayer();
-      }
+      addLayer();
+      addEventListener();
     }
     return () => {
       removeLayer();
     };
-  }, [map, options]);
+  }, [map]);
 
   return null;
 };
