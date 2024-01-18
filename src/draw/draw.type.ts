@@ -1,7 +1,7 @@
 import { Options } from "ol/interaction/Draw";
 import { Coordinate } from "ol/coordinate";
 import VectorSource from "ol/source/Vector";
-import {StyleLike} from "ol/style/Style";
+import { StyleLike } from "ol/style/Style";
 
 export type DrawProps = {
   /**

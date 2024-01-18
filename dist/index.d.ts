@@ -6,18 +6,30 @@ import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
-import VectorSource from 'ol/source/Vector';
-import { Options as Options$1 } from 'ol/style/Icon';
-import { Options } from 'ol/layer/BaseVector';
-import { Coordinate } from 'ol/coordinate';
-import { SelectEvent } from 'ol/interaction/Select';
-import { Options as Options$2 } from 'ol/source/Cluster';
+import { Options } from 'ol/control/ZoomSlider';
+import { ObjectEvent } from 'ol/Object';
 import { StyleLike } from 'ol/style/Style';
+import { GeolocationError } from 'ol/Geolocation';
+import { Coordinate } from 'ol/coordinate';
+import VectorSource from 'ol/source/Vector';
+import { Options as Options$2 } from 'ol/style/Icon';
+import { Options as Options$1 } from 'ol/layer/BaseVector';
+import { SelectEvent } from 'ol/interaction/Select';
+import { Options as Options$3 } from 'ol/source/Cluster';
 import { Pixel } from 'ol/pixel';
-import { Options as Options$3 } from 'ol/Overlay';
-import { Options as Options$4 } from 'ol/control/Control';
+import { Options as Options$4 } from 'ol/Overlay';
+import { Options as Options$5 } from 'ol/control/Control';
 import { Geometry } from 'ol/geom';
-import { Options as Options$5 } from 'ol/interaction/Draw';
+import { Options as Options$6 } from 'ol/interaction/Draw';
+
+type GeolocationType = {
+    fillColor?: string;
+    strokeColor?: string;
+    positionStyle?: StyleLike;
+    trackGeolocation?: boolean;
+    onError?: (error: GeolocationError) => void;
+    onChangePosition?: (coordinates: Coordinate) => void;
+};
 
 interface zoomStyleProps {
     width?: string;
@@ -28,10 +40,15 @@ interface zoomStyleProps {
     left?: string;
     right?: string;
 }
-interface OpenLayersProps {
+interface OpenLayersProps extends GeolocationType {
     interactionOptions?: DefaultsOptions;
     layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
+    showGeolocation?: boolean;
+    geolocationOptions?: GeolocationType;
     showZoom?: boolean;
+    showZoomSlider?: boolean;
+    zoomOptions?: Options;
+    zoom?: zoomStyleProps;
     zoomInStyle?: zoomStyleProps;
     zoomOutStyle?: zoomStyleProps;
     viewOptions?: ViewOptions;
@@ -43,6 +60,7 @@ interface OpenLayersProps {
     onClickMap?: () => void;
     onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
     onLoadStart?: (event: ol.MapEvent) => void;
+    onResolutionChange?: (event: ObjectEvent) => void;
     onLoadEnd?: (event: ol.MapEvent) => void;
     onMoveStart?: (event: ol.MapEvent) => void;
     onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;
@@ -66,12 +84,12 @@ interface PointProps {
         [x: string]: any;
     };
     source?: VectorSource;
-    iconOptions?: Options$1;
+    iconOptions?: Options$2;
     index: number;
     coordinate: Coordinate;
 }
 type PointLayerProps = {
-    options?: Options<any>;
+    options?: Options$1<any>;
     points?: PointProps[];
     onSourceCreated?: (source: VectorSource) => void;
     onClick?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
@@ -83,7 +101,7 @@ type PointLayerProps = {
 declare const PointLayer: ({ points, options, }: PointLayerProps) => null;
 
 interface ClusterLayerProps extends PointLayerProps {
-    clusterOptions?: Options$2;
+    clusterOptions?: Options$3;
     clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
 }
 
@@ -101,7 +119,7 @@ type OverlayProps = {
     position?: Coordinate;
     pixel?: Pixel;
     children?: ReactElement;
-    options?: Options$3;
+    options?: Options$4;
 };
 
 declare const CustomOverlay: ({ children, className, id, position, options, }: OverlayProps) => React.JSX.Element;
@@ -116,20 +134,21 @@ type ControlProps = {
      */
     className?: string;
     children: any;
-    options?: Options$4;
+    options?: Options$5;
 };
 
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
 
 type PolygonProps = {
     coordinates: Array<Coordinate>;
-    color: string;
+    strokeColor?: string;
+    fillColor?: string;
+    strokeWidth?: number;
     code: string;
-    opacity: string;
 };
 type PolygonLayerProps = {
     polygons?: Array<PolygonProps>;
-    options?: Options<any>;
+    options?: Options$1<any>;
     polygonStyle?: StyleLike;
     onClick?: (features: Feature<Geometry>[], event: any) => void;
     index?: number;
@@ -150,7 +169,7 @@ type DrawProps = {
     onDrawEnd?: (event: any) => void;
     onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
     onDrawAbort?: (coordinate: Coordinate, event: any) => void;
-    options?: Options$5;
+    options?: Options$6;
 };
 
 declare const CustomDraw: ({ drawStyle, drawnStyle, onDrawEnd, onDrawAbort, onDrawStart, onSourceCreated, options, }: DrawProps) => null;

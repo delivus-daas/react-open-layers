@@ -1,5 +1,12 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import * as ol from "ol";
+import Geolocation from "ol/Geolocation";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
@@ -7,8 +14,10 @@ import "./index.css";
 import { transform, transformExtent } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
+import { ZoomSlider } from "ol/control";
 import { boundingExtent } from "ol/extent";
-import { MapBrowserEvent } from "ol";
+import { MapBrowserEvent, View } from "ol";
+import { useGeolocation } from "./geolocation/useGeolocation";
 
 const MapContext = React.createContext<any>(undefined);
 const OpenLayers = forwardRef(
@@ -33,6 +42,9 @@ const OpenLayers = forwardRef(
       showZoom,
       zoomInStyle,
       zoomOutStyle,
+      showZoomSlider,
+      showGeolocation,
+      geolocationOptions,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -45,12 +57,15 @@ const OpenLayers = forwardRef(
       onClick,
       onPointerMove,
       onPointerOut,
+      onResolutionChange,
     }: OpenLayersProps,
     ref
   ) => {
     const [map, setMap] = useState<any>();
     const mapElement = useRef<any>();
     const mapRef = useRef<any>();
+    const viewRef = useRef<View>();
+    useGeolocation(map, showGeolocation, geolocationOptions);
 
     useEffect(() => {
       const bodyStyles: any = document.body.style;
@@ -118,16 +133,19 @@ const OpenLayers = forwardRef(
           ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
           : undefined;
 
+        viewRef.current = new ol.View({ center, ...viewOptions });
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
           interactions: interactionDefaults(interactionOptions),
-          view: new ol.View({ center, ...viewOptions }),
+          view: viewRef.current,
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
 
+        addViewListeners(viewRef.current);
         addListeners(mapRef.current);
+        addController(mapRef.current);
         setMap(mapRef.current);
       }
     }, []);
@@ -137,6 +155,25 @@ const OpenLayers = forwardRef(
         features.map((r: any) => r.getGeometry().getCoordinates())
       );
       map.getView().fit(extent, fitOptions);
+    }
+
+    function addController(map: any) {
+      if (map) {
+        if (showZoomSlider) {
+          const zoomSlider = new ZoomSlider();
+          map.addControl(zoomSlider);
+        }
+      }
+    }
+
+    function addViewListeners(view?: View) {
+      if (view) {
+        onResolutionChange &&
+          view.on("change:resolution", (event) => {
+            console.log("zoom changed");
+            onResolutionChange(event);
+          });
+      }
     }
     function addListeners(map: any) {
       if (map) {
@@ -252,6 +289,26 @@ const OpenLayers = forwardRef(
           });
       }
     }
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        zoom: (zoom: number) => {
+          if (viewRef.current instanceof View) {
+            viewRef.current.setZoom(zoom);
+          }
+        },
+        zoomSmooth: (zoom: number) => {
+          if (viewRef.current instanceof View) {
+            viewRef.current.animate({
+              zoom,
+              duration: 250,
+            });
+          }
+        },
+      }),
+      []
+    );
 
     return (
       <MapContext.Provider value={map}>

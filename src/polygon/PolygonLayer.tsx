@@ -8,16 +8,20 @@ import { useMap } from "../OpenLayers";
 import ol, { Feature } from "ol";
 import { Fill, Stroke, Style, Text } from "ol/style";
 
-function defaultPolygonStyle(color?: string, text?: string, opacity?: string) {
-  opacity = opacity || "15";
+function defaultPolygonStyle(
+  strokeColor?: string,
+  text?: string,
+  fillColor?: string,
+  strokeWidth?: number
+) {
   return [
     new Style({
       stroke: new Stroke({
-        color: color || "#4200FF",
-        width: 2.5,
+        color: strokeColor || "#4200FF",
+        width: strokeWidth || 2.5,
       }),
       fill: new Fill({
-        color: color ? color + opacity : "#4200FF" + opacity,
+        color: fillColor ? fillColor : "#4200FF25",
       }),
       text: new Text({
         font: "12px Calibri,sans-serif",
@@ -74,11 +78,16 @@ export const PolygonLayer = ({
     let features: Feature[] = [];
     if (polygons && polygons.length > 0) {
       features = polygons.map(
-        ({ coordinates, color, code, opacity }, index) => {
+        ({ coordinates, strokeColor, fillColor, strokeWidth, code }, index) => {
           const feature = new Feature(new Polygon([coordinates]));
           feature.setStyle(
             polygonStyle ||
-              defaultPolygonStyle(color, showCode ? code : undefined, opacity)
+              defaultPolygonStyle(
+                strokeColor,
+                showCode ? code : undefined,
+                fillColor,
+                strokeWidth
+              )
           );
           return feature;
         }
