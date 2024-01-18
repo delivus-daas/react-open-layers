@@ -4,7 +4,7 @@ import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import { Point } from "ol/geom";
 import { GeolocationType } from "./geolocation.type";
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { EFeatureName } from "../map.type";
@@ -17,6 +17,8 @@ export function useGeolocation(
   const geolocationRef = useRef<any>();
   const layerRef = useRef<any>();
   const featureRef = useRef<any>();
+  const changeListener = useRef<any>();
+  const errorListener = useRef<any>();
   const animatedToLocation = useRef(false);
   const defaultPositionStyle = (fillColor?: string, strokeColor?: string) => {
     return new Style({
@@ -34,20 +36,18 @@ export function useGeolocation(
   };
 
   const addListener = (geolocation: Geolocation, view: View) => {
+    console.log("geo addListener");
     if (geolocation) {
       // handle geolocation error.
-      geolocation.on("error", function (error) {
+      errorListener.current = geolocation.on("error", function (error) {
         console.log("geolocation error", error);
+        animatedToLocation.current = false;
         options?.onError && options?.onError(error);
       });
-      geolocation.on("change:position", function () {
+
+      changeListener.current = geolocation.on("change:position", function () {
         const coordinates = geolocationRef.current.getPosition();
         options?.onChangePosition && options?.onChangePosition(coordinates);
-        console.log(
-          "geolocation change:position",
-          coordinates,
-          featureRef.current
-        );
         if (
           view &&
           (options?.trackGeolocation || !animatedToLocation.current)
@@ -64,8 +64,29 @@ export function useGeolocation(
     }
   };
 
-  const addLayer = useCallback((map: Map) => {
-    if (layerRef.current) removeLayer();
+  const removeListener = (geolocation: Geolocation) => {
+    console.log("geo removeListener");
+    if (geolocation) {
+      geolocation.setTracking(false);
+      changeListener.current &&
+        geolocation.removeChangeListener(
+          "change:position",
+          changeListener.current
+        );
+      errorListener.current &&
+        geolocation.removeChangeListener("error", errorListener.current);
+    }
+  };
+
+  const createGeolocation = (map: Map) => {
+    console.log("geo createGeolocation");
+    geolocationRef.current = new Geolocation({
+      trackingOptions: {
+        enableHighAccuracy: true,
+      },
+      tracking: true,
+      projection: map.getView().getProjection(),
+    });
     featureRef.current = new Feature();
     featureRef.current.setStyle(
       options?.positionStyle ||
@@ -77,36 +98,28 @@ export function useGeolocation(
       opacity: 5,
     });
     layerRef.current.set("name", EFeatureName.geo);
-    map.addLayer(layerRef.current);
 
-    animatedToLocation.current = false;
-    geolocationRef.current = new Geolocation({
-      trackingOptions: {
-        enableHighAccuracy: true,
-      },
-      tracking: true,
-      projection: map.getView().getProjection(),
-    });
-
+    layerRef.current && map.addLayer(layerRef.current);
     addListener(geolocationRef.current, map.getView());
-  }, []);
-
-  const removeLayer = useCallback(() => {
-    if (map) {
-      layerRef.current && map.removeLayer(layerRef.current);
-    }
-  }, []);
+  };
 
   useEffect(() => {
+    animatedToLocation.current = false;
     if (map) {
       if (showGeolocation) {
-        addLayer(map);
+        createGeolocation(map);
       } else {
-        removeLayer();
+        layerRef.current && map.removeLayer(layerRef.current);
+        removeListener(geolocationRef.current);
       }
     }
+
     return () => {
-      removeLayer();
+      if (map) {
+        layerRef.current && map.removeLayer(layerRef.current);
+        removeListener(geolocationRef.current);
+      }
     };
-  }, [map, showGeolocation, addLayer]);
+
+  }, [map, showGeolocation]);
 }
