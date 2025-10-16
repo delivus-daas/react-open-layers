@@ -120,6 +120,21 @@ export const ClusterLayer = ({
         ...clusterOptions,
       });
 
+
+
+      let lastTime = performance.now();
+      let frameCount = 0;
+
+      map.on('postrender', () => {
+        frameCount++;
+        const now = performance.now();
+        if (now - lastTime > 1000) {
+          console.log('FPS:', frameCount);
+          frameCount = 0;
+          lastTime = now;
+        }
+      });
+
       clusterLayer.current = new VectorLayer({
         source: clusterSource,
         style: function (feature: FeatureLike, resolution: number) {
