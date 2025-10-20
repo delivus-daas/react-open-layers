@@ -117,7 +117,7 @@ export const ClusterLayer = ({
   };
 
   useEffect(() => {
-    if (points && map) {
+    if (points) {
       const features = points
         .map((listing) => new Feature({
           geometry: new Point(fromLonLat(listing.coordinate)),
@@ -173,7 +173,7 @@ export const ClusterLayer = ({
       });
       map.addLayer(clusters);
     }
-  }, [points, map])
+  }, [points])
 
   // useEffect(() => {
   //   drawFeatures(points);
