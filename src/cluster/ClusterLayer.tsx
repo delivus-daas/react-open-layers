@@ -115,15 +115,27 @@ export const ClusterLayer = ({
   };
 
   useEffect(() => {
-    if (map && !source.current) {
-      source.current = new VectorSource();
+    if (map && !source.current && points) {
+    const features = drawFeatures(points);
 
-      let clusterSource = new Cluster({
-        distance: 10,
-        minDistance: 10,
-        source: source.current,
-        ...clusterOptions,
-      });
+    source.current = new VectorSource({
+      features: features,
+    });
+
+    const clusterSource = new Cluster({
+      distance: 10,
+      minDistance: 10,
+      source: source.current,
+      ...clusterOptions,
+    });
+      // source.current = new VectorSource();
+      //
+      // let clusterSource = new Cluster({
+      //   distance: 10,
+      //   minDistance: 10,
+      //   source: source.current,
+      //   ...clusterOptions,
+      // });
 
 
       let lastTime = performance.now();
@@ -171,9 +183,9 @@ export const ClusterLayer = ({
     };
   }, [map]);
 
-  useEffect(() => {
-    drawFeatures(points);
-  }, [points, map]);
+  // useEffect(() => {
+  //   drawFeatures(points);
+  // }, [points]);
 
   const drawFeatures = (markers?: PointProps[]) => {
     let features: any = [];
@@ -196,10 +208,11 @@ export const ClusterLayer = ({
         }
       );
     }
-    if (source.current) {
-      source.current.clear();
-      source.current.addFeatures(features);
-    }
+    return features;
+    // if (source.current) {
+    //   source.current.clear();
+    //   source.current.addFeatures(features);
+    // }
   };
 
   return null;
