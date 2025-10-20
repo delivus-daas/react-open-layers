@@ -29,7 +29,7 @@ export const ClusterLayer = ({
                                onSourceCreated,
                                clusterStyle,
                              }: ClusterLayerProps) => {
-  const map = useMap();
+  // const map = useMap();
   const source = useRef<any>();
   const clusterLayer = useRef<any>();
   const overInteraction = useRef<any>();
@@ -66,54 +66,54 @@ export const ClusterLayer = ({
     return style;
   }
 
-  const addInteraction = () => {
-    if (map) {
-      if (onOver) {
-        const select = new Select({
-          condition: pointerMove,
-          layers: [clusterLayer.current],
-        });
-        select.on("select", (event) => {
-          console.log("onOver", event.selected);
-          onOver && onOver(event.selected, event.deselected, event);
-        });
-        overInteraction.current = select;
-        map.addInteraction(select);
-      } else if (overInteraction.current) {
-        map.removeInteraction(overInteraction.current);
-      }
-      if (onClick) {
-        const select = new Select({
-          condition: click,
-          layers: [clusterLayer.current],
-        });
-        select.on("select", (event: SelectEvent) => {
-          console.log("onClick", event.selected);
-          onClick && onClick(event.selected, event.deselected, event);
-        });
-        clickInteraction.current = select;
-        map.addInteraction(select);
-      } else if (clickInteraction.current) {
-        map.removeInteraction(clickInteraction.current);
-      }
-    }
-  };
-  const removeInteraction = () => {
-    if (map) {
-      if (clickInteraction.current) {
-        map.removeInteraction(clickInteraction.current);
-      }
-      if (overInteraction.current) {
-        map.removeInteraction(overInteraction.current);
-      }
-    }
-  };
-
-  const resetLayers = () => {
-    if (map && map.getLayers().getArray().length > 0) {
-      map.removeLayer(clusterLayer.current);
-    }
-  };
+  // const addInteraction = () => {
+  //   if (map) {
+  //     if (onOver) {
+  //       const select = new Select({
+  //         condition: pointerMove,
+  //         layers: [clusterLayer.current],
+  //       });
+  //       select.on("select", (event) => {
+  //         console.log("onOver", event.selected);
+  //         onOver && onOver(event.selected, event.deselected, event);
+  //       });
+  //       overInteraction.current = select;
+  //       map.addInteraction(select);
+  //     } else if (overInteraction.current) {
+  //       map.removeInteraction(overInteraction.current);
+  //     }
+  //     if (onClick) {
+  //       const select = new Select({
+  //         condition: click,
+  //         layers: [clusterLayer.current],
+  //       });
+  //       select.on("select", (event: SelectEvent) => {
+  //         console.log("onClick", event.selected);
+  //         onClick && onClick(event.selected, event.deselected, event);
+  //       });
+  //       clickInteraction.current = select;
+  //       map.addInteraction(select);
+  //     } else if (clickInteraction.current) {
+  //       map.removeInteraction(clickInteraction.current);
+  //     }
+  //   }
+  // };
+  // const removeInteraction = () => {
+  //   if (map) {
+  //     if (clickInteraction.current) {
+  //       map.removeInteraction(clickInteraction.current);
+  //     }
+  //     if (overInteraction.current) {
+  //       map.removeInteraction(overInteraction.current);
+  //     }
+  //   }
+  // };
+  //
+  // const resetLayers = () => {
+  //   if (map && map.getLayers().getArray().length > 0) {
+  //     map.removeLayer(clusterLayer.current);
+  //   }
+  // };
 
   useEffect(() => {
     if (points) {
@@ -205,5 +205,6 @@ export const ClusterLayer = ({
     // }
   };
 
+  console.log("render cluster layer")
   return (<div id="map" className={className}/>);
 };
