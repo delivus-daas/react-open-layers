@@ -131,24 +131,32 @@ export const ClusterLayer = ({
         source: source,
       });
 
+      const clusterStyle = (feature: FeatureLike, resolution: number) => {
+        const features: Feature[] = feature.get("features");
+        const size = features.length;
+        // Check cache
+        console.log("clusterStyle2 features", features.length);
+        if (!styleCache[size]) {
+          styleCache[size] = new Style({
+            image: new CircleStyle({
+              radius: 10 + size,
+              fill: new Fill({ color: '#E84C4F' }),
+              stroke: new Stroke({ color: '#fff', width: 2 }),
+            }),
+            text: new Text({
+              text: size > 1 ? size.toString() : '1',
+              fill: new Fill({ color: '#fff' }),
+              stroke: new Stroke({ color: '#000', width: 2 }),
+            }),
+          });
+        }
+
+        return styleCache[size];
+      };
+
       const clusters = new VectorLayer({
         source: clusterSource,
-        style: function (feature: FeatureLike, resolution: number) {
-          const features: Feature[] = feature.get("features");
-          const size = features?.length;
-          console.log(
-            "clusterStyle",
-            feature,
-            features,
-            features[0].getStyle()
-          );
-          console.log("clusterStyle size>1", features, !!clusterStyle);
-          if (clusterStyle) {
-            return clusterStyle(resolution, size, features);
-          }
-          return defaultClusterStyle(size);
-        },
-
+        style: clusterStyle
       })
       // const raster = new TileLayer({
       //   source: new OSM(),
