@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Cluster } from "ol/source";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
@@ -20,14 +20,14 @@ import { click, pointerMove } from "ol/events/condition";
 import { SelectEvent } from "ol/interaction/Select";
 
 export const ClusterLayer = ({
-  points,
-  clusterOptions = {},
-  options = { zIndex: 10 },
-  onClick,
-  onOver,
-  onSourceCreated,
-  clusterStyle,
-}: ClusterLayerProps) => {
+                               points,
+                               clusterOptions = {},
+                               options = { zIndex: 10 },
+                               onClick,
+                               onOver,
+                               onSourceCreated,
+                               clusterStyle,
+                             }: ClusterLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const clusterLayer = useRef<any>();
@@ -41,23 +41,28 @@ export const ClusterLayer = ({
   };
 
   function defaultClusterStyle(size: number) {
-    return new Style({
-      image: new CircleStyle({
-        radius: 12,
-        stroke: new Stroke({
-          color: "#fff",
+    let style = styleCache[size];
+    if (!style) {
+      style = new Style({
+        image: new CircleStyle({
+          radius: 10,
+          stroke: new Stroke({
+            color: '#fff',
+          }),
+          fill: new Fill({
+            color: '#3399CC',
+          }),
         }),
-        fill: new Fill({
-          color: "#f00",
+        text: new Text({
+          text: size.toString(),
+          fill: new Fill({
+            color: '#fff',
+          }),
         }),
-      }),
-      text: new Text({
-        text: size.toString(),
-        fill: new Fill({
-          color: "#fff",
-        }),
-      }),
-    });
+      });
+      styleCache[size] = style;
+    }
+    return style;
   }
 
   const addInteraction = () => {
@@ -121,7 +126,6 @@ export const ClusterLayer = ({
       });
 
 
-
       let lastTime = performance.now();
       let frameCount = 0;
 
@@ -146,20 +150,11 @@ export const ClusterLayer = ({
             features,
             features[0].getStyle()
           );
-          if (size === 1) return features[0].getStyle();
-          if (size > 1) {
-            console.log("clusterStyle size>1", features, !!clusterStyle);
-            if (clusterStyle) {
-              return clusterStyle(resolution, size, features);
-            }
-            console.log("clusterStyle cahce", styleCache[size]);
-            if (styleCache[size]) {
-              return styleCache[size];
-            }
-            console.log("clusterStyle cahce", defaultClusterStyle(size));
-            styleCache[size] = defaultClusterStyle(size);
-            return styleCache[size];
-          } //without feature no style;
+          console.log("clusterStyle size>1", features, !!clusterStyle);
+          if (clusterStyle) {
+            return clusterStyle(resolution, size, features);
+          }
+          return defaultClusterStyle(size);
         },
         ...options,
       });
