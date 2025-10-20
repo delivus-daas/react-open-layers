@@ -186,11 +186,12 @@ export const ClusterLayer = ({
           });
           properties && feature.setProperties(properties);
 
-          const iconStyle = new Style({
-            image: new Icon(iconOptions || defaultIconOptions),
-          });
-          feature.setStyle([iconStyle]);
-
+          if(iconOptions) {
+            const iconStyle = new Style({
+              image: new Icon(iconOptions),
+            });
+            feature.setStyle([iconStyle]);
+          }
           return feature;
         }
       );
