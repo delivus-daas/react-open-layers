@@ -14,10 +14,10 @@ import { Options } from "ol/style/Icon";
 import { fromLonLat } from "ol/proj";
 import { Point } from "ol/geom";
 import { PointProps } from "../point/point.type";
-import { FeatureLike } from "ol/Feature";
 import { Select } from "ol/interaction";
 import { click, pointerMove } from "ol/events/condition";
 import { SelectEvent } from "ol/interaction/Select";
+import { FeatureLike } from "ol/Feature";
 
 export const ClusterLayer = ({
                                points,
@@ -115,43 +115,23 @@ export const ClusterLayer = ({
   };
 
   useEffect(() => {
-    if (map && !source.current && points) {
-    const features = drawFeatures(points);
-
-    source.current = new VectorSource({
-      features: features,
-    });
-
-    const clusterSource = new Cluster({
-      distance: 10,
-      minDistance: 10,
-      source: source.current,
-      ...clusterOptions,
-    });
-      // source.current = new VectorSource();
-      //
-      // let clusterSource = new Cluster({
-      //   distance: 10,
-      //   minDistance: 10,
-      //   source: source.current,
-      //   ...clusterOptions,
-      // });
-
-
-      let lastTime = performance.now();
-      let frameCount = 0;
-
-      map.on('postrender', () => {
-        frameCount++;
-        const now = performance.now();
-        if (now - lastTime > 1000) {
-          console.log('FPS:', frameCount);
-          frameCount = 0;
-          lastTime = now;
-        }
+    if (points && map) {
+      const features = points
+        .map((listing) => new Feature({
+          geometry: new Point(fromLonLat(listing.coordinate)),
+        }));
+      console.log("ol features", features)
+      const source = new VectorSource({
+        features: features,
       });
 
-      clusterLayer.current = new VectorLayer({
+      const clusterSource = new Cluster({
+        distance: 10,
+        minDistance: 10,
+        source: source,
+      });
+
+      const clusters = new VectorLayer({
         source: clusterSource,
         style: function (feature: FeatureLike, resolution: number) {
           const features: Feature[] = feature.get("features");
@@ -168,20 +148,22 @@ export const ClusterLayer = ({
           }
           return defaultClusterStyle(size);
         },
-        ...options,
-      });
 
-      clusterLayer.current.set("name", EFeatureName.cluster);
-      clusterLayer.current.set("opacity", 2);
-      map.addLayer(clusterLayer.current);
-      onSourceCreated && onSourceCreated(source.current);
-      addInteraction();
+      })
+      // const raster = new TileLayer({
+      //   source: new OSM(),
+      // });
+      // const map = new Map({
+      //   layers: [mapbox],
+      //   target: 'map',
+      //   view: new View({
+      //     center: [0, 0],
+      //     zoom: 2,
+      //   }),
+      // });
+      map.addLayer(clusters);
     }
-    return () => {
-      resetLayers();
-      removeInteraction();
-    };
-  }, [map]);
+  }, [points, map])
 
   // useEffect(() => {
   //   drawFeatures(points);
@@ -195,9 +177,8 @@ export const ClusterLayer = ({
           const coord = fromLonLat(coordinate);
           const feature = new Feature({
             geometry: new Point(coord),
+            properties,
           });
-          properties && feature.setProperties(properties);
-
           if(!!iconOptions) {
             const iconStyle = new Style({
               image: new Icon(iconOptions),
