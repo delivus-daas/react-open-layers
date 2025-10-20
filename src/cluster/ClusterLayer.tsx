@@ -186,7 +186,7 @@ export const ClusterLayer = ({
           });
           properties && feature.setProperties(properties);
 
-          if(iconOptions) {
+          if(!!iconOptions) {
             const iconStyle = new Style({
               image: new Icon(iconOptions),
             });
