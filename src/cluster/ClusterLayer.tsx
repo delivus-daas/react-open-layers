@@ -1,5 +1,6 @@
+import React from 'react';
 import { useEffect, useRef } from "react";
-import { Cluster } from "ol/source";
+import { Cluster, OSM } from "ol/source";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import { EFeatureName } from "../map.type";
@@ -7,7 +8,7 @@ import CircleStyle from "ol/style/Circle";
 import { ClusterLayerProps } from "./cluster.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../OpenLayers";
-import { Feature } from "ol";
+import { Feature, View, Map } from "ol";
 // @ts-ignore
 import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
@@ -18,6 +19,7 @@ import { Select } from "ol/interaction";
 import { click, pointerMove } from "ol/events/condition";
 import { SelectEvent } from "ol/interaction/Select";
 import { FeatureLike } from "ol/Feature";
+import TileLayer from "ol/layer/Tile";
 
 export const ClusterLayer = ({
                                points,
@@ -158,17 +160,17 @@ export const ClusterLayer = ({
         source: clusterSource,
         style: clusterStyle
       })
-      // const raster = new TileLayer({
-      //   source: new OSM(),
-      // });
-      // const map = new Map({
-      //   layers: [mapbox],
-      //   target: 'map',
-      //   view: new View({
-      //     center: [0, 0],
-      //     zoom: 2,
-      //   }),
-      // });
+      const raster = new TileLayer({
+        source: new OSM(),
+      });
+      const map = new Map({
+        layers: [raster],
+        target: 'map',
+        view: new View({
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
       map.addLayer(clusters);
     }
   }, [points, map])
@@ -204,5 +206,5 @@ export const ClusterLayer = ({
     // }
   };
 
-  return null;
+  return (<div id="map" className="w-full h-full"/>);
 };

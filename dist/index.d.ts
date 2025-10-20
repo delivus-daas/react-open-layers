@@ -105,7 +105,7 @@ interface ClusterLayerProps extends PointLayerProps {
     clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
 }
 
-declare const ClusterLayer: ({ points, clusterOptions, options, onClick, onOver, onSourceCreated, clusterStyle, }: ClusterLayerProps) => null;
+declare const ClusterLayer: ({ points, clusterOptions, options, onClick, onOver, onSourceCreated, clusterStyle, }: ClusterLayerProps) => React.JSX.Element;
 
 type OverlayProps = {
     /**
