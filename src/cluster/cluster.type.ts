@@ -10,6 +10,7 @@ export type Coordinate = {
 
 export interface ClusterLayerProps extends PointLayerProps {
   clusterOptions?: ClusterOptions;
+  className?: string;
   clusterStyle?: (
     resolution: number,
     size: number,

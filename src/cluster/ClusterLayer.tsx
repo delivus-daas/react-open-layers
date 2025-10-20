@@ -1,14 +1,12 @@
-import React from 'react';
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 import { Cluster, OSM } from "ol/source";
 import { Fill, Icon, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
-import { EFeatureName } from "../map.type";
 import CircleStyle from "ol/style/Circle";
 import { ClusterLayerProps } from "./cluster.type";
 import VectorSource from "ol/source/Vector";
 import { useMap } from "../OpenLayers";
-import { Feature, View, Map } from "ol";
+import { Feature, Map, View } from "ol";
 // @ts-ignore
 import marker from "../assets/marker.png";
 import { Options } from "ol/style/Icon";
@@ -26,6 +24,7 @@ export const ClusterLayer = ({
                                clusterOptions = {},
                                options = { zIndex: 10 },
                                onClick,
+                               className,
                                onOver,
                                onSourceCreated,
                                clusterStyle,
@@ -189,7 +188,7 @@ export const ClusterLayer = ({
             geometry: new Point(coord),
             properties,
           });
-          if(!!iconOptions) {
+          if (!!iconOptions) {
             const iconStyle = new Style({
               image: new Icon(iconOptions),
             });
@@ -206,5 +205,5 @@ export const ClusterLayer = ({
     // }
   };
 
-  return (<div id="map" className="w-full h-full"/>);
+  return (<div id="map" className={className}/>);
 };
