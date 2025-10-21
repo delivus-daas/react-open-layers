@@ -1,7 +1,7 @@
 import React, { ReactNode, ReactElement } from 'react';
 import { ViewOptions, FitOptions } from 'ol/View';
 import { DefaultsOptions } from 'ol/interaction/defaults';
-import ol, { Feature } from 'ol';
+import ol, { Feature, Map } from 'ol';
 import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
@@ -16,6 +16,8 @@ import { Options as Options$2 } from 'ol/style/Icon';
 import { Options as Options$1 } from 'ol/layer/BaseVector';
 import { SelectEvent } from 'ol/interaction/Select';
 import { Options as Options$3 } from 'ol/source/Cluster';
+import { FeatureLike } from 'ol/Feature';
+import { Style } from 'ol/style';
 import { Pixel } from 'ol/pixel';
 import { Options as Options$4 } from 'ol/Overlay';
 import { Options as Options$5 } from 'ol/control/Control';
@@ -89,7 +91,7 @@ interface PointProps {
     coordinate: Coordinate;
 }
 type PointLayerProps = {
-    options?: Options$1<any>;
+    layerOptions?: Options$1<any>;
     points?: PointProps[];
     onSourceCreated?: (source: VectorSource) => void;
     onClick?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
@@ -98,15 +100,18 @@ type PointLayerProps = {
     children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };
 
-declare const PointLayer: ({ points, options, }: PointLayerProps) => null;
+declare const PointLayer: ({ points, layerOptions, }: PointLayerProps) => null;
 
 interface ClusterLayerProps extends PointLayerProps {
     clusterOptions?: Options$3;
-    className?: string;
-    clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
+    features: Feature[];
+    map: Map;
+    clickStyle?: (feature: Feature) => Style;
+    overStyle?: (feature: Feature) => Style;
+    clusterStyle?: (feature: FeatureLike) => Style;
 }
 
-declare const ClusterLayer: ({ points, clusterOptions, options, onClick, className, onOver, onSourceCreated, clusterStyle, }: ClusterLayerProps) => React.JSX.Element;
+declare const useCluster: ({ features, map, clusterOptions, layerOptions, onClick, onOver, clusterStyle: clusterStyleProp, overStyle, clickStyle, }: ClusterLayerProps) => void;
 
 type OverlayProps = {
     /**
@@ -175,4 +180,4 @@ type DrawProps = {
 
 declare const CustomDraw: ({ drawStyle, drawnStyle, onDrawEnd, onDrawAbort, onDrawStart, onSourceCreated, options, }: DrawProps) => null;
 
-export { ClusterLayer, Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer };
+export { Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer, useCluster };

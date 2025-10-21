@@ -1,2 +1,2 @@
 import { PointLayerProps } from "./point.type";
-export declare const PointLayer: ({ points, options, }: PointLayerProps) => null;
+export declare const PointLayer: ({ points, layerOptions, }: PointLayerProps) => null;

@@ -1,13 +1,17 @@
 import { Options as ClusterOptions } from "ol/source/Cluster";
 import { PointLayerProps } from "../point/point.type";
-import { Feature } from "ol";
-import { StyleLike } from "ol/style/Style";
+import { Feature, Map } from "ol";
+import { FeatureLike } from "ol/Feature";
+import { Style } from "ol/style";
 export type Coordinate = {
     latitude: number;
     longitude: number;
 };
 export interface ClusterLayerProps extends PointLayerProps {
     clusterOptions?: ClusterOptions;
-    className?: string;
-    clusterStyle?: (resolution: number, size: number, features: Feature[]) => StyleLike;
+    features: Feature[];
+    map: Map;
+    clickStyle?: (feature: Feature) => Style;
+    overStyle?: (feature: Feature) => Style;
+    clusterStyle?: (feature: FeatureLike) => Style;
 }

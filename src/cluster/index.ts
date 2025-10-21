@@ -1,1 +1,1 @@
-export { ClusterLayer } from "./ClusterLayer";
+export { useCluster } from "./useCluster";
