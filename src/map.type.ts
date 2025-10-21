@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { FitOptions, ViewOptions } from "ol/View";
 import { DefaultsOptions } from "ol/interaction/defaults";
-import ol, { Feature } from "ol";
+import ol, { Feature, Map } from "ol";
 import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
@@ -36,6 +36,7 @@ export interface OpenLayersProps extends GeolocationType {
   children?: ReactNode | ReactNode[];
   fitOptions?: FitOptions;
   enableFitWhenClick?: boolean;
+  onInit?: (map: Map) => void;
   onClickMap?: () => void;
   onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   onLoadStart?: (event: ol.MapEvent) => void;

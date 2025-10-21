@@ -63,7 +63,6 @@ export const useCluster = ({
         select.on("select", (event) => {
           setSelectedStyle(event.selected, event.deselected, overStyle)
           console.log("onOver", event.selected[0], event.deselected[0]);
-          let features: Feature[] = event.selected.length ? event.selected[0].get("features") : [];
           onOver && onOver(event.selected, event.deselected, event);
         });
         overInteraction.current = select;

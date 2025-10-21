@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import * as ol from "ol";
-import Geolocation from "ol/Geolocation";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
@@ -38,6 +37,7 @@ const OpenLayers = forwardRef(
       },
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
+      onInit,
       onDoubleClick,
       showZoom,
       zoomInStyle,
@@ -142,6 +142,8 @@ const OpenLayers = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
+
+        onInit && onInit(mapRef.current);
 
         addViewListeners(viewRef.current);
         addListeners(mapRef.current);
