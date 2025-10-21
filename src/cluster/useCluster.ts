@@ -47,7 +47,7 @@ export const useCluster = ({
 
     return styleCache[size];
   };
- const clusterStyle = clusterStyleProp || defaultClusterStyle;
+  const clusterStyle = clusterStyleProp || defaultClusterStyle;
   const setSelectedStyle = (selected: Feature[], deselected: Feature[], style?: (f: Feature) => Style) => {
     selected && selected.forEach(s => s.setStyle(style ? style(s) : clusterStyle(s)));
     deselected && deselected.forEach(s => s.setStyle(clusterStyle(s)));
@@ -131,6 +131,4 @@ export const useCluster = ({
       };
     }
   }, [map, features])
-  if (map)
-    console.log("ol features render", features, map?.getLayers().getArray())
 };
