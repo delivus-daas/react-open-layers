@@ -31,6 +31,7 @@ export interface OpenLayersProps extends GeolocationType {
     zoomOutStyle?: zoomStyleProps;
     viewOptions?: ViewOptions;
     initialCenter?: number[];
+    center?: number[];
     className?: string;
     children?: ReactNode | ReactNode[];
     fitOptions?: FitOptions;

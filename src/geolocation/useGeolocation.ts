@@ -10,7 +10,7 @@ import VectorSource from "ol/source/Vector";
 import { EFeatureName } from "../map.type";
 
 export function useGeolocation(
-  map: Map,
+  map?: Map,
   showGeolocation?: boolean,
   options?: GeolocationType
 ) {

@@ -47,6 +47,7 @@ export const useCluster = ({
 
     return styleCache[size];
   };
+
   const clusterStyle = clusterStyleProp || defaultClusterStyle;
   const setSelectedStyle = (selected: Feature[], deselected: Feature[], style?: (f: Feature) => Style) => {
     selected && selected.forEach(s => s.setStyle(style ? style(s) : clusterStyle(s)));

@@ -1,11 +1,6 @@
-import React, {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState, } from "react";
 import * as ol from "ol";
+import { MapBrowserEvent, View } from "ol";
 import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
@@ -15,7 +10,6 @@ import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { ZoomSlider } from "ol/control";
 import { boundingExtent } from "ol/extent";
-import { MapBrowserEvent, View } from "ol";
 import { useGeolocation } from "./geolocation/useGeolocation";
 
 const MapContext = React.createContext<any>(undefined);
@@ -23,6 +17,7 @@ const OpenLayers = forwardRef(
   (
     {
       initialCenter = [126.83, 37.57],
+      center,
       moveTolerance = 1,
       maxTilesLoading = 16,
       className,
@@ -61,11 +56,16 @@ const OpenLayers = forwardRef(
     }: OpenLayersProps,
     ref
   ) => {
-    const [map, setMap] = useState<any>();
-    const mapElement = useRef<any>();
-    const mapRef = useRef<any>();
+    const [map, setMap] = useState<ol.Map>();
+    const mapElement = useRef<HTMLDivElement | null>(null);
+    const mapRef = useRef<ol.Map>();
     const viewRef = useRef<View>();
     useGeolocation(map, showGeolocation, geolocationOptions);
+
+    useEffect(() => {
+      if (center && map)
+        map.getView().setCenter(center);
+    }, [center]);
 
     useEffect(() => {
       const bodyStyles: any = document.body.style;
@@ -156,7 +156,8 @@ const OpenLayers = forwardRef(
       const extent = boundingExtent(
         features.map((r: any) => r.getGeometry().getCoordinates())
       );
-      map.getView().fit(extent, fitOptions);
+      if (map)
+        map.getView().fit(extent, fitOptions);
     }
 
     function addController(map: any) {
@@ -171,82 +172,83 @@ const OpenLayers = forwardRef(
     function addViewListeners(view?: View) {
       if (view) {
         onResolutionChange &&
-          view.on("change:resolution", (event) => {
-            console.log("zoom changed");
-            onResolutionChange(event);
-          });
+        view.on("change:resolution", (event) => {
+          console.log("zoom changed");
+          onResolutionChange(event);
+        });
       }
     }
+
     function addListeners(map: any) {
       if (map) {
         onLoadStart &&
-          map.on("loadstart", function (event: ol.MapBrowserEvent<any>) {
-            if (onLoadStart) {
-              onLoadStart(event);
-            }
-          });
+        map.on("loadstart", function (event: ol.MapBrowserEvent<any>) {
+          if (onLoadStart) {
+            onLoadStart(event);
+          }
+        });
 
         onLoadEnd &&
-          map.on("loadend", function (event: ol.MapBrowserEvent<any>) {
-            if (onLoadEnd) {
-              onLoadEnd(event);
-            }
-          });
+        map.on("loadend", function (event: ol.MapBrowserEvent<any>) {
+          if (onLoadEnd) {
+            onLoadEnd(event);
+          }
+        });
 
         onPostRender &&
-          map.on("postrender", function (event: ol.MapBrowserEvent<any>) {
-            if (onPostRender) {
-              onPostRender(event);
-            }
-          });
+        map.on("postrender", function (event: ol.MapBrowserEvent<any>) {
+          if (onPostRender) {
+            onPostRender(event);
+          }
+        });
 
         onPreCompose &&
-          map.on("precompose", function (event: ol.MapBrowserEvent<any>) {
-            if (onPreCompose) {
-              onPreCompose(event);
-            }
-          });
+        map.on("precompose", function (event: ol.MapBrowserEvent<any>) {
+          if (onPreCompose) {
+            onPreCompose(event);
+          }
+        });
 
         onPostCompose &&
-          map.on("postcompose", function (event: ol.MapBrowserEvent<any>) {
-            if (onPostCompose) {
-              onPostCompose(event);
-            }
-          });
+        map.on("postcompose", function (event: ol.MapBrowserEvent<any>) {
+          if (onPostCompose) {
+            onPostCompose(event);
+          }
+        });
 
         onRenderComplete &&
-          map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
-            if (onRenderComplete) {
-              onRenderComplete(event);
-            }
-          });
+        map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
+          if (onRenderComplete) {
+            onRenderComplete(event);
+          }
+        });
 
         onMoveStart &&
-          map.on("movestart", function (event: ol.MapBrowserEvent<any>) {
-            if (onMoveStart) {
-              onMoveStart(event);
-            }
-          });
+        map.on("movestart", function (event: ol.MapBrowserEvent<any>) {
+          if (onMoveStart) {
+            onMoveStart(event);
+          }
+        });
 
         onMoveEnd &&
-          map.on("moveend", function (event: ol.MapBrowserEvent<any>) {
-            if (onMoveEnd) {
-              let transExtent;
-              if (mapRef.current) {
-                const extent = mapRef.current
-                  .getView()
-                  .calculateExtent(mapRef.current.getSize());
-                transExtent = transformExtent(
-                  extent,
-                  mapRef.current.getView().getProjection(),
-                  "EPSG:4326"
-                );
-              }
-              onMoveEnd(event, transExtent);
+        map.on("moveend", function (event: ol.MapBrowserEvent<any>) {
+          if (onMoveEnd) {
+            let transExtent;
+            if (mapRef.current) {
+              const extent = mapRef.current
+                .getView()
+                .calculateExtent(mapRef.current.getSize());
+              transExtent = transformExtent(
+                extent,
+                mapRef.current.getView().getProjection(),
+                "EPSG:4326"
+              );
             }
-          });
+            onMoveEnd(event, transExtent);
+          }
+        });
 
-        onDoubleClick &&
+        if (onDoubleClick && mapRef.current)
           mapRef.current.on("dblclick", function (
             event: ol.MapBrowserEvent<any>
           ) {
@@ -257,38 +259,38 @@ const OpenLayers = forwardRef(
           });
 
         onClick &&
-          map.on("singleclick", function (event: MapBrowserEvent<any>) {
-            event.stopPropagation();
-            if (map) {
-              const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-              onClick && onClick(clickedFeatures, event);
-              if (enableFitWhenClick) {
-                fitToFeatures(clickedFeatures);
-              }
+        map.on("singleclick", function (event: MapBrowserEvent<any>) {
+          event.stopPropagation();
+          if (map) {
+            const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
+            onClick && onClick(clickedFeatures, event);
+            if (enableFitWhenClick) {
+              fitToFeatures(clickedFeatures);
             }
-          });
+          }
+        });
 
         onPointerDrag &&
-          map.on("pointerdrag", function (event: ol.MapBrowserEvent<any>) {
-            if (onPointerDrag) {
-              onPointerDrag(event);
-            }
-          });
+        map.on("pointerdrag", function (event: ol.MapBrowserEvent<any>) {
+          if (onPointerDrag) {
+            onPointerDrag(event);
+          }
+        });
 
         onPointerMove &&
-          map.on("pointermove", function (event: ol.MapBrowserEvent<any>) {
-            const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
-            if (onPointerMove) {
-              onPointerMove(hoveredFeatures, event);
-            }
-          });
+        map.on("pointermove", function (event: ol.MapBrowserEvent<any>) {
+          const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
+          if (onPointerMove) {
+            onPointerMove(hoveredFeatures, event);
+          }
+        });
 
         onPointerOut &&
-          map.on("pointerout", function (event: ol.MapBrowserEvent<any>) {
-            if (onPointerOut) {
-              onPointerOut(event);
-            }
-          });
+        map.on("pointerout", function (event: ol.MapBrowserEvent<any>) {
+          if (onPointerOut) {
+            onPointerOut(event);
+          }
+        });
       }
     }
 
