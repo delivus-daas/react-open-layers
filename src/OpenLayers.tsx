@@ -5,7 +5,7 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import { transform, transformExtent } from "ol/proj";
+import { fromLonLat, transformExtent } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { ZoomSlider } from "ol/control";
@@ -63,8 +63,8 @@ const OpenLayers = forwardRef(
     useGeolocation(map, showGeolocation, geolocationOptions);
 
     useEffect(() => {
-      if (center && map)
-        map.getView().setCenter(center);
+      if (center && mapRef.current)
+        mapRef.current.getView().setCenter(center);
     }, [center]);
 
     useEffect(() => {
@@ -130,7 +130,7 @@ const OpenLayers = forwardRef(
         console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         const center = initialCenter
-          ? transform(initialCenter, "EPSG:4326", "EPSG:3857")
+          ? fromLonLat(initialCenter)
           : undefined;
 
         viewRef.current = new ol.View({ center, ...viewOptions });
