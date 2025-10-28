@@ -10,7 +10,7 @@ import { Options } from 'ol/control/ZoomSlider';
 import { StyleLike } from 'ol/style/Style';
 import { GeolocationError } from 'ol/Geolocation';
 import { Coordinate } from 'ol/coordinate';
-import VectorSource from 'ol/source/Vector';
+import VectorSource, { Options as Options$4 } from 'ol/source/Vector';
 import { Options as Options$2 } from 'ol/style/Icon';
 import { Options as Options$1 } from 'ol/layer/BaseVector';
 import { SelectEvent } from 'ol/interaction/Select';
@@ -18,10 +18,10 @@ import { Options as Options$3 } from 'ol/source/Cluster';
 import { FeatureLike } from 'ol/Feature';
 import { Style } from 'ol/style';
 import { Pixel } from 'ol/pixel';
-import { Options as Options$4 } from 'ol/Overlay';
-import { Options as Options$5 } from 'ol/control/Control';
+import { Options as Options$5 } from 'ol/Overlay';
+import { Options as Options$6 } from 'ol/control/Control';
 import { Geometry } from 'ol/geom';
-import { Options as Options$6 } from 'ol/interaction/Draw';
+import { Options as Options$7 } from 'ol/interaction/Draw';
 
 type GeolocationType = {
     fillColor?: string;
@@ -107,12 +107,27 @@ interface ClusterLayerProps extends PointLayerProps {
     clusterOptions?: Options$3;
     features: Feature[];
     map: Map;
+    visible?: boolean;
     clickStyle?: (feature: Feature) => Style;
     overStyle?: (feature: Feature) => Style;
     clusterStyle?: (feature: FeatureLike) => Style;
 }
 
-declare const useCluster: ({ features, map, clusterOptions, layerOptions, onClick, onOver, clusterStyle: clusterStyleProp, overStyle, clickStyle, }: ClusterLayerProps) => void;
+declare const useCluster: ({ features, map, clusterOptions, layerOptions, onClick, onOver, clusterStyle: clusterStyleProp, overStyle, clickStyle, visible }: ClusterLayerProps) => void;
+
+interface LayerProps extends PointLayerProps {
+    name?: string;
+    map: Map;
+    index?: number;
+    visible?: boolean;
+    options?: Options$4<any>;
+    layerOptions?: Options$1<any>;
+    clickStyle?: (feature: Feature) => Style;
+    overStyle?: (feature: Feature) => Style;
+    style?: (feature: FeatureLike) => Style;
+}
+
+declare const useLayer: ({ map, options, layerOptions, name, onClick, onOver, clickStyle, overStyle, style, visible, }: LayerProps) => void;
 
 type OverlayProps = {
     /**
@@ -126,7 +141,7 @@ type OverlayProps = {
     position?: Coordinate;
     pixel?: Pixel;
     children?: ReactElement;
-    options?: Options$4;
+    options?: Options$5;
 };
 
 declare const CustomOverlay: ({ children, className, id, position, options, }: OverlayProps) => React.JSX.Element;
@@ -141,7 +156,7 @@ type ControlProps = {
      */
     className?: string;
     children: any;
-    options?: Options$5;
+    options?: Options$6;
 };
 
 declare const Controller: ({ id, children, className, options, }: ControlProps) => React.JSX.Element;
@@ -176,9 +191,9 @@ type DrawProps = {
     onDrawEnd?: (event: any) => void;
     onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
     onDrawAbort?: (coordinate: Coordinate, event: any) => void;
-    options?: Options$6;
+    options?: Options$7;
 };
 
 declare const CustomDraw: ({ drawStyle, drawnStyle, onDrawEnd, onDrawAbort, onDrawStart, onSourceCreated, options, }: DrawProps) => null;
 
-export { Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer, useCluster };
+export { Controller, CustomDraw, CustomOverlay, OpenLayers, PointLayer, PolygonLayer, useCluster, useLayer };
