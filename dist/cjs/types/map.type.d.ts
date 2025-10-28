@@ -1,13 +1,12 @@
 import { ReactNode } from "react";
 import { FitOptions, ViewOptions } from "ol/View";
 import { DefaultsOptions } from "ol/interaction/defaults";
-import ol, { Feature, Map } from "ol";
+import ol, { Feature, Map, View } from "ol";
 import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
 import { Extent } from "ol/extent";
 import { Options as ZoomOptions } from "ol/control/ZoomSlider";
-import { ObjectEvent } from "ol/Object";
 import { GeolocationType } from "./geolocation/geolocation.type";
 export interface zoomStyleProps {
     width?: string;
@@ -40,7 +39,7 @@ export interface OpenLayersProps extends GeolocationType {
     onClickMap?: () => void;
     onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
     onLoadStart?: (event: ol.MapEvent) => void;
-    onResolutionChange?: (event: ObjectEvent) => void;
+    onResolutionChange?: (view: View) => void;
     onLoadEnd?: (event: ol.MapEvent) => void;
     onMoveStart?: (event: ol.MapEvent) => void;
     onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;

@@ -1,13 +1,12 @@
 import React, { ReactNode, ReactElement } from 'react';
 import { ViewOptions, FitOptions } from 'ol/View';
 import { DefaultsOptions } from 'ol/interaction/defaults';
-import ol, { Map, Feature } from 'ol';
+import ol, { Map, Feature, View } from 'ol';
 import Collection from 'ol/Collection';
 import LayerGroup from 'ol/layer/Group';
 import BaseLayer from 'ol/layer/Base';
 import { Extent } from 'ol/extent';
 import { Options } from 'ol/control/ZoomSlider';
-import { ObjectEvent } from 'ol/Object';
 import { StyleLike } from 'ol/style/Style';
 import { GeolocationError } from 'ol/Geolocation';
 import { Coordinate } from 'ol/coordinate';
@@ -64,7 +63,7 @@ interface OpenLayersProps extends GeolocationType {
     onClickMap?: () => void;
     onClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
     onLoadStart?: (event: ol.MapEvent) => void;
-    onResolutionChange?: (event: ObjectEvent) => void;
+    onResolutionChange?: (view: View) => void;
     onLoadEnd?: (event: ol.MapEvent) => void;
     onMoveStart?: (event: ol.MapEvent) => void;
     onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;

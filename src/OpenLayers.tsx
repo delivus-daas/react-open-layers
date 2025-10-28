@@ -172,9 +172,9 @@ const OpenLayers = forwardRef(
     function addViewListeners(view?: View) {
       if (view) {
         onResolutionChange &&
-        view.on("change:resolution", (event) => {
+        view.on("change:resolution", () => {
           console.log("zoom changed");
-          onResolutionChange(event);
+          onResolutionChange(view);
         });
       }
     }
