@@ -8,6 +8,7 @@ export interface ClusterLayerProps extends PointLayerProps {
   clusterOptions?: ClusterOptions;
   features: Feature[];
   map: Map;
+  visible?: boolean;
   clickStyle?: (feature: Feature) => Style
   overStyle?: (feature: Feature) => Style
   clusterStyle?: (feature: FeatureLike) => Style

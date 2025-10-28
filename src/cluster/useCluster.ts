@@ -21,6 +21,7 @@ export const useCluster = ({
                              clusterStyle: clusterStyleProp,
                              overStyle,
                              clickStyle,
+                             visible = true
                            }: ClusterLayerProps) => {
   const clusterLayer = useRef<any>();
   const clusterSource = useRef<any>();
@@ -108,27 +109,32 @@ export const useCluster = ({
 
   useEffect(() => {
     console.log("useeff", map, features)
-    if (map && features) {
-      clusterSource.current = new Cluster({
-        distance: 20,
-        minDistance: 10,
-        source: new VectorSource({ features }),
-        ...clusterOptions,
-      });
+    if (map) {
+      if (features && visible) {
+        clusterSource.current = new Cluster({
+          distance: 20,
+          minDistance: 10,
+          source: new VectorSource({ features }),
+          ...clusterOptions,
+        });
 
-      clusterLayer.current = new VectorLayer({
-        source: clusterSource.current,
-        style: clusterStyle,
-        ...layerOptions
-      })
+        clusterLayer.current = new VectorLayer({
+          source: clusterSource.current,
+          style: clusterStyle,
+          ...layerOptions
+        })
 
-      clusterLayer.current.set("name", "cluster");
-      map.addLayer(clusterLayer.current);
-      addInteraction();
+        clusterLayer.current.set("name", "cluster");
+        map.addLayer(clusterLayer.current);
+        addInteraction();
+      } else if (!visible) {
+        resetLayers();
+        removeInteraction();
+      }
       return () => {
         resetLayers();
         removeInteraction();
       };
     }
-  }, [map, features])
+  }, [map, features, visible])
 };
