@@ -52,7 +52,7 @@ export interface OpenLayersProps extends GeolocationType {
   onPostRender?: (event: ol.MapEvent) => void;
   onPostCompose?: (event: any) => void;
   onPreCompose?: (event: any) => void;
-  onRenderComplete?: (event: any) => void;
+  onRenderComplete?: (map: Map, event: any) => void;
   onDoubleClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   moveTolerance?: number;
   maxTilesLoading?: number;

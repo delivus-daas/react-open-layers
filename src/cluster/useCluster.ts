@@ -14,6 +14,8 @@ import { ClusterLayerProps } from "./cluster.type";
 export const useCluster = ({
                              features,
                              map,
+                             name = "cluster",
+                             options = {},
                              clusterOptions = {},
                              layerOptions = { zIndex: 10 },
                              onClick,
@@ -57,37 +59,39 @@ export const useCluster = ({
 
   const addInteraction = () => {
     if (map) {
-      const select = new Select({
-        condition: pointerMove,
-        layers: [clusterLayer.current],
-      });
-      if (onOver || overStyle) {
-        select.on("select", (event) => {
-          setSelectedStyle(event.selected, event.deselected, overStyle)
-          console.log("onOver", event.selected[0], event.deselected[0]);
-          onOver && onOver(event.selected, event.deselected, event);
-        });
-        overInteraction.current = select;
-        map.addInteraction(select);
-      } else if (overInteraction.current) {
-        map.removeInteraction(overInteraction.current);
-      }
-      if (onClick || clickStyle) {
+      if (!overInteraction.current) {
         const select = new Select({
-          condition: click,
+          condition: pointerMove,
           layers: [clusterLayer.current],
         });
-        select.on("select", (event: SelectEvent) => {
-          setSelectedStyle(event.selected, event.deselected, clickStyle)
-          let features: Feature[] = event.selected[0].get("features");
-          console.log("onClick", event.selected, features);
-          onClick && onClick(event.selected, event.deselected, event);
-        });
-        clickInteraction.current = select;
-        map.addInteraction(select);
-      } else if (clickInteraction.current) {
-        map.removeInteraction(clickInteraction.current);
+        if (onOver || overStyle) {
+          select.on("select", (event) => {
+            setSelectedStyle(event.selected, event.deselected, overStyle)
+            console.log("onOver", event.selected[0], event.deselected[0]);
+            if (onOver) onOver(event.selected, event.deselected, event);
+          });
+          overInteraction.current = select;
+          map.addInteraction(select);
+        }
       }
+      if (!clickInteraction.current) {
+        if (onClick || clickStyle) {
+          const select = new Select({
+            condition: click,
+            layers: [clusterLayer.current],
+          });
+          select.on("select", (event: SelectEvent) => {
+            setSelectedStyle(event.selected, event.deselected, clickStyle)
+            let features: Feature[] = event.selected[0].get("features");
+            console.log("onClick", event.selected, features);
+            if (onClick) onClick(event.selected, event.deselected, event);
+          });
+          clickInteraction.current = select;
+          map.addInteraction(select);
+        }
+      }
+      const interactions = map.getInteractions().getArray();
+      console.log("cluster interactions", interactions);
     }
   };
   const removeInteraction = () => {
@@ -108,33 +112,35 @@ export const useCluster = ({
   };
 
   useEffect(() => {
-    console.log("useeff", map, features)
-    if (map) {
-      if (features && visible) {
-        clusterSource.current = new Cluster({
-          distance: 20,
-          minDistance: 10,
-          source: new VectorSource({ features }),
-          ...clusterOptions,
-        });
+    if (map && features) {
+      clusterSource.current = new Cluster({
+        distance: 20,
+        minDistance: 10,
+        source: new VectorSource({ features, ...options }),
+        ...clusterOptions,
+      });
 
-        clusterLayer.current = new VectorLayer({
-          source: clusterSource.current,
-          style: clusterStyle,
-          ...layerOptions
-        })
+      clusterLayer.current = new VectorLayer({
+        source: clusterSource.current,
+        visible,
+        style: clusterStyle,
+        ...layerOptions
+      })
 
-        clusterLayer.current.set("name", "cluster");
-        map.addLayer(clusterLayer.current);
-        addInteraction();
-      } else if (!visible) {
-        resetLayers();
-        removeInteraction();
-      }
+      if (name) clusterLayer.current.set("name", name);
+      map.addLayer(clusterLayer.current);
+      console.log("useLayer map: ", map, "layer: ", clusterLayer.current)
+      addInteraction();
       return () => {
         resetLayers();
         removeInteraction();
       };
     }
-  }, [map, features, visible])
+  }, [map, features]);
+
+  useEffect(() => {
+    if (clusterLayer.current) {
+      clusterLayer.current.setVisible(visible);
+    }
+  }, [visible]);
 };

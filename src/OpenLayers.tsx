@@ -142,9 +142,6 @@ const OpenLayers = forwardRef(
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
-
-        onInit && onInit(mapRef.current);
-
         addViewListeners(viewRef.current);
         addListeners(mapRef.current);
         addController(mapRef.current);
@@ -173,7 +170,6 @@ const OpenLayers = forwardRef(
       if (view) {
         onResolutionChange &&
         view.on("change:resolution", () => {
-          console.log("zoom changed");
           onResolutionChange(view);
         });
       }
@@ -219,7 +215,7 @@ const OpenLayers = forwardRef(
         onRenderComplete &&
         map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
           if (onRenderComplete) {
-            onRenderComplete(event);
+            onRenderComplete(map, event);
           }
         });
 
