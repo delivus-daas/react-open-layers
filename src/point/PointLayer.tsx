@@ -14,7 +14,7 @@ import marker from "../assets/marker.png";
 
 export const PointLayer = ({
   points,
-  options = { zIndex: 10 },
+  layerOptions = { zIndex: 10 },
 }: PointLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
@@ -29,7 +29,7 @@ export const PointLayer = ({
       source.current = new VectorSource();
       vectorLayer.current = new VectorLayer({
         source: source.current,
-        ...options,
+        ...layerOptions,
       });
       vectorLayer.current.set("name", EFeatureName.marker);
       vectorLayer.current.set("opacity", 2);

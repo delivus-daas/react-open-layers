@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import VectorSource from "ol/source/Vector";
+import VectorSource, { Options as SourceOptions } from "ol/source/Vector";
 import { Feature } from "ol";
 import { Options as IconOptions } from "ol/style/Icon";
 import { Options } from "ol/layer/BaseVector";
@@ -17,7 +17,8 @@ export interface PointProps {
 }
 
 export type PointLayerProps = {
-  options?: Options<any>;
+  options?: SourceOptions<any>;
+  layerOptions?: Options<any>;
   points?: PointProps[];
   onSourceCreated?: (source: VectorSource) => void;
   onClick?: (
@@ -31,5 +32,6 @@ export type PointLayerProps = {
     event: SelectEvent
   ) => void;
   index?: number;
+  name?: string;
   children?: (source?: VectorSource) => ReactNode | ReactNode[];
 };

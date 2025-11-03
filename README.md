@@ -1,6 +1,6 @@
 # React openlayers wrapper
 
-A wrapper library designed to create openlayers map in an easy and customizablew way.
+A wrapper library designed to create openlayers map in an easy and customizable way.
 
 ## Installation
 
