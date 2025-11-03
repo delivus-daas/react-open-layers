@@ -1,6 +1,6 @@
 {
   "name": "@delivus/react-open-layers",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "repository": "https://github.com/delivus-daas/react-open-layers.git",
   "description": "Open layer map component with, markers and clustering feature",
   "author": "delivus",
