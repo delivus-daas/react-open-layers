@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Cluster } from "ol/source";
+import { Cluster, Source } from "ol/source";
 import { Fill, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import CircleStyle from "ol/style/Circle";
@@ -10,11 +10,13 @@ import { Select } from "ol/interaction";
 import { SelectEvent } from "ol/interaction/Select";
 import { Feature } from "ol";
 import { ClusterLayerProps } from "./cluster.type";
+import { Layer } from "ol/layer";
 
 export const useCluster = ({
                              features,
                              map,
                              name = "cluster",
+                             distance,
                              options = {},
                              clusterOptions = {},
                              layerOptions = { zIndex: 10 },
@@ -25,8 +27,8 @@ export const useCluster = ({
                              clickStyle,
                              visible = true
                            }: ClusterLayerProps) => {
-  const clusterLayer = useRef<any>();
-  const clusterSource = useRef<any>();
+  const clusterLayer = useRef<Layer<Source>>();
+  const clusterSource = useRef<Cluster>();
   const overInteraction = useRef<any>();
   const clickInteraction = useRef<any>();
   const styleCache: any = {};
@@ -58,7 +60,7 @@ export const useCluster = ({
   }
 
   const addInteraction = () => {
-    if (map) {
+    if (map && clusterLayer.current) {
       if (!overInteraction.current) {
         const select = new Select({
           condition: pointerMove,
@@ -106,7 +108,7 @@ export const useCluster = ({
   };
 
   const resetLayers = () => {
-    if (map && map.getLayers().getArray().length > 0) {
+    if (map && map.getLayers().getArray().length > 0 && clusterLayer.current) {
       map.removeLayer(clusterLayer.current);
     }
   };
@@ -114,7 +116,7 @@ export const useCluster = ({
   useEffect(() => {
     if (map && features) {
       clusterSource.current = new Cluster({
-        distance: 20,
+        distance,
         minDistance: 10,
         source: new VectorSource({ features, ...options }),
         ...clusterOptions,
@@ -143,4 +145,10 @@ export const useCluster = ({
       clusterLayer.current.setVisible(visible);
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (clusterSource.current && distance) {
+      clusterSource.current.setDistance(distance);
+    }
+  }, [distance]);
 };
