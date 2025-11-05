@@ -146,6 +146,7 @@ const OpenLayers = forwardRef(
         addListeners(mapRef.current);
         addController(mapRef.current);
         setMap(mapRef.current);
+        if(onInit) onInit(mapRef.current);
       }
     }, []);
 
