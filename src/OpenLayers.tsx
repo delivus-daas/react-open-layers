@@ -5,7 +5,6 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import { fromLonLat } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { ZoomSlider } from "ol/control";
@@ -16,7 +15,7 @@ const MapContext = React.createContext<any>(undefined);
 const OpenLayers = forwardRef(
   (
     {
-      initialCenter = [126.83, 37.57],
+      initialCenter,
       center,
       moveTolerance = 1,
       maxTilesLoading = 16,
@@ -129,11 +128,9 @@ const OpenLayers = forwardRef(
       if (mapElement.current && !mapRef.current) {
         console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
-        const center = initialCenter
-          ? fromLonLat(initialCenter)
-          : undefined;
+        if(viewOptions)
 
-        viewRef.current = new ol.View({ center, ...viewOptions });
+        viewRef.current = new ol.View({ center: initialCenter, ...viewOptions });
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
