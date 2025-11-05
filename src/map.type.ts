@@ -44,7 +44,7 @@ export interface OpenLayersProps extends GeolocationType {
   onResolutionChange?: (view: View) => void;
   onLoadEnd?: (event: ol.MapEvent) => void;
   onMoveStart?: (event: ol.MapEvent) => void;
-  onMoveEnd?: (event: ol.MapEvent, extent?: Extent) => void;
+  onMoveEnd?: (event: ol.MapEvent) => void;
   onPointerDrag?: (event: ol.MapBrowserEvent<any>) => void;
   onPointerMove?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   onPointerOut?: (event: ol.MapBrowserEvent<any>) => void;
@@ -52,7 +52,7 @@ export interface OpenLayersProps extends GeolocationType {
   onPostRender?: (event: ol.MapEvent) => void;
   onPostCompose?: (event: any) => void;
   onPreCompose?: (event: any) => void;
-  onRenderComplete?: (map: Map, event: any) => void;
+  onRenderComplete?: (event: any) => void;
   onDoubleClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   moveTolerance?: number;
   maxTilesLoading?: number;

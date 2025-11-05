@@ -5,7 +5,7 @@ import TileLayer from "ol/layer/Tile";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
-import { fromLonLat, transformExtent } from "ol/proj";
+import { fromLonLat } from "ol/proj";
 import { OpenLayersProps } from "./map.type";
 import { FeatureLike } from "ol/Feature";
 import { ZoomSlider } from "ol/control";
@@ -215,7 +215,7 @@ const OpenLayers = forwardRef(
         onRenderComplete &&
         map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
           if (onRenderComplete) {
-            onRenderComplete(map, event);
+            onRenderComplete(event);
           }
         });
 
@@ -229,18 +229,7 @@ const OpenLayers = forwardRef(
         onMoveEnd &&
         map.on("moveend", function (event: ol.MapBrowserEvent<any>) {
           if (onMoveEnd) {
-            let transExtent;
-            if (mapRef.current) {
-              const extent = mapRef.current
-                .getView()
-                .calculateExtent(mapRef.current.getSize());
-              transExtent = transformExtent(
-                extent,
-                mapRef.current.getView().getProjection(),
-                "EPSG:4326"
-              );
-            }
-            onMoveEnd(event, transExtent);
+            onMoveEnd(event);
           }
         });
 
