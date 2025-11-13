@@ -32,7 +32,7 @@ export const useCluster = ({
   const overInteraction = useRef<any>();
   const clickInteraction = useRef<any>();
   const styleCache: any = {};
-  const defaultClusterStyle = (feature: FeatureLike) => {
+  const defaultClusterStyle = (feature: FeatureLike, resolution: number) => {
     const size = feature.get("features").length;
     // Check cache
     console.log("clusterStyle2 features", size);
@@ -54,9 +54,14 @@ export const useCluster = ({
   };
 
   const clusterStyle = clusterStyleProp || defaultClusterStyle;
-  const setSelectedStyle = (selected: Feature[], deselected: Feature[], style?: (f: Feature) => Style) => {
-    selected && selected.forEach(s => s.setStyle(style ? style(s) : clusterStyle(s)));
-    deselected && deselected.forEach(s => s.setStyle(clusterStyle(s)));
+  const setSelectedStyle = (event: SelectEvent, style?: (f: Feature) => Style) => {
+    const mapInstance = event.mapBrowserEvent.map;
+    const view = mapInstance.getView();
+    const resolution = view.getResolution() || 100;
+
+    console.log('Resolution:', resolution);
+    if (event.selected) event.selected.forEach(s => s.setStyle(style ? style(s) : clusterStyle(s, resolution)));
+    if (event.selected) event.deselected.forEach(s => s.setStyle(clusterStyle(s, resolution)));
   }
 
   const addInteraction = () => {
@@ -68,7 +73,7 @@ export const useCluster = ({
         });
         if (onOver || overStyle) {
           select.on("select", (event) => {
-            setSelectedStyle(event.selected, event.deselected, overStyle)
+            if (overStyle) setSelectedStyle(event, overStyle)
             console.log("onOver", event.selected[0], event.deselected[0]);
             if (onOver) onOver(event.selected, event.deselected, event);
           });
@@ -83,7 +88,7 @@ export const useCluster = ({
             layers: [clusterLayer.current],
           });
           select.on("select", (event: SelectEvent) => {
-            setSelectedStyle(event.selected, event.deselected, clickStyle)
+            if (clickStyle) setSelectedStyle(event, clickStyle)
             let features: Feature[] = event.selected[0].get("features");
             console.log("onClick", event.selected, features);
             if (onClick) onClick(event.selected, event.deselected, event);

@@ -12,6 +12,7 @@ export const useLayer = ({
                            options = {},
                            layerOptions = {},
                            name,
+                           features,
                            onClick,
                            onOver,
                            clickStyle,
@@ -40,8 +41,8 @@ export const useLayer = ({
               }
             });
           }
-        )
-        ;
+        );
+
       if (onClick || clickStyle)
         map.on('singleclick', function (e: MapBrowserEvent<any>) {
           map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
@@ -85,7 +86,15 @@ export const useLayer = ({
         resetLayers();
       };
     }
-  }, [map])
+  }, [map]);
+
+  useEffect(() => {
+    if (source.current) {
+      console.log("useLayer", source.current, features)
+      source.current.clear();
+      if (features) source.current.addFeatures(features);
+    }
+  }, [features]);
 
   useEffect(() => {
     if (vertorLayer.current) {

@@ -7,9 +7,10 @@ import { Options as SourceOptions } from "ol/source/Vector";
 
 export interface LayerProps {
   name?: string;
-  map: Map;
+  map?: Map;
   index?: number;
   visible?: boolean;
+  features?: Feature[];
   options?: SourceOptions<any>;
   layerOptions?: LayerOptions<any>;
   clickStyle?: (feature: Feature) => Style
