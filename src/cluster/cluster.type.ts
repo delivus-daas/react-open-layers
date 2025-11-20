@@ -2,7 +2,7 @@ import { Options as ClusterOptions } from "ol/source/Cluster";
 import { PointLayerProps } from "../point/point.type";
 import { Feature, Map } from "ol";
 import { FeatureLike } from "ol/Feature";
-import { Style } from "ol/style";
+import { StyleLike } from "ol/style/Style";
 
 export interface ClusterLayerProps extends PointLayerProps {
   clusterOptions?: ClusterOptions;
@@ -10,8 +10,7 @@ export interface ClusterLayerProps extends PointLayerProps {
   map: Map;
   visible?: boolean;
   distance?: number;
-  clickStyle?: (feature: Feature) => Style
-  overStyle?: (feature: Feature) => Style
-  clusterStyle?: (feature: FeatureLike, resolution: number) => Style
-
+  zoom?: number;
+  overStyle?: (feature: FeatureLike) => StyleLike
+  clusterStyle?: (feature: FeatureLike, resolution: number) => StyleLike
 }
