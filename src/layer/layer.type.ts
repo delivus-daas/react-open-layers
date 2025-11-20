@@ -4,6 +4,7 @@ import { FeatureLike } from "ol/Feature";
 import { Style } from "ol/style";
 import { Options, Options as LayerOptions } from "ol/layer/BaseVector";
 import { Options as SourceOptions } from "ol/source/Vector";
+import { StyleLike } from "ol/style/Style";
 
 export interface LayerProps {
   name?: string;
@@ -13,9 +14,9 @@ export interface LayerProps {
   features?: Feature[];
   options?: SourceOptions<any>;
   layerOptions?: LayerOptions<any>;
-  clickStyle?: (feature: Feature) => Style
-  overStyle?: (feature: Feature) => Style
-  style?: (feature: FeatureLike) => Style
+  clickStyle?: (feature: FeatureLike) => StyleLike | undefined
+  overStyle?: (feature: FeatureLike) => StyleLike | undefined
+  style?: (feature: FeatureLike) => StyleLike | undefined
   onClick?: (
     selected: FeatureLike,
     deselected: FeatureLike,
