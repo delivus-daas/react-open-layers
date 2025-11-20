@@ -16,7 +16,7 @@ export interface LayerProps {
   layerOptions?: LayerOptions<any>;
   clickStyle?: (feature: FeatureLike) => StyleLike | undefined
   overStyle?: (feature: FeatureLike) => StyleLike | undefined
-  style?: (feature: FeatureLike) => StyleLike | undefined
+  style?: (feature: FeatureLike) => Style
   onClick?: (
     selected: FeatureLike,
     deselected: FeatureLike,
