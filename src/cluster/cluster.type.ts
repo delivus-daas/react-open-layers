@@ -7,7 +7,7 @@ import { StyleLike } from "ol/style/Style";
 export interface ClusterLayerProps extends PointLayerProps {
   clusterOptions?: ClusterOptions;
   features: Feature[];
-  map: Map;
+  map?: Map;
   visible?: boolean;
   distance?: number;
   zoom?: number;
