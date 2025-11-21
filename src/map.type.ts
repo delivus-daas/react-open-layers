@@ -5,7 +5,6 @@ import ol, { Feature, Map, View } from "ol";
 import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
-import { Extent } from "ol/extent";
 import { Options as ZoomOptions } from "ol/control/ZoomSlider";
 import { GeolocationType } from "./geolocation/geolocation.type";
 
@@ -27,11 +26,11 @@ export interface OpenLayersProps extends GeolocationType {
   showZoom?: boolean;
   showZoomSlider?: boolean;
   zoomOptions?: ZoomOptions;
-  zoom?: zoomStyleProps;
   zoomInStyle?: zoomStyleProps;
   zoomOutStyle?: zoomStyleProps;
   viewOptions?: ViewOptions;
   initialCenter?: number[];
+  zoom?: number;
   center?: number[];
   className?: string;
   children?: ReactNode | ReactNode[];

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState, } from "react";
+import React, { useEffect, useRef, useState, } from "react";
 import * as ol from "ol";
 import { MapBrowserEvent, View } from "ol";
 import TileLayer from "ol/layer/Tile";
@@ -12,7 +12,7 @@ import { boundingExtent } from "ol/extent";
 import { useGeolocation } from "./geolocation/useGeolocation";
 
 const MapContext = React.createContext<any>(undefined);
-const OpenLayers = forwardRef(
+const OpenLayers =
   (
     {
       initialCenter,
@@ -21,6 +21,7 @@ const OpenLayers = forwardRef(
       maxTilesLoading = 16,
       className,
       children,
+      zoom,
       viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
       layers: layersProp,
       interactionOptions = {
@@ -52,9 +53,7 @@ const OpenLayers = forwardRef(
       onPointerMove,
       onPointerOut,
       onResolutionChange,
-    }: OpenLayersProps,
-    ref
-  ) => {
+    }: OpenLayersProps) => {
     const [map, setMap] = useState<ol.Map>();
     const mapElement = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<ol.Map>();
@@ -65,6 +64,14 @@ const OpenLayers = forwardRef(
       if (center && mapRef.current)
         mapRef.current.getView().setCenter(center);
     }, [center]);
+
+    useEffect(() => {
+      if (zoom && mapRef.current)
+        mapRef.current.getView().animate({
+          zoom,
+          duration: 800
+        });
+    }, [zoom]);
 
     useEffect(() => {
       const bodyStyles: any = document.body.style;
@@ -128,9 +135,9 @@ const OpenLayers = forwardRef(
       if (mapElement.current && !mapRef.current) {
         console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
-        if(viewOptions)
+        if (viewOptions)
 
-        viewRef.current = new ol.View({ center: initialCenter, ...viewOptions });
+          viewRef.current = new ol.View({ center: initialCenter, ...viewOptions });
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
@@ -143,7 +150,7 @@ const OpenLayers = forwardRef(
         addListeners(mapRef.current);
         addController(mapRef.current);
         setMap(mapRef.current);
-        if(onInit) onInit(mapRef.current);
+        if (onInit) onInit(mapRef.current);
       }
     }, []);
 
@@ -277,26 +284,6 @@ const OpenLayers = forwardRef(
       }
     }
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        zoom: (zoom: number) => {
-          if (viewRef.current instanceof View) {
-            viewRef.current.setZoom(zoom);
-          }
-        },
-        zoomSmooth: (zoom: number) => {
-          if (viewRef.current instanceof View) {
-            viewRef.current.animate({
-              zoom,
-              duration: 250,
-            });
-          }
-        },
-      }),
-      []
-    );
-
     return (
       <MapContext.Provider value={map}>
         <div ref={mapElement} className={"map " + className}>
@@ -305,7 +292,6 @@ const OpenLayers = forwardRef(
       </MapContext.Provider>
     );
   }
-);
 
 export default OpenLayers;
 export const useMap = () => React.useContext(MapContext);
