@@ -81,7 +81,7 @@ export const useCluster = ({
       if (!clickInteraction.current) {
         if (onClick) {
           const select = new Select({
-            condition: click, layers: [clusterLayer.current]
+            condition: click, layers: [clusterLayer.current], style: clusterStyle
           });
           if (onClick) {
             select.on("select", (event: SelectEvent) => {
