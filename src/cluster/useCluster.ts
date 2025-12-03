@@ -1,15 +1,15 @@
-import {useEffect, useRef} from 'react';
-import {Cluster, Source} from "ol/source";
-import {Fill, Stroke, Style, Text} from "ol/style";
+import { useEffect, useRef } from 'react';
+import { Cluster, Source } from "ol/source";
+import { Fill, Stroke, Style, Text } from "ol/style";
 import VectorLayer from "ol/layer/Vector";
 import CircleStyle from "ol/style/Circle";
 import VectorSource from "ol/source/Vector";
-import {FeatureLike} from "ol/Feature";
-import {click, pointerMove} from "ol/events/condition";
-import {Select} from "ol/interaction";
-import {SelectEvent} from "ol/interaction/Select";
-import {Map} from "ol";
-import {Layer} from "ol/layer";
+import { FeatureLike } from "ol/Feature";
+import { click, pointerMove } from "ol/events/condition";
+import { Select } from "ol/interaction";
+import { SelectEvent } from "ol/interaction/Select";
+import { Map } from "ol";
+import { Layer } from "ol/layer";
 import { ClusterLayerProps } from "./cluster.type";
 
 export const useCluster = ({
@@ -19,12 +19,13 @@ export const useCluster = ({
                              distance,
                              options = {},
                              clusterOptions = {},
-                             layerOptions = {zIndex: 10},
+                             layerOptions = { zIndex: 10 },
                              onClick,
                              onOver,
                              clusterStyle: clusterStyleProp,
                              overStyle,
                              zoom,
+                             onInit,
                              visible = true
                            }: ClusterLayerProps) => {
   const clusterLayer = useRef<Layer<Source>>();
@@ -49,9 +50,9 @@ export const useCluster = ({
     if (!styleCache[size]) {
       styleCache[size] = new Style({
         image: new CircleStyle({
-          radius: 10 + size, fill: new Fill({color: '#333'}), stroke: new Stroke({color: '#fff', width: 2}),
+          radius: 10 + size, fill: new Fill({ color: '#333' }), stroke: new Stroke({ color: '#fff', width: 2 }),
         }), text: new Text({
-          text: size > 1 ? size.toString() : '1', fill: new Fill({color: '#fff'}),
+          text: size > 1 ? size.toString() : '1', fill: new Fill({ color: '#fff' }),
         }),
       });
     }
@@ -132,6 +133,7 @@ export const useCluster = ({
       if (name) clusterLayer.current.set("name", name);
       map.addLayer(clusterLayer.current);
       console.log("useLayer map: ", map, "layer: ", clusterLayer.current)
+      if (onInit) onInit(source.current);
       addInteraction(map);
       return () => {
         resetLayers(map);
