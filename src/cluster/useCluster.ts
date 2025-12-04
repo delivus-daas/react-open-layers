@@ -37,8 +37,8 @@ export const useCluster = ({
 
   useEffect(() => {
     if (clusterSource.current && !!zoom) {
-      let distance = 50; // default
-      if (zoom >= 15) distance = 15; else if (zoom >= 13) distance = 20; else if (zoom >= 11) distance = 25; else if (zoom >= 9) distance = 30;
+      let distance = 60; // default
+      if (zoom >= 17) distance = 10; if (zoom >= 15) distance = 20; else if (zoom >= 13) distance = 30; else if (zoom >= 11) distance = 40; else if (zoom >= 9) distance = 50;
       clusterSource.current.setDistance(distance);
     }
   }, [zoom]);
