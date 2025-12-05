@@ -17,4 +17,5 @@ export type OverlayProps = {
   pixel?: Pixel;
   children?: ReactElement;
   options?: Options;
+  visible?: boolean;
 };

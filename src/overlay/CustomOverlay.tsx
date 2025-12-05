@@ -4,12 +4,13 @@ import { Overlay } from "ol";
 import { useMap } from "../OpenLayers";
 
 export const CustomOverlay = ({
-  children,
-  className,
-  id,
-  position,
-  options = { positioning: "center-center" },
-}: OverlayProps) => {
+                                children,
+                                className,
+                                id,
+                                position,
+                                visible = true,
+                                options = { positioning: "center-center" },
+                              }: OverlayProps) => {
   const map = useMap();
   const overleyRef = useRef<Overlay>();
   const element = document.getElementById(id);
@@ -33,6 +34,15 @@ export const CustomOverlay = ({
   useEffect(() => {
     overleyRef.current?.setPosition(position);
   }, [position]);
+
+  useEffect(() => {
+    if (!!map)
+      if (visible) {
+        overleyRef.current?.setMap(map);
+      } else {
+        overleyRef.current?.setMap(null);
+      }
+  }, [visible]);
 
   return (
     <div id={id} className={className}>
