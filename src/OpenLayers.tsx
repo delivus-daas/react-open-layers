@@ -30,6 +30,7 @@ const OpenLayers =
         mouseWheelZoom: true,
         dragPan: true,
       },
+      extent,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       enableFitWhenClick,
       onInit,
@@ -72,6 +73,11 @@ const OpenLayers =
           duration: 800
         });
     }, [zoom]);
+
+    useEffect(() => {
+      if (extent && viewRef.current)
+        viewRef.current.fit(extent, fitOptions);
+    }, [extent]);
 
     useEffect(() => {
       const bodyStyles: any = document.body.style;

@@ -38,7 +38,8 @@ export const useCluster = ({
   useEffect(() => {
     if (clusterSource.current && !!zoom) {
       let distance = 60; // default
-      if (zoom >= 17) distance = 10; if (zoom >= 15) distance = 20; else if (zoom >= 13) distance = 30; else if (zoom >= 11) distance = 40; else if (zoom >= 9) distance = 50;
+      if (zoom >= 17) distance = 10;
+      if (zoom >= 15) distance = 20; else if (zoom >= 13) distance = 30; else if (zoom >= 11) distance = 40; else if (zoom >= 9) distance = 50;
       clusterSource.current.setDistance(distance);
     }
   }, [zoom]);
@@ -84,11 +85,10 @@ export const useCluster = ({
           const select = new Select({
             condition: click, layers: [clusterLayer.current], style: clusterStyle
           });
-          if (onClick) {
-            select.on("select", (event: SelectEvent) => {
-              onClick(event.selected, event.deselected, event);
-            });
-          }
+          select.on("select", (event: SelectEvent) => {
+            console.log("onclick", event);
+            onClick(event.selected, event.deselected, event);
+          });
           clickInteraction.current = select;
           map.addInteraction(select);
         }
@@ -119,9 +119,9 @@ export const useCluster = ({
   };
 
   useEffect(() => {
-    if (!!map) {
+    if (!!map && !source.current) {
       console.log("useCluster init")
-      source.current = new VectorSource(options);
+      source.current = new VectorSource({ features, ...options });
       clusterSource.current = new Cluster({
         distance, minDistance: 10, source: source.current, ...clusterOptions,
       });
@@ -140,7 +140,7 @@ export const useCluster = ({
         removeInteraction(map);
       };
     }
-  }, [map]);
+  }, [map, features]);
 
   useEffect(() => {
     if (source.current) {
