@@ -1,5 +1,5 @@
 {
-  "name": "@delivus/react-open-layers",
+  "name": "@delivus-daas/react-open-layers",
   "version": "2.2.8",
   "repository": "https://github.com/delivus-daas/react-open-layers.git",
   "description": "Open layer map component with, markers and clustering feature",
@@ -8,20 +8,27 @@
   "private": false,
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "style": "dist/esm/index.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/cjs/index.js",
+      "import": "./dist/esm/index.js",
+      "default": "./dist/esm/index.js"
+    },
+    "./index.css": "./dist/esm/index.css"
+  },
   "files": [
     "dist"
   ],
   "publishConfig": {
-    "delivus:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "rollup": "rollup -c"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
   },
   "resolutions": {
     "@types/react": "18.2.0",
@@ -53,6 +60,10 @@
     "rollup-plugin-terser": "^7.0.2",
     "tslib": "^2.5.3",
     "typescript": "^5.1.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
     "invariant": "^2.2.4",

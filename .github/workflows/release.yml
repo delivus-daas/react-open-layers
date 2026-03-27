@@ -1,23 +1,39 @@
-# Name for the github action
-name: Push to Master
+name: Publish to GitHub Packages
 
-# Trigger this action when we push to master or merge a pull-request to master
 on:
   push:
     branches:
       - master
 
-# runs the jobs
 jobs:
-  build:
-    # runs on ubuntu
+  publish:
     runs-on: ubuntu-latest
-    steps:
-      # checkout to github
-      - uses: actions/checkout@v3
-      # semantic release action from third party
-      - uses: codfish/semantic-release-action@master
-    # Add the environment variable for NPM and github. Github is needed because semantic-release will create a new release and release notes automatically
+    permissions:
+      contents: read
+      packages: write
     env:
-      GITHUB_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: '@delivus-daas'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build package
+        run: yarn build
+
+      - name: Bundle package
+        run: yarn rollup
+
+      - name: Publish package
+        run: npm publish

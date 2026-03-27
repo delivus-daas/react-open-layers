@@ -55,6 +55,7 @@ export interface OpenLayersProps extends GeolocationType {
   onDoubleClick?: (feature: Feature[], event: ol.MapBrowserEvent<any>) => void;
   moveTolerance?: number;
   maxTilesLoading?: number;
+  extent?: [number]; //[minx, miny, maxx, maxy]
 }
 
 export enum EFeatureName {
