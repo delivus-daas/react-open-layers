@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import { EFeatureName } from "../map.type";
 import Polygon from "ol/geom/Polygon.js";
 import { PolygonLayerProps, PolygonProps } from "./polygon.type";
 import { useMap } from "../OpenLayers";
-import ol, { Feature } from "ol";
+import { Feature } from "ol";
 import { Fill, Stroke, Style, Text } from "ol/style";
 
 function defaultPolygonStyle(
@@ -37,12 +37,13 @@ function defaultPolygonStyle(
     }),
   ];
 }
+
 export const PolygonLayer = ({
-  polygons,
-  options = { zIndex: 10 },
-  polygonStyle,
-  showCode,
-}: PolygonLayerProps) => {
+                               polygons,
+                               options = { zIndex: 10 },
+                               polygonStyle,
+                               showCode,
+                             }: PolygonLayerProps) => {
   const map = useMap();
   const source = useRef<any>();
   const vectorLayer = useRef<any>();
@@ -82,12 +83,12 @@ export const PolygonLayer = ({
           const feature = new Feature(new Polygon([coordinates]));
           feature.setStyle(
             polygonStyle ||
-              defaultPolygonStyle(
-                strokeColor,
-                showCode ? code : undefined,
-                fillColor,
-                strokeWidth
-              )
+            defaultPolygonStyle(
+              strokeColor,
+              showCode ? code : undefined,
+              fillColor,
+              strokeWidth
+            )
           );
           return feature;
         }

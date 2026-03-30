@@ -16,13 +16,13 @@ export default [
             {
                 file: "dist/cjs/index.js",
                 format: 'cjs',
-                sourcemap: true,
+                sourcemap: false,
                 name: 'react-open-layers'
             },
             {
                 file: "dist/esm/index.js",
                 format: 'esm',
-                sourcemap: true
+                sourcemap: false
             }
         ],
         plugins: [
@@ -41,7 +41,7 @@ export default [
                 modules: {
                     scopeBehaviour: 'global',
                 },
-                sourceMap: true,
+                sourceMap: false,
                 extract: true,
             })
         ]
