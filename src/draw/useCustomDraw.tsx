@@ -1,48 +1,41 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { DrawProps } from "./draw.type";
-import { useMap } from "../OpenLayers";
+import * as ol from "ol";
 import { Draw } from "ol/interaction";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
-import { Vector } from "ol/layer";
+import { Layer, Vector } from "ol/layer";
 
-export const CustomDraw = ({
-  drawStyle,
-  drawnStyle,
-  onDrawEnd,
-  onDrawAbort,
-  onDrawStart,
-  onSourceCreated,
-  options = { type: "Polygon" },
-}: DrawProps) => {
-  const map = useMap();
-  const drawRef = useRef<any>();
-  const source = new VectorSource({ wrapX: false });
-  const layerRef = useRef<any>();
+export const useCustomDraw = ({
+                                map,
+                                drawStyle,
+                                drawnStyle,
+                                onDrawEnd,
+                                onDrawAbort,
+                                onDrawStart,
+                                onSourceCreated,
+                                options = { type: "Polygon" },
+                                visible = true
+                              }: DrawProps) => {
+  const drawRef = useRef<Draw>();
+  const layerRef = useRef<Layer>();
+
   function addEventListener() {
     if (drawRef.current) {
       if (onDrawStart) {
-        drawRef.current.on("drawstart", function (event: any) {
-          const coordinate = event.feature.getGeometry().getFirstCoordinate();
-          onDrawStart(coordinate, event);
-        });
+        drawRef.current.on("drawstart", onDrawStart);
       }
       if (onDrawEnd) {
-        drawRef.current.on("drawend", function (event: any) {
-          onDrawEnd(event);
-        });
+        drawRef.current.on("drawend", onDrawEnd);
       }
       if (onDrawAbort) {
-        drawRef.current.on("drawabort", function (event: any) {
-          const coordinate = event.feature.getGeometry().getFirstCoordinate();
-          onDrawAbort(coordinate, event);
-        });
+        drawRef.current.on("drawabort", onDrawAbort);
       }
     }
   }
+
   const defaultDrawStyle = (feature: any) => {
     var geometry = feature.getGeometry();
-    console.log("geometry", geometry.getType());
     switch (geometry.getType()) {
       case "LineString":
         return [
@@ -82,9 +75,9 @@ export const CustomDraw = ({
     }
   };
 
-  const addLayer = useCallback(() => {
-    console.log("addLayer");
+  const addLayer = useCallback((map: ol.Map) => {
     const { type, ...rest } = options;
+    const source = new VectorSource({ wrapX: false });
     layerRef.current = new Vector({
       source,
       style: drawStyle || defaultDrawStyle,
@@ -100,7 +93,21 @@ export const CustomDraw = ({
     map.addInteraction(drawRef.current);
   }, []);
 
-  const removeLayer = useCallback(() => {
+  const removeListeners = useCallback(() => {
+    if (drawRef.current) {
+      if (onDrawStart) {
+        drawRef.current.un("drawstart", onDrawStart);
+      }
+      if (onDrawEnd) {
+        drawRef.current.un("drawend", onDrawEnd);
+      }
+      if (onDrawAbort) {
+        drawRef.current.un("drawabort", onDrawAbort);
+      }
+    }
+  }, []);
+
+  const removeLayer = useCallback((map?: ol.Map) => {
     console.log("add removeLayer");
     if (map) {
       drawRef.current && map.removeInteraction(drawRef.current);
@@ -109,14 +116,13 @@ export const CustomDraw = ({
   }, []);
 
   useEffect(() => {
-    if (map) {
-      addLayer();
+    if (map && visible) {
+      addLayer(map);
       addEventListener();
     }
     return () => {
-      removeLayer();
+      removeLayer(map);
+      removeListeners();
     };
-  }, [map]);
-
-  return null;
+  }, [map, visible]);
 };
