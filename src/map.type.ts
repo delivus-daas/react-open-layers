@@ -1,12 +1,17 @@
 import { ReactNode } from "react";
 import { FitOptions, ViewOptions } from "ol/View";
 import { DefaultsOptions } from "ol/interaction/defaults";
-import { Feature, Map, View, MapBrowserEvent, MapEvent } from "ol";
+import { Feature, Map, MapBrowserEvent, MapEvent, View } from "ol";
 import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
 import { Options as ZoomOptions } from "ol/control/ZoomSlider";
 import { GeolocationType } from "./geolocation/geolocation.type";
+import VectorSource, { Options as SourceOptions } from "ol/source/Vector";
+import { Options as IconOptions } from "ol/style/Icon";
+import { Coordinate } from "ol/coordinate";
+import { Options } from "ol/layer/BaseVector";
+import { SelectEvent } from "ol/interaction/Select";
 
 export interface zoomStyleProps {
   width?: string;
@@ -38,21 +43,21 @@ export interface OpenLayersProps extends GeolocationType {
   enableFitWhenClick?: boolean;
   onInit?: (map: Map) => void;
   onClickMap?: () => void;
-  onClick?: (feature: Feature[], event: MapBrowserEvent<any>) => void;
+  onClick?: (event: MapBrowserEvent<any>) => void;
   onLoadStart?: (event: MapEvent) => void;
   onResolutionChange?: (view: View) => void;
   onLoadEnd?: (event: MapEvent) => void;
   onMoveStart?: (event: MapEvent) => void;
   onMoveEnd?: (event: MapEvent) => void;
   onPointerDrag?: (event: MapBrowserEvent<any>) => void;
-  onPointerMove?: (feature: Feature[], event: MapBrowserEvent<any>) => void;
-  onPointerOut?: (event: MapBrowserEvent<any>) => void;
+  onPointerMove?: (event: MapBrowserEvent<any>) => void;
+  onPointerOut?: (event: any) => void;
   onMouseOut?: (event: MapBrowserEvent<any>) => void;
   onPostRender?: (event: MapEvent) => void;
   onPostCompose?: (event: any) => void;
   onPreCompose?: (event: any) => void;
   onRenderComplete?: (event: any) => void;
-  onDoubleClick?: (feature: Feature[], event: MapBrowserEvent<any>) => void;
+  onDoubleClick?: (event: MapBrowserEvent<any>) => void;
   moveTolerance?: number;
   maxTilesLoading?: number;
   extent?: [number]; //[minx, miny, maxx, maxy]
@@ -64,3 +69,25 @@ export enum EFeatureName {
   polygon = "polygon",
   cluster = "cluster",
 }
+
+export interface PointProps {
+  properties?: {
+    [x: string]: any;
+  };
+  source?: VectorSource;
+  iconOptions?: IconOptions;
+  index: number;
+  coordinate: Coordinate;
+}
+
+export type PointLayerProps = {
+  options?: SourceOptions<any>;
+  layerOptions?: Options<any>;
+  points?: PointProps[];
+  onSourceCreated?: (source: VectorSource) => void;
+  onClick?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
+  onOver?: (selected: Feature[], deselected: Feature[], event: SelectEvent) => void;
+  index?: number;
+  name?: string;
+  children?: (source?: VectorSource) => ReactNode | ReactNode[];
+};

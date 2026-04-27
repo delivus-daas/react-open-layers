@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState, } from "react";
+import React, { createContext, useEffect, useRef, useState, } from "react";
 import * as ol from "ol";
-import { MapBrowserEvent, View } from "ol";
+import { View } from "ol";
+import type { EventsKey } from "ol/events";
 import TileLayer from "ol/layer/Tile";
+import { unByKey } from "ol/Observable";
 import { OSM } from "ol/source";
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { OpenLayersProps } from "./map.type";
-import { FeatureLike } from "ol/Feature";
 import { ZoomSlider } from "ol/control";
-import { boundingExtent } from "ol/extent";
 import { useGeolocation } from "./geolocation/useGeolocation";
 
-const MapContext = React.createContext<any>(undefined);
+const MapContext = createContext<ol.Map | undefined>(undefined);
 const OpenLayers =
   (
     {
@@ -32,7 +32,6 @@ const OpenLayers =
       },
       extent,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
-      enableFitWhenClick,
       onInit,
       onDoubleClick,
       showZoom,
@@ -52,13 +51,14 @@ const OpenLayers =
       onRenderComplete,
       onClick,
       onPointerMove,
-      onPointerOut,
       onResolutionChange,
     }: OpenLayersProps) => {
     const [map, setMap] = useState<ol.Map>();
     const mapElement = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<ol.Map>();
     const viewRef = useRef<View>();
+    const mapListenerKeysRef = useRef<EventsKey[]>([]);
+    const viewListenerKeysRef = useRef<EventsKey[]>([]);
     useGeolocation(map, showGeolocation, geolocationOptions);
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const OpenLayers =
     }, [center]);
 
     useEffect(() => {
-      if (zoom && mapRef.current)
+      if (zoom !== undefined && mapRef.current)
         mapRef.current.getView().animate({
           zoom,
           duration: 800
@@ -132,14 +132,7 @@ const OpenLayers =
     }, [showZoom, zoomInStyle, zoomOutStyle]);
 
     useEffect(() => {
-      console.log(
-        "mapElement",
-        mapElement.current,
-        mapRef.current,
-        mapElement.current && !mapRef.current
-      );
       if (mapElement.current && !mapRef.current) {
-        console.log("mapElement 1", mapElement.current);
         const layers = layersProp || [new TileLayer({ source: new OSM() })];
         if (viewOptions)
 
@@ -152,21 +145,27 @@ const OpenLayers =
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
-        addViewListeners(viewRef.current);
-        addListeners(mapRef.current);
+        viewListenerKeysRef.current = addViewListeners(viewRef.current);
+        mapListenerKeysRef.current = addListeners(mapRef.current);
         addController(mapRef.current);
         setMap(mapRef.current);
         if (onInit) onInit(mapRef.current);
       }
-    }, []);
+      return () => {
+        unByKey(mapListenerKeysRef.current);
+        unByKey(viewListenerKeysRef.current);
+        mapListenerKeysRef.current = [];
+        viewListenerKeysRef.current = [];
 
-    function fitToFeatures(features: FeatureLike[]) {
-      const extent = boundingExtent(
-        features.map((r: any) => r.getGeometry().getCoordinates())
-      );
-      if (map)
-        map.getView().fit(extent, fitOptions);
-    }
+        if (mapRef.current) {
+          mapRef.current.setTarget(undefined);
+          mapRef.current = undefined;
+        }
+
+        viewRef.current = undefined;
+        setMap(undefined);
+      };
+    }, []);
 
     function addController(map: any) {
       if (map) {
@@ -178,116 +177,60 @@ const OpenLayers =
     }
 
     function addViewListeners(view?: View) {
+      const listenerKeys: EventsKey[] = [];
       if (view) {
-        onResolutionChange &&
-        view.on("change:resolution", () => {
-          onResolutionChange(view);
-        });
+        if (onResolutionChange) {
+          listenerKeys.push(
+            view.on("change:resolution", () => {
+              onResolutionChange(view);
+            })
+          );
+        }
       }
+      return listenerKeys;
     }
 
-    function addListeners(map: any) {
+    function addListeners(map: ol.Map) {
+      const listenerKeys: EventsKey[] = [];
       if (map) {
-        onLoadStart &&
-        map.on("loadstart", function (event: ol.MapBrowserEvent<any>) {
-          if (onLoadStart) {
-            onLoadStart(event);
-          }
-        });
+        if (onLoadStart)
+          listenerKeys.push(map.on("loadstart", onLoadStart));
 
-        onLoadEnd &&
-        map.on("loadend", function (event: ol.MapBrowserEvent<any>) {
-          if (onLoadEnd) {
-            onLoadEnd(event);
-          }
-        });
+        if (onLoadEnd)
+          listenerKeys.push(map.on("loadend", onLoadEnd));
 
-        onPostRender &&
-        map.on("postrender", function (event: ol.MapBrowserEvent<any>) {
-          if (onPostRender) {
-            onPostRender(event);
-          }
-        });
+        if (onPostRender)
+          listenerKeys.push(map.on("postrender", onPostRender));
 
-        onPreCompose &&
-        map.on("precompose", function (event: ol.MapBrowserEvent<any>) {
-          if (onPreCompose) {
-            onPreCompose(event);
-          }
-        });
 
-        onPostCompose &&
-        map.on("postcompose", function (event: ol.MapBrowserEvent<any>) {
-          if (onPostCompose) {
-            onPostCompose(event);
-          }
-        });
+        if (onPreCompose)
+          listenerKeys.push(map.on("precompose", onPreCompose));
 
-        onRenderComplete &&
-        map.on("rendercomplete", function (event: ol.MapBrowserEvent<any>) {
-          if (onRenderComplete) {
-            onRenderComplete(event);
-          }
-        });
+        if (onPostCompose)
+          listenerKeys.push(map.on("postcompose", onPostCompose));
 
-        onMoveStart &&
-        map.on("movestart", function (event: ol.MapBrowserEvent<any>) {
-          if (onMoveStart) {
-            onMoveStart(event);
-          }
-        });
+        if (onRenderComplete)
+          listenerKeys.push(map.on("rendercomplete", onRenderComplete));
 
-        onMoveEnd &&
-        map.on("moveend", function (event: ol.MapBrowserEvent<any>) {
-          if (onMoveEnd) {
-            onMoveEnd(event);
-          }
-        });
+        if (onMoveStart)
+          listenerKeys.push(map.on("movestart", onMoveStart));
 
-        if (onDoubleClick && mapRef.current)
-          mapRef.current.on("dblclick", function (
-            event: ol.MapBrowserEvent<any>
-          ) {
-            if (onDoubleClick) {
-              const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-              onDoubleClick(clickedFeatures, event);
-            }
-          });
+        if (onMoveEnd)
+          listenerKeys.push(map.on("moveend", onMoveEnd));
 
-        onClick &&
-        map.on("singleclick", function (event: MapBrowserEvent<any>) {
-          event.stopPropagation();
-          if (map) {
-            const clickedFeatures = map.getFeaturesAtPixel(event.pixel);
-            onClick && onClick(clickedFeatures, event);
-            if (enableFitWhenClick) {
-              fitToFeatures(clickedFeatures);
-            }
-          }
-        });
+        if (onDoubleClick)
+          listenerKeys.push(map.on("dblclick", onDoubleClick));
 
-        onPointerDrag &&
-        map.on("pointerdrag", function (event: ol.MapBrowserEvent<any>) {
-          if (onPointerDrag) {
-            onPointerDrag(event);
-          }
-        });
+        if (onClick)
+          listenerKeys.push(map.on("singleclick", onClick));
 
-        onPointerMove &&
-        map.on("pointermove", function (event: ol.MapBrowserEvent<any>) {
-          const hoveredFeatures = map.getFeaturesAtPixel(event.pixel);
-          if (onPointerMove) {
-            onPointerMove(hoveredFeatures, event);
-          }
-        });
+        if (onPointerDrag)
+          listenerKeys.push(map.on("pointerdrag", onPointerDrag));
 
-        onPointerOut &&
-        map.on("pointerout", function (event: ol.MapBrowserEvent<any>) {
-          if (onPointerOut) {
-            onPointerOut(event);
-          }
-        });
+        if (onPointerMove)
+          listenerKeys.push(map.on("pointermove", onPointerMove));
       }
+      return listenerKeys;
     }
 
     return (

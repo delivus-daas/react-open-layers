@@ -4,11 +4,11 @@ import { useMap } from "../OpenLayers";
 import { Control } from "ol/control";
 
 export const Controller = ({
-  id,
-  children,
-  className,
-  options = {},
-}: ControlProps) => {
+                             id,
+                             children,
+                             className,
+                             options = {},
+                           }: ControlProps) => {
   const map = useMap();
   const controlRef = useRef<Control>();
   const element = document.getElementById(id);
@@ -22,10 +22,11 @@ export const Controller = ({
         });
         map.addControl(controlRef.current);
       }
+      return () => {
+        if (controlRef.current)
+          map.removeControl(controlRef.current);
+      };
     }
-    return () => {
-      map && map.removeControl(controlRef.current);
-    };
   }, [map]);
 
   return (

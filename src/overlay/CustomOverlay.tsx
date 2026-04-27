@@ -24,11 +24,11 @@ export const CustomOverlay = ({
         });
         map.addOverlay(overleyRef.current);
       }
+      return () => {
+        if (overleyRef.current) map.removeOverlay(overleyRef.current);
+      };
     }
 
-    return () => {
-      map && map.removeOverlay(overleyRef.current);
-    };
   }, [map]);
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
 import { Layer, Vector } from "ol/layer";
 
-export const useCustomDraw = ({
+export const usePolygonDraw = ({
                                 map,
                                 drawStyle,
                                 drawnStyle,

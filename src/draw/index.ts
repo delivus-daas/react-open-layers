@@ -1,2 +1,2 @@
-export { useCustomDraw } from "./useCustomDraw";
+export { usePolygonDraw } from "./usePolygonDraw";
 export type * from "./draw.type";
