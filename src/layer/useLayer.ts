@@ -80,7 +80,6 @@ export const useLayer = ({
       });
       if (name) vertorLayer.current.set("name", name);
       map.addLayer(vertorLayer.current);
-      console.log("✅ Layer is ready name:" + name);
       addInteraction();
       return () => {
         resetLayers();
@@ -90,7 +89,6 @@ export const useLayer = ({
 
   useEffect(() => {
     if (source.current) {
-      console.log("useLayer", source.current, features)
       source.current.clear();
       if (features) source.current.addFeatures(features);
     }

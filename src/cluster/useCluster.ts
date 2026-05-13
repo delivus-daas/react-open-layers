@@ -47,7 +47,6 @@ export const useCluster = ({
   const defaultClusterStyle = (feature: FeatureLike, resolution: number) => {
     const size = feature.get("features").length;
     // Check cache
-    console.log("clusterStyle2 features", size);
     if (!styleCache[size]) {
       styleCache[size] = new Style({
         image: new CircleStyle({
@@ -71,7 +70,6 @@ export const useCluster = ({
           });
           if (onOver) {
             select.on("select", (event) => {
-              console.log("cluster onOver", event);
               onOver(event.selected, event.deselected, event);
             });
           }
@@ -79,14 +77,12 @@ export const useCluster = ({
           map.addInteraction(select);
         }
       }
-      console.log("addInteractions", !clickInteraction.current, onClick);
       if (!clickInteraction.current) {
         if (onClick) {
           const select = new Select({
             condition: click, layers: [clusterLayer.current], style: clusterStyle
           });
           select.on("select", (event: SelectEvent) => {
-            console.log("onclick", event);
             onClick(event.selected, event.deselected, event);
           });
           clickInteraction.current = select;
@@ -95,13 +91,11 @@ export const useCluster = ({
       }
       const interactions = map.getInteractions()
         .getArray();
-      console.log("cluster interactions", clickInteraction.current, overInteraction.current, interactions);
     }
   };
 
   const removeInteraction = (map: Map) => {
     if (map) {
-      console.log("removeInteraction", map);
       if (clickInteraction.current) {
         map.removeInteraction(clickInteraction.current);
       }
@@ -120,8 +114,8 @@ export const useCluster = ({
 
   useEffect(() => {
     if (!!map && !source.current) {
-      console.log("useCluster init")
-      source.current = new VectorSource({ features, ...options });
+      source.current = new VectorSource(options);
+      source.current.refresh()
       clusterSource.current = new Cluster({
         distance, minDistance: 10, source: source.current, ...clusterOptions,
       });
@@ -132,7 +126,6 @@ export const useCluster = ({
 
       if (name) clusterLayer.current.set("name", name);
       map.addLayer(clusterLayer.current);
-      console.log("useLayer map: ", map, "layer: ", clusterLayer.current)
       if (onInit) onInit(source.current);
       addInteraction(map);
       return () => {
@@ -140,7 +133,7 @@ export const useCluster = ({
         removeInteraction(map);
       };
     }
-  }, [map, features]);
+  }, [map]);
 
   useEffect(() => {
     if (source.current) {
