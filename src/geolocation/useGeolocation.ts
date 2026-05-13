@@ -36,11 +36,9 @@ export function useGeolocation(
   };
 
   const addListener = (geolocation: Geolocation, view: View) => {
-    console.log("geo addListener");
     if (geolocation) {
       // handle geolocation error.
       errorListener.current = geolocation.on("error", function (error) {
-        console.log("geolocation error", error);
         animatedToLocation.current = false;
         options?.onError && options?.onError(error);
       });
@@ -65,7 +63,6 @@ export function useGeolocation(
   };
 
   const removeListener = (geolocation: Geolocation) => {
-    console.log("geo removeListener");
     if (geolocation) {
       geolocation.setTracking(false);
       changeListener.current &&
@@ -79,7 +76,6 @@ export function useGeolocation(
   };
 
   const createGeolocation = (map: Map) => {
-    console.log("geo createGeolocation");
     geolocationRef.current = new Geolocation({
       trackingOptions: {
         enableHighAccuracy: true,
