@@ -24,14 +24,14 @@ export interface zoomStyleProps {
 }
 
 export interface OpenLayersProps {
-  interactionOptions?: DefaultsOptions;
-  layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
+  initialInteractionOptions?: DefaultsOptions;
+  initialLayers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
   showZoom?: boolean;
-  showZoomSlider?: boolean;
+  initialShowZoomSlider?: boolean;
   zoomOptions?: ZoomOptions;
   zoomInStyle?: zoomStyleProps;
   zoomOutStyle?: zoomStyleProps;
-  viewOptions?: ViewOptions;
+  initialViewOptions?: ViewOptions;
   initialCenter?: number[];
   zoom?: number;
   center?: number[];

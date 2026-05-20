@@ -18,20 +18,20 @@ const OpenLayers =
   (
     {
       initialCenter,
+      initialViewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
+      initialLayers: initialLayersProp,
+      initialInteractionOptions = {
+        doubleClickZoom: true,
+        shiftDragZoom: true,
+        mouseWheelZoom: true,
+        dragPan: true,
+      },
       center,
       moveTolerance = 1,
       maxTilesLoading = 16,
       className,
       children,
       zoom,
-      viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
-      layers: layersProp,
-      interactionOptions = {
-        doubleClickZoom: true,
-        shiftDragZoom: true,
-        mouseWheelZoom: true,
-        dragPan: true,
-      },
       extent,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       onInit,
@@ -39,7 +39,7 @@ const OpenLayers =
       showZoom,
       zoomInStyle,
       zoomOutStyle,
-      showZoomSlider,
+      initialShowZoomSlider,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -98,14 +98,17 @@ const OpenLayers =
 
     useEffect(() => {
       if (mapElement.current && !mapRef.current) {
-        const layers = layersProp || [new TileLayer({ source: new OSM() })];
-        if (viewOptions)
+        const layers = initialLayersProp || [new TileLayer({ source: new OSM() })];
+        if (initialViewOptions)
 
-          viewRef.current = new ol.View({ center: initialCenter, ...viewOptions });
+          viewRef.current = new ol.View({
+            center: initialCenter,
+            ...initialViewOptions,
+          });
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
-          interactions: interactionDefaults(interactionOptions),
+          interactions: interactionDefaults(initialInteractionOptions),
           view: viewRef.current,
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
@@ -134,7 +137,7 @@ const OpenLayers =
 
     function addController(map: ol.Map) {
       if (map) {
-        if (showZoomSlider) {
+        if (initialShowZoomSlider) {
           const zoomSlider = new ZoomSlider();
           map.addControl(zoomSlider);
         }
