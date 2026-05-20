@@ -39,7 +39,7 @@ const OpenLayers =
       showZoom,
       zoomInStyle,
       zoomOutStyle,
-      initialShowZoomSlider,
+      showZoomSlider,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -57,6 +57,7 @@ const OpenLayers =
     const mapElement = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<ol.Map>();
     const viewRef = useRef<View>();
+    const zoomSliderRef = useRef<ZoomSlider>();
     const mapListenerKeysRef = useRef<EventsKey[]>([]);
     const viewListenerKeysRef = useRef<EventsKey[]>([]);
 
@@ -115,7 +116,7 @@ const OpenLayers =
         });
         viewListenerKeysRef.current = addViewListeners(viewRef.current);
         mapListenerKeysRef.current = addListeners(mapRef.current);
-        addController(mapRef.current);
+        addZoomController(mapRef.current);
         setMap(mapRef.current);
         if (onInit) onInit(mapRef.current);
       }
@@ -126,6 +127,7 @@ const OpenLayers =
         viewListenerKeysRef.current = [];
 
         if (mapRef.current) {
+          removeZoomController(mapRef.current);
           mapRef.current.setTarget(undefined);
           mapRef.current = undefined;
         }
@@ -135,12 +137,19 @@ const OpenLayers =
       };
     }, []);
 
-    function addController(map: ol.Map) {
+    function addZoomController(map: ol.Map) {
       if (map) {
-        if (initialShowZoomSlider) {
-          const zoomSlider = new ZoomSlider();
-          map.addControl(zoomSlider);
+        if (showZoomSlider) {
+          zoomSliderRef.current = new ZoomSlider();
+          map.addControl(zoomSliderRef.current);
         }
+      }
+    }
+
+    function removeZoomController(map: ol.Map) {
+      if (zoomSliderRef.current) {
+        map.removeControl(zoomSliderRef.current);
+        zoomSliderRef.current = undefined;
       }
     }
 

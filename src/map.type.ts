@@ -27,7 +27,7 @@ export interface OpenLayersProps {
   initialInteractionOptions?: DefaultsOptions;
   initialLayers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
   showZoom?: boolean;
-  initialShowZoomSlider?: boolean;
+  showZoomSlider?: boolean;
   zoomOptions?: ZoomOptions;
   zoomInStyle?: zoomStyleProps;
   zoomOutStyle?: zoomStyleProps;
