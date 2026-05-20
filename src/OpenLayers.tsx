@@ -33,8 +33,6 @@ const OpenLayers =
       onInit,
       onDoubleClick,
       showZoom,
-      zoomInStyle,
-      zoomOutStyle,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -73,24 +71,6 @@ const OpenLayers =
       if (extent && viewRef.current)
         viewRef.current.fit(extent, fitOptions);
     }, [extent]);
-
-    const mapStyle: MapCssVariables = {
-      "--zoom-visible": showZoom ? "visible" : "hidden",
-      "--zoomin-width": zoomInStyle?.width ?? "47px",
-      "--zoomin-height": zoomInStyle?.height ?? "39px",
-      "--zoomin-backgroundColor": zoomInStyle?.backgroundColor ?? "white",
-      "--zoomin-bottom": zoomInStyle?.bottom ?? "69px",
-      "--zoomin-top": zoomInStyle?.top ?? "inherit",
-      "--zoomin-right": zoomInStyle?.right ?? "20px",
-      "--zoomin-left": zoomInStyle?.left ?? "inherit",
-      "--zoomout-width": zoomOutStyle?.width ?? "47px",
-      "--zoomout-height": zoomOutStyle?.height ?? "39px",
-      "--zoomout-backgroundColor": zoomOutStyle?.backgroundColor ?? "white",
-      "--zoomout-bottom": zoomOutStyle?.bottom ?? "29px",
-      "--zoomout-top": zoomOutStyle?.top ?? "inherit",
-      "--zoomout-right": zoomOutStyle?.right ?? "20px",
-      "--zoomout-left": zoomOutStyle?.left ?? "inherit",
-    };
 
     useEffect(() => {
       if (mapElement.current && !mapRef.current) {
@@ -190,7 +170,7 @@ const OpenLayers =
 
     return (
       <MapContext.Provider value={map}>
-        <div ref={mapElement} className={"map " + className} style={mapStyle}>
+        <div ref={mapElement} className={"map " + className}>
           {children}
         </div>
       </MapContext.Provider>

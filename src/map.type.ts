@@ -28,8 +28,6 @@ export interface OpenLayersProps {
   initialLayers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
   showZoom?: boolean;
   zoomOptions?: ZoomOptions;
-  zoomInStyle?: zoomStyleProps;
-  zoomOutStyle?: zoomStyleProps;
   initialViewOptions?: ViewOptions;
   initialCenter?: number[];
   zoom?: number;
