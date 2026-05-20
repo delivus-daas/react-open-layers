@@ -9,16 +9,12 @@ import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { OpenLayersProps } from "./map.type";
-import { ZoomSlider } from "ol/control";
 
 const MapContext = createContext<ol.Map | undefined>(undefined);
-
-type MapCssVariables = React.CSSProperties & Record<string, string>;
 
 const OpenLayers =
   (
     {
-      initialCenter,
       initialViewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
       initialLayers: initialLayersProp,
       initialInteractionOptions,
@@ -27,12 +23,10 @@ const OpenLayers =
       maxTilesLoading = 16,
       className,
       children,
-      zoom,
       extent,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       onInit,
       onDoubleClick,
-      showZoom,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -50,7 +44,6 @@ const OpenLayers =
     const mapElement = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<ol.Map>();
     const viewRef = useRef<View>();
-    const zoomSliderRef = useRef<ZoomSlider>();
     const mapListenerKeysRef = useRef<EventsKey[]>([]);
     const viewListenerKeysRef = useRef<EventsKey[]>([]);
 
@@ -58,14 +51,6 @@ const OpenLayers =
       if (center && mapRef.current)
         mapRef.current.getView().setCenter(center);
     }, [center]);
-
-    useEffect(() => {
-      if (zoom !== undefined && mapRef.current)
-        mapRef.current.getView().animate({
-          zoom,
-          duration: 800
-        });
-    }, [zoom]);
 
     useEffect(() => {
       if (extent && viewRef.current)
@@ -76,15 +61,10 @@ const OpenLayers =
       if (mapElement.current && !mapRef.current) {
         const layers = initialLayersProp || [new TileLayer({ source: new OSM() })];
         if (initialViewOptions)
-
-          viewRef.current = new ol.View({
-            center: initialCenter,
-            ...initialViewOptions,
-          });
+          viewRef.current = new ol.View(initialViewOptions);
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
-
           interactions: interactionDefaults(initialInteractionOptions).extend([new MouseWheelZoom()]),
           view: viewRef.current,
           moveTolerance: moveTolerance,
