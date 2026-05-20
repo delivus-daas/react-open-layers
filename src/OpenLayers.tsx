@@ -9,7 +9,6 @@ import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { OpenLayersProps } from "./map.type";
 import { ZoomSlider } from "ol/control";
-import { useGeolocation } from "./geolocation/useGeolocation";
 
 const MapContext = createContext<ol.Map | undefined>(undefined);
 
@@ -41,8 +40,6 @@ const OpenLayers =
       zoomInStyle,
       zoomOutStyle,
       showZoomSlider,
-      showGeolocation,
-      geolocationOptions,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -62,7 +59,6 @@ const OpenLayers =
     const viewRef = useRef<View>();
     const mapListenerKeysRef = useRef<EventsKey[]>([]);
     const viewListenerKeysRef = useRef<EventsKey[]>([]);
-    useGeolocation(map, showGeolocation, geolocationOptions);
 
     useEffect(() => {
       if (center && mapRef.current)
