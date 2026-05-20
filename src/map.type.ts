@@ -26,11 +26,9 @@ export interface zoomStyleProps {
 export interface OpenLayersProps {
   initialInteractionOptions?: DefaultsOptions;
   initialLayers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
-  showZoom?: boolean;
   zoomOptions?: ZoomOptions;
   initialViewOptions?: ViewOptions;
   initialCenter?: number[];
-  zoom?: number;
   center?: number[];
   className?: string;
   children?: ReactNode | ReactNode[];
