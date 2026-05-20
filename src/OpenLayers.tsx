@@ -5,6 +5,7 @@ import type { EventsKey } from "ol/events";
 import TileLayer from "ol/layer/Tile";
 import { unByKey } from "ol/Observable";
 import { OSM } from "ol/source";
+import DragRotateAndZoom from 'ol/interaction/DragRotateAndZoom.js';
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { OpenLayersProps } from "./map.type";
@@ -20,12 +21,7 @@ const OpenLayers =
       initialCenter,
       initialViewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
       initialLayers: initialLayersProp,
-      initialInteractionOptions = {
-        doubleClickZoom: true,
-        shiftDragZoom: true,
-        mouseWheelZoom: true,
-        dragPan: true,
-      },
+      initialInteractionOptions,
       center,
       moveTolerance = 1,
       maxTilesLoading = 16,
@@ -109,7 +105,8 @@ const OpenLayers =
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
-          interactions: interactionDefaults(initialInteractionOptions),
+
+          interactions: interactionDefaults(initialInteractionOptions).extend([new DragRotateAndZoom()]),
           view: viewRef.current,
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
