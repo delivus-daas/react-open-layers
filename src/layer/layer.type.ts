@@ -11,7 +11,7 @@ export interface LayerProps {
   index?: number;
   visible?: boolean;
   features?: Feature[];
-  options?: SourceOptions<any>;
+  options?: SourceOptions;
   layerOptions?: LayerOptions<Feature, VectorSource<Feature>>;
   clickStyle?: (feature: FeatureLike) => StyleLike | undefined
   overStyle?: (feature: FeatureLike) => StyleLike | undefined
@@ -19,11 +19,11 @@ export interface LayerProps {
   onClick?: (
     selected: FeatureLike,
     deselected: FeatureLike,
-    event: MapBrowserEvent<any>
+    event: MapBrowserEvent
   ) => void;
   onOver?: (
     selected: FeatureLike,
     deselected: FeatureLike,
-    event: MapBrowserEvent<any>
+    event: MapBrowserEvent
   ) => void;
 }

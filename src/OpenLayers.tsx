@@ -18,20 +18,20 @@ const OpenLayers =
   (
     {
       initialCenter,
+      initialViewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
+      initialLayers: initialLayersProp,
+      initialInteractionOptions = {
+        doubleClickZoom: true,
+        shiftDragZoom: true,
+        mouseWheelZoom: true,
+        dragPan: true,
+      },
       center,
       moveTolerance = 1,
       maxTilesLoading = 16,
       className,
       children,
       zoom,
-      viewOptions = { zoom: 10, maxZoom: 21, minZoom: 5 },
-      layers: layersProp,
-      interactionOptions = {
-        doubleClickZoom: true,
-        shiftDragZoom: true,
-        mouseWheelZoom: true,
-        dragPan: true,
-      },
       extent,
       fitOptions = { duration: 500, padding: [50, 50, 50, 50] },
       onInit,
@@ -57,6 +57,7 @@ const OpenLayers =
     const mapElement = useRef<HTMLDivElement | null>(null);
     const mapRef = useRef<ol.Map>();
     const viewRef = useRef<View>();
+    const zoomSliderRef = useRef<ZoomSlider>();
     const mapListenerKeysRef = useRef<EventsKey[]>([]);
     const viewListenerKeysRef = useRef<EventsKey[]>([]);
 
@@ -98,21 +99,24 @@ const OpenLayers =
 
     useEffect(() => {
       if (mapElement.current && !mapRef.current) {
-        const layers = layersProp || [new TileLayer({ source: new OSM() })];
-        if (viewOptions)
+        const layers = initialLayersProp || [new TileLayer({ source: new OSM() })];
+        if (initialViewOptions)
 
-          viewRef.current = new ol.View({ center: initialCenter, ...viewOptions });
+          viewRef.current = new ol.View({
+            center: initialCenter,
+            ...initialViewOptions,
+          });
         mapRef.current = new ol.Map({
           target: mapElement.current,
           layers,
-          interactions: interactionDefaults(interactionOptions),
+          interactions: interactionDefaults(initialInteractionOptions),
           view: viewRef.current,
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
         viewListenerKeysRef.current = addViewListeners(viewRef.current);
         mapListenerKeysRef.current = addListeners(mapRef.current);
-        addController(mapRef.current);
+        addZoomController(mapRef.current);
         setMap(mapRef.current);
         if (onInit) onInit(mapRef.current);
       }
@@ -123,6 +127,7 @@ const OpenLayers =
         viewListenerKeysRef.current = [];
 
         if (mapRef.current) {
+          removeZoomController(mapRef.current);
           mapRef.current.setTarget(undefined);
           mapRef.current = undefined;
         }
@@ -132,12 +137,19 @@ const OpenLayers =
       };
     }, []);
 
-    function addController(map: any) {
+    function addZoomController(map: ol.Map) {
       if (map) {
         if (showZoomSlider) {
-          const zoomSlider = new ZoomSlider();
-          map.addControl(zoomSlider);
+          zoomSliderRef.current = new ZoomSlider();
+          map.addControl(zoomSliderRef.current);
         }
+      }
+    }
+
+    function removeZoomController(map: ol.Map) {
+      if (zoomSliderRef.current) {
+        map.removeControl(zoomSliderRef.current);
+        zoomSliderRef.current = undefined;
       }
     }
 

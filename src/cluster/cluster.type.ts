@@ -1,7 +1,7 @@
 import { Options as ClusterOptions } from "ol/source/Cluster";
 import { Feature, Map } from "ol";
 import { FeatureLike } from "ol/Feature";
-import { StyleLike } from "ol/style/Style";
+import { StyleFunction, StyleLike } from "ol/style/Style";
 import VectorSource from "ol/source/Vector";
 import { PointLayerProps } from "../map.type";
 
@@ -13,6 +13,6 @@ export interface ClusterLayerProps extends PointLayerProps {
   distance?: number;
   zoom?: number;
   onInit?: (source: VectorSource) => void;
-  overStyle?: (feature: FeatureLike, resolution: number) => StyleLike | undefined
-  clusterStyle?: (feature: FeatureLike, resolution: number) => StyleLike | undefined
+  overStyle?: StyleFunction
+  clusterStyle?: StyleFunction
 }

@@ -38,7 +38,7 @@ import {
 ```xml
 
   <OpenLayers
-   interactionOptions={{ pinchZoom: true }}
+   initialInteractionOptions={{ pinchZoom: true }}
    className={"shipping-map"}
    onMouseOverFeatures={handleMouseOverCluster}
    onMouseOutFeatures={handleMouseOutCluster}
@@ -71,12 +71,12 @@ import {
 Optional default props for all Map components:
 
 ```
-  interactionOptions: DefaultsOptions;
-  layers: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
+  initialInteractionOptions: DefaultsOptions;
+  initialLayers: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
   showZoom: boolean;
   zoomInStyle: zoomStyleProps;
   zoomOutStyle: zoomStyleProps;
-  viewOptions: ViewOptions;
+  initialViewOptions: ViewOptions;
   initialCenter: number[];
   className: string;
   children: ReactNode | ReactNode[];
@@ -103,18 +103,18 @@ Optional default props for all Map components:
 ```
 
 
-### `interactionOptions`
+### `initialInteractionOptions`
 
-`interactionOptions` prop is a set of interactions included in maps by default
+`initialInteractionOptions` prop is a set of interactions included in maps by default
 
-for more information : [interactionOptions](https://openlayers.org/en/latest/apidoc/module-ol_interaction_defaults)
+for more information : [interaction options](https://openlayers.org/en/latest/apidoc/module-ol_interaction_defaults)
 
-### `layers`
+### `initialLayers`
 
-The `layers` prop allows user to add layers for the map as an array collection similar to openlayers prop for layers.
+The `initialLayers` prop allows user to add layers for the map as an array collection similar to openlayers prop for layers.
 
 For example :
-`layers: [
+`initialLayers: [
 raster,
 vector
 ],`
@@ -139,11 +139,11 @@ Accepted styling props are:
   right: string;
 ```
 
-### `viewOptions`
+### `initialViewOptions`
 
-`viewOptions` prop is a set of view properties included in maps by default
+`initialViewOptions` prop is a set of view properties included in maps by default
 
-for more information : [viewOptions](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html)
+for more information : [view options](https://openlayers.org/en/latest/apidoc/module-ol_View-View.html)
 
 ### `initialCenter`
 

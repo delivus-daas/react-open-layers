@@ -1,5 +1,7 @@
 import { Feature, Map, View } from "ol";
 import Geolocation from "ol/Geolocation";
+import type { GeolocationError } from "ol/Geolocation";
+import { unByKey } from "ol/Observable";
 import { Fill, Stroke, Style } from "ol/style";
 import CircleStyle from "ol/style/Circle";
 import { Point } from "ol/geom";
@@ -8,17 +10,18 @@ import { useEffect, useRef } from "react";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { EFeatureName } from "../map.type";
+import type { EventsKey } from "ol/events";
 
 export function useGeolocation(
   map?: Map,
   showGeolocation?: boolean,
   options?: GeolocationType
 ) {
-  const geolocationRef = useRef<any>();
-  const layerRef = useRef<any>();
-  const featureRef = useRef<any>();
-  const changeListener = useRef<any>();
-  const errorListener = useRef<any>();
+  const geolocationRef = useRef<Geolocation>();
+  const layerRef = useRef<VectorLayer<VectorSource<Feature<Point>>> | null>(null);
+  const featureRef = useRef<Feature<Point> | null>(null);
+  const changeListener = useRef<EventsKey>();
+  const errorListener = useRef<EventsKey>();
   const animatedToLocation = useRef(false);
   const defaultPositionStyle = (fillColor?: string, strokeColor?: string) => {
     return new Style({
@@ -38,13 +41,14 @@ export function useGeolocation(
   const addListener = (geolocation: Geolocation, view: View) => {
     if (geolocation) {
       // handle geolocation error.
-      errorListener.current = geolocation.on("error", function (error) {
+      errorListener.current = geolocation.on("error", function (error: GeolocationError) {
         animatedToLocation.current = false;
         options?.onError && options?.onError(error);
       });
 
       changeListener.current = geolocation.on("change:position", function () {
-        const coordinates = geolocationRef.current.getPosition();
+        const coordinates = geolocation.getPosition();
+        if (!coordinates) return;
         options?.onChangePosition && options?.onChangePosition(coordinates);
         if (
           view &&
@@ -62,16 +66,17 @@ export function useGeolocation(
     }
   };
 
-  const removeListener = (geolocation: Geolocation) => {
+  const removeListener = (geolocation?: Geolocation) => {
     if (geolocation) {
       geolocation.setTracking(false);
-      changeListener.current &&
-        geolocation.removeChangeListener(
-          "change:position",
-          changeListener.current
-        );
-      errorListener.current &&
-        geolocation.removeChangeListener("error", errorListener.current);
+      if (changeListener.current) {
+        unByKey(changeListener.current);
+        changeListener.current = undefined;
+      }
+      if (errorListener.current) {
+        unByKey(errorListener.current);
+        errorListener.current = undefined;
+      }
     }
   };
 

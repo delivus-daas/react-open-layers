@@ -11,6 +11,7 @@ import { SelectEvent } from "ol/interaction/Select";
 import { Map } from "ol";
 import { Layer } from "ol/layer";
 import { ClusterLayerProps } from "./cluster.type";
+import { StyleFunction } from "ol/style/Style";
 
 export const useCluster = ({
                              features,
@@ -31,9 +32,9 @@ export const useCluster = ({
   const clusterLayer = useRef<Layer<Source>>();
   const source = useRef<VectorSource>();
   const clusterSource = useRef<Cluster>();
-  const overInteraction = useRef<any>();
-  const clickInteraction = useRef<any>();
-  const styleCache: any = {};
+  const overInteraction = useRef<Select>();
+  const clickInteraction = useRef<Select>();
+  const styleCache: Record<number, Style> = {};
 
   useEffect(() => {
     if (clusterSource.current && !!zoom) {
@@ -44,7 +45,7 @@ export const useCluster = ({
     }
   }, [zoom]);
 
-  const defaultClusterStyle = (feature: FeatureLike, resolution: number) => {
+  const defaultClusterStyle: StyleFunction = (feature: FeatureLike) => {
     const size = feature.get("features").length;
     // Check cache
     if (!styleCache[size]) {
@@ -60,7 +61,7 @@ export const useCluster = ({
     return styleCache[size];
   };
 
-  const clusterStyle = clusterStyleProp || defaultClusterStyle;
+  const clusterStyle: StyleFunction = clusterStyleProp || defaultClusterStyle;
   const addInteraction = (map: Map) => {
     if (map && clusterLayer.current) {
       if (onOver || overStyle) {
