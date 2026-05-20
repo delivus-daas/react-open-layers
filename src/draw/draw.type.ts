@@ -19,5 +19,5 @@ export type DrawProps = {
   onDrawStart?: (event: BaseEvent | Event) => void;
   onDrawEnd?: (event: DrawEvent) => void;
   onDrawAbort?: (event: BaseEvent | Event) => void;
-  onGetPointsInsidePolygon?: (coordinate: Coordinate, event: any) => void;
+  onGetPointsInsidePolygon?: (coordinate: Coordinate, event: DrawEvent) => void;
 };

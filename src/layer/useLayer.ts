@@ -27,7 +27,7 @@ export const useLayer = ({
   const addInteraction = () => {
     if (map) {
       if (onOver || overStyle)
-        map.on('pointermove', function (e: MapBrowserEvent<any>) {
+        map.on('pointermove', function (e: MapBrowserEvent) {
             map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
               if (!layer || layer?.get("name") !== vertorLayer.current?.get("name") || feature === highlighted) return;
               if (onOver) onOver(feature, highlighted as FeatureLike, e);
@@ -44,7 +44,7 @@ export const useLayer = ({
         );
 
       if (onClick || clickStyle)
-        map.on('singleclick', function (e: MapBrowserEvent<any>) {
+        map.on('singleclick', function (e: MapBrowserEvent) {
           map.forEachFeatureAtPixel(e.pixel, function (feature, layer) {
             if (!layer || layer?.get("name") !== vertorLayer.current?.get("name")) return;
             if (onClick) onClick(feature, highlighted as FeatureLike, e);

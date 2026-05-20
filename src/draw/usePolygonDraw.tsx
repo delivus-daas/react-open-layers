@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { DrawProps } from "./draw.type";
 import * as ol from "ol";
+import { FeatureLike } from "ol/Feature";
 import { Draw } from "ol/interaction";
 import VectorSource from "ol/source/Vector";
 import { Circle, Fill, Stroke, Style } from "ol/style";
@@ -34,8 +35,9 @@ export const usePolygonDraw = ({
     }
   }
 
-  const defaultDrawStyle = (feature: any) => {
+  const defaultDrawStyle = (feature: FeatureLike) => {
     var geometry = feature.getGeometry();
+    if (!geometry) return undefined;
     switch (geometry.getType()) {
       case "LineString":
         return [

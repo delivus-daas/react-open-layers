@@ -10,6 +10,6 @@ export type ControlProps = {
    * className for overlay container element
    */
   className?: string;
-  children: any;
+  children: ReactNode;
   options?: Options;
 };

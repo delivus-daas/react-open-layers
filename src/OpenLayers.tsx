@@ -132,7 +132,7 @@ const OpenLayers =
       };
     }, []);
 
-    function addController(map: any) {
+    function addController(map: ol.Map) {
       if (map) {
         if (showZoomSlider) {
           const zoomSlider = new ZoomSlider();

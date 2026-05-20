@@ -6,12 +6,12 @@ import Collection from "ol/Collection";
 import LayerGroup from "ol/layer/Group";
 import BaseLayer from "ol/layer/Base";
 import { Options as ZoomOptions } from "ol/control/ZoomSlider";
-import { GeolocationType } from "./geolocation/geolocation.type";
 import VectorSource, { Options as SourceOptions } from "ol/source/Vector";
 import { Options as IconOptions } from "ol/style/Icon";
 import { Coordinate } from "ol/coordinate";
 import { Options } from "ol/layer/BaseVector";
 import { SelectEvent } from "ol/interaction/Select";
+import RenderEvent from "ol/render/Event";
 
 export interface zoomStyleProps {
   width?: string;
@@ -23,11 +23,9 @@ export interface zoomStyleProps {
   right?: string;
 }
 
-export interface OpenLayersProps extends GeolocationType {
+export interface OpenLayersProps {
   interactionOptions?: DefaultsOptions;
   layers?: BaseLayer[] | Collection<BaseLayer> | LayerGroup | undefined;
-  showGeolocation?: boolean;
-  geolocationOptions?: GeolocationType;
   showZoom?: boolean;
   showZoomSlider?: boolean;
   zoomOptions?: ZoomOptions;
@@ -43,21 +41,21 @@ export interface OpenLayersProps extends GeolocationType {
   enableFitWhenClick?: boolean;
   onInit?: (map: Map) => void;
   onClickMap?: () => void;
-  onClick?: (event: MapBrowserEvent<any>) => void;
+  onClick?: (event: MapBrowserEvent) => void;
   onLoadStart?: (event: MapEvent) => void;
   onResolutionChange?: (view: View) => void;
   onLoadEnd?: (event: MapEvent) => void;
   onMoveStart?: (event: MapEvent) => void;
   onMoveEnd?: (event: MapEvent) => void;
-  onPointerDrag?: (event: MapBrowserEvent<any>) => void;
-  onPointerMove?: (event: MapBrowserEvent<any>) => void;
-  onPointerOut?: (event: any) => void;
-  onMouseOut?: (event: MapBrowserEvent<any>) => void;
+  onPointerDrag?: (event: MapBrowserEvent) => void;
+  onPointerMove?: (event: MapBrowserEvent) => void;
+  onPointerOut?: (event: MapBrowserEvent) => void;
+  onMouseOut?: (event: MapBrowserEvent) => void;
   onPostRender?: (event: MapEvent) => void;
-  onPostCompose?: (event: any) => void;
-  onPreCompose?: (event: any) => void;
-  onRenderComplete?: (event: any) => void;
-  onDoubleClick?: (event: MapBrowserEvent<any>) => void;
+  onPostCompose?: (event: RenderEvent) => void;
+  onPreCompose?: (event: RenderEvent) => void;
+  onRenderComplete?: (event: RenderEvent) => void;
+  onDoubleClick?: (event: MapBrowserEvent) => void;
   moveTolerance?: number;
   maxTilesLoading?: number;
   extent?: [number]; //[minx, miny, maxx, maxy]
@@ -72,7 +70,7 @@ export enum EFeatureName {
 
 export interface PointProps {
   properties?: {
-    [x: string]: any;
+    [x: string]: unknown;
   };
   source?: VectorSource;
   iconOptions?: IconOptions;
@@ -81,7 +79,7 @@ export interface PointProps {
 }
 
 export type PointLayerProps = {
-  options?: SourceOptions<any>;
+  options?: SourceOptions;
   layerOptions?: Options<Feature, VectorSource<Feature>>;
   points?: PointProps[];
   onSourceCreated?: (source: VectorSource) => void;
