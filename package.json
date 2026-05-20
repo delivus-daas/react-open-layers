@@ -68,6 +68,6 @@
   "dependencies": {
     "invariant": "^2.2.4",
     "loadjs": "^4.3.0-rc1",
-    "ol": "^7.4.0"
+    "ol": "^10.9.0"
   }
 }

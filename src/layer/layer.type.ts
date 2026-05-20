@@ -2,7 +2,7 @@ import { Feature, Map, MapBrowserEvent } from "ol";
 import { FeatureLike } from "ol/Feature";
 import { Style } from "ol/style";
 import { Options as LayerOptions } from "ol/layer/BaseVector";
-import { Options as SourceOptions } from "ol/source/Vector";
+import VectorSource, { Options as SourceOptions } from "ol/source/Vector";
 import { StyleLike } from "ol/style/Style";
 
 export interface LayerProps {
@@ -12,7 +12,7 @@ export interface LayerProps {
   visible?: boolean;
   features?: Feature[];
   options?: SourceOptions<any>;
-  layerOptions?: LayerOptions<any>;
+  layerOptions?: LayerOptions<Feature, VectorSource<Feature>>;
   clickStyle?: (feature: FeatureLike) => StyleLike | undefined
   overStyle?: (feature: FeatureLike) => StyleLike | undefined
   style?: (feature: FeatureLike) => Style

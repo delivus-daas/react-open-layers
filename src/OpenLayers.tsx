@@ -12,6 +12,9 @@ import { ZoomSlider } from "ol/control";
 import { useGeolocation } from "./geolocation/useGeolocation";
 
 const MapContext = createContext<ol.Map | undefined>(undefined);
+
+type MapCssVariables = React.CSSProperties & Record<string, string>;
+
 const OpenLayers =
   (
     {
@@ -79,57 +82,23 @@ const OpenLayers =
         viewRef.current.fit(extent, fitOptions);
     }, [extent]);
 
-    useEffect(() => {
-      const bodyStyles: any = document.body.style;
-      if (!showZoom) {
-        bodyStyles.setProperty("--zoom-visible", "hidden");
-      } else {
-        bodyStyles.setProperty("--zoom-visible", "visible");
-
-        bodyStyles.setProperty("--zoomin-width", zoomInStyle?.width ?? "47px");
-        bodyStyles.setProperty(
-          "--zoomin-height",
-          zoomInStyle?.height ?? "39px"
-        );
-        bodyStyles.setProperty(
-          "--zoomin-backgroundColor",
-          zoomInStyle?.backgroundColor ?? "white"
-        );
-        bodyStyles.setProperty(
-          "--zoomin-bottom",
-          zoomInStyle?.bottom ?? "69px"
-        );
-        bodyStyles.setProperty("--zoomin-top", zoomInStyle?.top ?? "inherit");
-        bodyStyles.setProperty("--zoomin-right", zoomInStyle?.right ?? "20px");
-        bodyStyles.setProperty("--zoomin-left", zoomInStyle?.left ?? "inherit");
-
-        bodyStyles.setProperty(
-          "--zoomout-width",
-          zoomOutStyle?.width ?? "47px"
-        );
-        bodyStyles.setProperty(
-          "--zoomout-height",
-          zoomOutStyle?.height ?? "39px"
-        );
-        bodyStyles.setProperty(
-          "--zoomout-backgroundColor",
-          zoomOutStyle?.backgroundColor ?? "white"
-        );
-        bodyStyles.setProperty(
-          "--zoomout-bottom",
-          zoomOutStyle?.bottom ?? "29px"
-        );
-        bodyStyles.setProperty("--zoomout-top", zoomOutStyle?.top ?? "inherit");
-        bodyStyles.setProperty(
-          "--zoomout-right",
-          zoomOutStyle?.right ?? "20px"
-        );
-        bodyStyles.setProperty(
-          "--zoomout-left",
-          zoomOutStyle?.left ?? "inherit"
-        );
-      }
-    }, [showZoom, zoomInStyle, zoomOutStyle]);
+    const mapStyle: MapCssVariables = {
+      "--zoom-visible": showZoom ? "visible" : "hidden",
+      "--zoomin-width": zoomInStyle?.width ?? "47px",
+      "--zoomin-height": zoomInStyle?.height ?? "39px",
+      "--zoomin-backgroundColor": zoomInStyle?.backgroundColor ?? "white",
+      "--zoomin-bottom": zoomInStyle?.bottom ?? "69px",
+      "--zoomin-top": zoomInStyle?.top ?? "inherit",
+      "--zoomin-right": zoomInStyle?.right ?? "20px",
+      "--zoomin-left": zoomInStyle?.left ?? "inherit",
+      "--zoomout-width": zoomOutStyle?.width ?? "47px",
+      "--zoomout-height": zoomOutStyle?.height ?? "39px",
+      "--zoomout-backgroundColor": zoomOutStyle?.backgroundColor ?? "white",
+      "--zoomout-bottom": zoomOutStyle?.bottom ?? "29px",
+      "--zoomout-top": zoomOutStyle?.top ?? "inherit",
+      "--zoomout-right": zoomOutStyle?.right ?? "20px",
+      "--zoomout-left": zoomOutStyle?.left ?? "inherit",
+    };
 
     useEffect(() => {
       if (mapElement.current && !mapRef.current) {
@@ -235,7 +204,7 @@ const OpenLayers =
 
     return (
       <MapContext.Provider value={map}>
-        <div ref={mapElement} className={"map " + className}>
+        <div ref={mapElement} className={"map " + className} style={mapStyle}>
           {children}
         </div>
       </MapContext.Provider>
