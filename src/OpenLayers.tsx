@@ -5,7 +5,7 @@ import type { EventsKey } from "ol/events";
 import TileLayer from "ol/layer/Tile";
 import { unByKey } from "ol/Observable";
 import { OSM } from "ol/source";
-import DragRotateAndZoom from 'ol/interaction/DragRotateAndZoom.js';
+import MouseWheelZoom from 'ol/interaction/MouseWheelZoom';
 import { defaults as interactionDefaults } from "ol/interaction/defaults";
 import "./index.css";
 import { OpenLayersProps } from "./map.type";
@@ -35,7 +35,6 @@ const OpenLayers =
       showZoom,
       zoomInStyle,
       zoomOutStyle,
-      showZoomSlider,
       onLoadStart,
       onLoadEnd,
       onMoveStart,
@@ -106,14 +105,13 @@ const OpenLayers =
           target: mapElement.current,
           layers,
 
-          interactions: interactionDefaults(initialInteractionOptions).extend([new DragRotateAndZoom()]),
+          interactions: interactionDefaults(initialInteractionOptions).extend([new MouseWheelZoom()]),
           view: viewRef.current,
           moveTolerance: moveTolerance,
           maxTilesLoading: maxTilesLoading,
         });
         viewListenerKeysRef.current = addViewListeners(viewRef.current);
         mapListenerKeysRef.current = addListeners(mapRef.current);
-        addZoomController(mapRef.current);
         setMap(mapRef.current);
         if (onInit) onInit(mapRef.current);
       }
@@ -124,7 +122,6 @@ const OpenLayers =
         viewListenerKeysRef.current = [];
 
         if (mapRef.current) {
-          removeZoomController(mapRef.current);
           mapRef.current.setTarget(undefined);
           mapRef.current = undefined;
         }
@@ -133,22 +130,6 @@ const OpenLayers =
         setMap(undefined);
       };
     }, []);
-
-    function addZoomController(map: ol.Map) {
-      if (map) {
-        if (showZoomSlider) {
-          zoomSliderRef.current = new ZoomSlider();
-          map.addControl(zoomSliderRef.current);
-        }
-      }
-    }
-
-    function removeZoomController(map: ol.Map) {
-      if (zoomSliderRef.current) {
-        map.removeControl(zoomSliderRef.current);
-        zoomSliderRef.current = undefined;
-      }
-    }
 
     function addViewListeners(view?: View) {
       const listenerKeys: EventsKey[] = [];
